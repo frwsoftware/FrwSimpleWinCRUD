@@ -1,0 +1,162 @@
+﻿[
+  {
+    "JExampleDto1Id": "1",
+    "Name": "Dto_1_Record_0",
+    "CreatedDate": "2017-08-31T11:03:34.0865679+03:00",
+    "Dto2": {
+      "JExampleDto2Id": "1"
+    }
+  },
+  {
+    "JExampleDto1Id": "2",
+    "Name": "Dto_1_Record_1",
+    "CreatedDate": "2017-08-31T11:03:34.1021952+03:00",
+    "Dto2": {
+      "JExampleDto2Id": "2"
+    }
+  },
+  {
+    "JExampleDto1Id": "3",
+    "Name": "Dto_1_Record_2",
+    "CreatedDate": "2017-08-31T11:03:34.1021952+03:00",
+    "Dto2": {
+      "JExampleDto2Id": "3"
+    }
+  },
+  {
+    "JExampleDto1Id": "4",
+    "Name": "Dto_1_Record_3",
+    "CreatedDate": "2017-08-31T11:03:34.1021952+03:00",
+    "Dto2": {
+      "JExampleDto2Id": "4"
+    }
+  },
+  {
+    "JExampleDto1Id": "5",
+    "Name": "Dto_1_Record_4",
+    "CreatedDate": "2017-08-31T11:03:34.1021952+03:00",
+    "Dto2": {
+      "JExampleDto2Id": "5"
+    }
+  },
+  {
+    "JExampleDto1Id": "6",
+    "Name": "Dto_1_Record_5",
+    "CreatedDate": "2017-08-31T11:03:34.1021952+03:00",
+    "Dto2": {
+      "JExampleDto2Id": "6"
+    }
+  },
+  {
+    "JExampleDto1Id": "7",
+    "Name": "Dto_1_Record_6",
+    "CreatedDate": "2017-08-31T11:03:34.1021952+03:00",
+    "Dto2": {
+      "JExampleDto2Id": "7"
+    }
+  },
+  {
+    "JExampleDto1Id": "8",
+    "Name": "Dto_1_Record_7",
+    "CreatedDate": "2017-08-31T11:03:34.1021952+03:00",
+    "Dto2": {
+      "JExampleDto2Id": "8"
+    }
+  },
+  {
+    "JExampleDto1Id": "9",
+    "Name": "Dto_1_Record_8",
+    "CreatedDate": "2017-08-31T11:03:34.1021952+03:00",
+    "Dto2": {
+      "JExampleDto2Id": "9"
+    }
+  },
+  {
+    "JExampleDto1Id": "10",
+    "Name": "Dto_1_Record_9",
+    "CreatedDate": "2017-08-31T11:03:34.1021952+03:00",
+    "Dto2": {
+      "JExampleDto2Id": "10"
+    }
+  },
+  {
+    "JExampleDto1Id": "11",
+    "Name": "Dto_1_Record_10",
+    "CreatedDate": "2017-08-31T11:03:34.1021952+03:00",
+    "Dto2": {
+      "JExampleDto2Id": "11"
+    }
+  },
+  {
+    "JExampleDto1Id": "12",
+    "Name": "Dto_1_Record_11",
+    "CreatedDate": "2017-08-31T11:03:34.1021952+03:00",
+    "Dto2": {
+      "JExampleDto2Id": "12"
+    }
+  },
+  {
+    "JExampleDto1Id": "13",
+    "Name": "Dto_1_Record_12",
+    "CreatedDate": "2017-08-31T11:03:34.1021952+03:00",
+    "Dto2": {
+      "JExampleDto2Id": "13"
+    }
+  },
+  {
+    "JExampleDto1Id": "14",
+    "Name": "Dto_1_Record_13",
+    "CreatedDate": "2017-08-31T11:03:34.1021952+03:00",
+    "Dto2": {
+      "JExampleDto2Id": "14"
+    }
+  },
+  {
+    "JExampleDto1Id": "15",
+    "Name": "Dto_1_Record_14",
+    "CreatedDate": "2017-08-31T11:03:34.1021952+03:00",
+    "Dto2": {
+      "JExampleDto2Id": "15"
+    }
+  },
+  {
+    "JExampleDto1Id": "16",
+    "Name": "Dto_1_Record_15",
+    "CreatedDate": "2017-08-31T11:03:34.1021952+03:00",
+    "Dto2": {
+      "JExampleDto2Id": "16"
+    }
+  },
+  {
+    "JExampleDto1Id": "17",
+    "Name": "Dto_1_Record_16",
+    "CreatedDate": "2017-08-31T11:03:34.1021952+03:00",
+    "Dto2": {
+      "JExampleDto2Id": "17"
+    }
+  },
+  {
+    "JExampleDto1Id": "18",
+    "Name": "Dto_1_Record_17",
+    "CreatedDate": "2017-08-31T11:03:34.1021952+03:00",
+    "Dto2": {
+      "JExampleDto2Id": "18"
+    }
+  },
+  {
+    "JExampleDto1Id": "19",
+    "Name": "Dto_1_Record_18",
+    "CreatedDate": "2017-08-31T11:03:34.1178178+03:00",
+    "Dto2": {
+      "JExampleDto2Id": "19"
+    }
+  },
+  {
+    "JExampleDto1Id": "20",
+    "Name": "Dto_1_Record_19",
+    "CreatedDate": "2017-08-31T11:03:34.1178178+03:00",
+    "Dto2": {
+      "JExampleDto2Id": "20"
+    }
+  }
+]

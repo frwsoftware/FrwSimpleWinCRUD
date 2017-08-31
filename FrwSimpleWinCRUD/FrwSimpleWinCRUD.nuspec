@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://github.com/frwsoftware/SimpleWinCRUD</licenseUrl>
+    <projectUrl>https://github.com/frwsoftware/SimpleWinCRUD</projectUrl>
+    <iconUrl>https://github.com/frwsoftware/SimpleWinCRUD</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2016</copyright>
+    <tags>ObjectListView CRUD Json</tags>
+  </metadata>
+</package>

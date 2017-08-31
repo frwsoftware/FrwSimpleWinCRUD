@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<DockPanelContainers>
+  <ScreenSystem ScreenCount="1">
+    <DockPanelContainer Bounds="119, 83, 1402, 678" Left="119" Top="83" Width="1402" Height="678" WindowState="Normal" Type="FrwSoftware.FrwMainAppForm" />
+  </ScreenSystem>
+</DockPanelContainers>

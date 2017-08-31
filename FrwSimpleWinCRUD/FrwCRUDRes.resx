@@ -1,0 +1,516 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="List_View_Of_Record" xml:space="preserve">
+    <value>View record</value>
+  </data>
+  <data name="Lisе_Refresh_List" xml:space="preserve">
+    <value>Refresh list</value>
+  </data>
+  <data name="Main_Window" xml:space="preserve">
+    <value>Main window</value>
+  </data>
+  <data name="List" xml:space="preserve">
+    <value>list</value>
+  </data>
+  <data name="List_Create_New_Record" xml:space="preserve">
+    <value>Add new record</value>
+  </data>
+  <data name="Move_Not_Allowed_1" xml:space="preserve">
+    <value>This drag&amp;drop is not possible. The source or destination does not allow this operation.</value>
+  </data>
+  <data name="Move_Not_Allowed_2" xml:space="preserve">
+    <value>This drag&amp;drop is not possible. You can only transfer to the area of a specific line in the list.</value>
+  </data>
+  <data name="WARNING" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="NO_RIGHTS" xml:space="preserve">
+    <value>The operation is impossible. Insufficient access rights.</value>
+  </data>
+  <data name="SelectFieldToPaste" xml:space="preserve">
+    <value>Select field insert to</value>
+  </data>
+  <data name="List_Edit_Record" xml:space="preserve">
+    <value>Edit record</value>
+  </data>
+  <data name="List_Remove_Record" xml:space="preserve">
+    <value>Remove record</value>
+  </data>
+  <data name="List_Remove_All_Records" xml:space="preserve">
+    <value>Remove all records</value>
+  </data>
+  <data name="List_Copy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="List_Cut" xml:space="preserve">
+    <value>Cut</value>
+  </data>
+  <data name="List_Paste_From_Buffer" xml:space="preserve">
+    <value>Paste from internal application clipboard</value>
+  </data>
+  <data name="List_Paste_From_Windows_Buffer" xml:space="preserve">
+    <value>Paste from Windowsl clipboard</value>
+  </data>
+  <data name="List_Selected_More_Than_On_record" xml:space="preserve">
+    <value>There are more than one record</value>
+  </data>
+  <data name="List_No_Selected_Records" xml:space="preserve">
+    <value>No selected records</value>
+  </data>
+  <data name="List_Columns" xml:space="preserve">
+    <value>List columns</value>
+  </data>
+  <data name="List_No_Records" xml:space="preserve">
+    <value>No records</value>
+  </data>
+  <data name="Drag_Copy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="Drag_Move" xml:space="preserve">
+    <value>Move</value>
+  </data>
+  <data name="Drag_Record_Successfully" xml:space="preserve">
+    <value>Record successfully</value>
+  </data>
+  <data name="Drage_Moved" xml:space="preserve">
+    <value>moved</value>
+  </data>
+  <data name="Drag_Copied" xml:space="preserve">
+    <value>copied</value>
+  </data>
+  <data name="List_Delete_Record_Confirmation" xml:space="preserve">
+    <value>Delete the entry. If you agree with this - click "Yes"</value>
+  </data>
+  <data name="List_Delete_All_records_Confirmation" xml:space="preserve">
+    <value>Delete all records. If you agree with this - click "Yes"</value>
+  </data>
+  <data name="List_Edit_Field" xml:space="preserve">
+    <value>Edit field</value>
+  </data>
+  <data name="Object_For_View_Not_Found" xml:space="preserve">
+    <value>No item found to display</value>
+  </data>
+  <data name="List_View_Field" xml:space="preserve">
+    <value>View fileld</value>
+  </data>
+  <data name="List_Copy_To_Clipboard_OLV" xml:space="preserve">
+    <value>Copy to buffer in OLV format</value>
+  </data>
+  <data name="List_Refresh_List" xml:space="preserve">
+    <value>Refresh list</value>
+  </data>
+  <data name="List_Settings" xml:space="preserve">
+    <value>List settings</value>
+  </data>
+  <data name="List_Open_In_Dialog" xml:space="preserve">
+    <value>Open property windows in a modal dialog</value>
+  </data>
+  <data name="List_Details_Info" xml:space="preserve">
+    <value>Details record info</value>
+  </data>
+  <data name="List_Add_Record" xml:space="preserve">
+    <value>Add record</value>
+  </data>
+  <data name="List_Copy_To_Clipboard" xml:space="preserve">
+    <value>Copy record to Clipboard</value>
+  </data>
+  <data name="List_Save_List" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="TreeList_Loading" xml:space="preserve">
+    <value>Loading</value>
+  </data>
+  <data name="Record_Can_Not_Be_Empty" xml:space="preserve">
+    <value>Record can not be empty</value>
+  </data>
+  <data name="Wrong_Operation" xml:space="preserve">
+    <value>Wrong operation</value>
+  </data>
+  <data name="List_Can_Not_Delete_Children" xml:space="preserve">
+    <value>Can not delete because there are child records</value>
+  </data>
+  <data name="List_Add_TopLevel_Record" xml:space="preserve">
+    <value>Add new toplevel record</value>
+  </data>
+  <data name="List_Add_Child_Record" xml:space="preserve">
+    <value>Add chilld record</value>
+  </data>
+  <data name="ListSettingDialogcs_ListViewSCannotShowGroupsWhenInListView" xml:space="preserve">
+    <value>ListView's cannot show groups when in List view.</value>
+  </data>
+  <data name="ListSettingDialogcs_No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="ListSettingDialogcs_SingleClick" xml:space="preserve">
+    <value>Single Click</value>
+  </data>
+  <data name="ListSettingDialogcs_DoubleClick" xml:space="preserve">
+    <value>Double Click</value>
+  </data>
+  <data name="ListSettingDialogcs_SorryMicrosoftSaysThatVirtualListsCanTUseTileView" xml:space="preserve">
+    <value>Sorry, Microsoft says that virtual lists can't use Tile view.</value>
+  </data>
+  <data name="ListSettingDialogcs_MicrosoftSaysThatTileViewCanTHaveCheckboxesSoCheckBoxesHaveBeenTurnedOffOnThisList" xml:space="preserve">
+    <value>Microsoft says that Tile view can't have checkboxes, so CheckBoxes have been turned off on this list.</value>
+  </data>
+  <data name="Present" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="Not_present" xml:space="preserve">
+    <value>Not</value>
+  </data>
+  <data name="ListSettingDialogcs_RowHeight" xml:space="preserve">
+    <value>Row &amp;Height:</value>
+  </data>
+  <data name="ListSettingDialogcs_Groups" xml:space="preserve">
+    <value>&amp;Groups</value>
+  </data>
+  <data name="ListSettingDialogcs_Details" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="ListSettingDialogcs_Tile" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="ListSettingDialogcs_List" xml:space="preserve">
+    <value>List</value>
+  </data>
+  <data name="ListSettingDialogcs_LargeIcon" xml:space="preserve">
+    <value>Large Icon</value>
+  </data>
+  <data name="ListSettingDialogcs_SmallIcon" xml:space="preserve">
+    <value>Small Icon</value>
+  </data>
+  <data name="ListSettingDialogcs_View" xml:space="preserve">
+    <value>View:</value>
+  </data>
+  <data name="ListSettingDialogcs_F2Only" xml:space="preserve">
+    <value>F2 Only</value>
+  </data>
+  <data name="ListSettingDialogcs_Lightbox" xml:space="preserve">
+    <value>Lightbox</value>
+  </data>
+  <data name="ListSettingDialogcs_Translucent" xml:space="preserve">
+    <value>Translucent</value>
+  </data>
+  <data name="ListSettingDialogcs_Border" xml:space="preserve">
+    <value>Border</value>
+  </data>
+  <data name="ListSettingDialogcs_TextColor" xml:space="preserve">
+    <value>Text Color</value>
+  </data>
+  <data name="ListSettingDialogcs_None" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="ListSettingDialogcs_HotItem" xml:space="preserve">
+    <value>Hot Item:</value>
+  </data>
+  <data name="ListSettingDialogcs_Editable" xml:space="preserve">
+    <value>Editable:</value>
+  </data>
+  <data name="SimpleAttachmentsDialog_Path" xml:space="preserve">
+    <value>Path</value>
+  </data>
+  <data name="SimpleAttachmentsDialog_Size" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="SimpleAttachmentsDialog_CreationDate" xml:space="preserve">
+    <value>Creation date</value>
+  </data>
+  <data name="SimpleAttachmentsDialog_ModificationDate" xml:space="preserve">
+    <value>Modification date</value>
+  </data>
+  <data name="SimpleAttachmentsDialog_FileType" xml:space="preserve">
+    <value>Type of file</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>Ok</value>
+  </data>
+  <data name="SimpleAttachmentsDialog_AddRef" xml:space="preserve">
+    <value>Add file reference</value>
+  </data>
+  <data name="SimpleAttachmentsDialog_AddFileCopy" xml:space="preserve">
+    <value>Add file copy</value>
+  </data>
+  <data name="SimpleAttachmentsDialog_AddUrl" xml:space="preserve">
+    <value>Add URL</value>
+  </data>
+  <data name="SimpleAttachmentsDialog_AddFolderRef" xml:space="preserve">
+    <value>Add folder reference</value>
+  </data>
+  <data name="SimpleAttachmentsDialog_OpenFile" xml:space="preserve">
+    <value>Open file</value>
+  </data>
+  <data name="SimpleAttachmentsDialog_OpenFolder" xml:space="preserve">
+    <value>Open folder</value>
+  </data>
+  <data name="SimpleAttachmentsDialog_Attachments" xml:space="preserve">
+    <value>Attacments</value>
+  </data>
+  <data name="Choise" xml:space="preserve">
+    <value>Choise</value>
+  </data>
+  <data name="SimpleDateTimeDialog_ClearTime" xml:space="preserve">
+    <value>Clear time</value>
+  </data>
+  <data name="Clear" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="SimpleDateTimeDialog_Date_And_Time" xml:space="preserve">
+    <value>Date and time</value>
+  </data>
+  <data name="SimpleDictListDialog_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="SimpleDictListDialog_Image" xml:space="preserve">
+    <value>Image</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="SimpleDictListDialog_Dict" xml:space="preserve">
+    <value>Dictionary</value>
+  </data>
+  <data name="SimpleJDictItemDialog_Key" xml:space="preserve">
+    <value>Key</value>
+  </data>
+  <data name="SimpleJDictItemDialog_Text" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="SimpleJDictItemDialog_Image" xml:space="preserve">
+    <value>Image</value>
+  </data>
+  <data name="SimpleJDictItemDialog_Title" xml:space="preserve">
+    <value>Dictionary record</value>
+  </data>
+  <data name="SimpleListDialog_Title" xml:space="preserve">
+    <value>List</value>
+  </data>
+  <data name="SimpleMultivalueDictFieldItemListDialog_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="SimpleMultivalueDictFieldItemListDialog_Image" xml:space="preserve">
+    <value>Image</value>
+  </data>
+  <data name="SimpleMultivalueDictFieldItemListDialog_Title" xml:space="preserve">
+    <value>Selection list of dictionary</value>
+  </data>
+  <data name="SimpleMultivalueFieldItemListDialog_Id" xml:space="preserve">
+    <value>Id</value>
+  </data>
+  <data name="SimpleMultivalueFieldItemListDialog_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="View" xml:space="preserve">
+    <value>View</value>
+  </data>
+  <data name="SimpleMultivalueFieldItemListDialog_Title" xml:space="preserve">
+    <value>Selection list</value>
+  </data>
+  <data name="SimplePropertyDialog_Title" xml:space="preserve">
+    <value>Property Dialog</value>
+  </data>
+  <data name="SimplePropertyWindow_Attribute" xml:space="preserve">
+    <value>Attribute: </value>
+  </data>
+  <data name="SimplePropertyWindow_Title" xml:space="preserve">
+    <value>Record properties</value>
+  </data>
+  <data name="SimplePropertyWindow_Props" xml:space="preserve">
+    <value> - properies</value>
+  </data>
+  <data name="SimpleTextDialog_EnterText" xml:space="preserve">
+    <value>Enter text</value>
+  </data>
+  <data name="SimpleTextEditDialog_Title" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="AppSettingsWindow_Title" xml:space="preserve">
+    <value>Application settings</value>
+  </data>
+  <data name="Application_Allready_Running" xml:space="preserve">
+    <value>Application allready running!</value>
+  </data>
+  <data name="Application_Folder_Not_Found" xml:space="preserve">
+    <value>The local database directory was not found by the path:</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close...</value>
+  </data>
+  <data name="ActiveDocumentWindow" xml:space="preserve">
+    <value>Active document window</value>
+  </data>
+  <data name="AllDocumentsExpectActive" xml:space="preserve">
+    <value>All documents expect active</value>
+  </data>
+  <data name="AllDocuments" xml:space="preserve">
+    <value>All documents</value>
+  </data>
+  <data name="AllWindows" xml:space="preserve">
+    <value>All windows</value>
+  </data>
+  <data name="WidgetSConfiguration" xml:space="preserve">
+    <value>Widget's configuration</value>
+  </data>
+  <data name="LoadConfiguration" xml:space="preserve">
+    <value>Load configuration</value>
+  </data>
+  <data name="SaveConfiguration" xml:space="preserve">
+    <value>Save configuration</value>
+  </data>
+  <data name="UpdateCurrentConfiguration" xml:space="preserve">
+    <value>Update current configuration</value>
+  </data>
+  <data name="CloseApplication" xml:space="preserve">
+    <value>Close application</value>
+  </data>
+  <data name="Toolbar" xml:space="preserve">
+    <value>Toolbar</value>
+  </data>
+  <data name="Statusbar" xml:space="preserve">
+    <value>Statusbar</value>
+  </data>
+  <data name="EnableFloating" xml:space="preserve">
+    <value>Enable floating</value>
+  </data>
+  <data name="ShowDocumentsIcons" xml:space="preserve">
+    <value>Show documents icons</value>
+  </data>
+  <data name="ListSettingDialogcs_AutoCalcHeight" xml:space="preserve">
+    <value>Auto calc. height</value>
+  </data>
+  <data name="ListSettingDialogcs_ListSettings" xml:space="preserve">
+    <value>List settings</value>
+  </data>
+  <data name="BaseMainAppForm_OpenNewContainerWindow" xml:space="preserve">
+    <value>Open new container window</value>
+  </data>
+  <data name="BaseMainAppForm_HideMainApplicationWindow" xml:space="preserve">
+    <value>Hide main application window</value>
+  </data>
+</root>

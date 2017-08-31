@@ -1,0 +1,72 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+
+namespace FrwSoftware
+{
+    public enum ViewMode
+    {
+        View, // view detail of the record fields
+        Edit,
+        Delete,
+        New, // create a new record
+        List,
+        ViewContent, // for example, viewing the contents of a record with a double click
+        RemoveFrom // eg deleting an entry from the current category
+    }
+
+    public interface IContent
+    {
+        bool HideOnClose { get; set; }// the window is not removed from memory when closing (necessary for caching the window state)
+        IDictionary<string, object> GetKeyParams();
+        void SetKeyParams(IDictionary<string, object> pars);
+        void SaveConfig();
+        bool CompareKeyParams(IDictionary<string, object> pars);
+        IContentContainer ContentContainer { get; set; }
+    }
+
+    public interface IViewProcessor : IContent
+    {
+        void CreateView();
+        void ProcessView();
+    }
+
+    public interface IParentView 
+    {
+        string PaneUID { get; set; }
+        // the unique identifier of the window instance, is needed to bind the list windows and the child view when saving the configuration  
+        IEnumerable<IChildView> ChildViews { get; }
+        void AddChildView(IChildView view);
+        bool ContainsChildView(IChildView view);
+        void RemoveChildView(IChildView view);
+        event ObjectSelectEventHandler OnObjectSelectEvent;
+    }
+
+
+    public interface IChildView 
+    {
+        string RelPaneUID { get; set; }// reference to the list box identifier 
+        event ChildObjectUpdateEventHandler ChildObjectUpdateEvent;
+        void RegisterAsChildView(IParentView parent);
+        void UnRegisterAsChildView(IParentView parent);
+    }
+
+    public interface IObjectViewProcessor : IViewProcessor
+    {
+        Type SourceObjectType { get; set; }
+    }
+
+    public interface IListProcessor : IObjectViewProcessor
+    {
+        object FilteredObject { get; set; }
+        IList SelectedObjects { get; }
+        void RefreshObject(object o);
+        void RefreshList();
+    }
+
+    public interface IPropertyProcessor : IObjectViewProcessor
+    {
+        ViewMode ViewMode { get; set; }
+        object SourceObject { get; set; }
+    }
+}
