@@ -33,6 +33,11 @@ namespace FrwSoftware
 
     public class BaseTreeControl : TreeView
     {
+        static public string TREE_FOLDER_OPENED = "tree_folder_opened";
+        static public string TREE_FOLDER_CLOSED = "tree_folder_closed";
+        static public string TREE_FOLDER_OPENED_SELECTED = "tree_folder_opened_selected";
+        static public string TREE_FOLDER_CLOSED_SELECTED = "tree_folder_closed_selected";
+
         public TreeNode RootNode { get; set; }
 
         public bool ChangeNodeImageOnExpand { get; set; }
@@ -86,8 +91,8 @@ namespace FrwSoftware
             IEnumerable<TreeNode> list = ChildrenGetter(parentNode);
             foreach (var node in list)
             {
-                if (node.ImageKey == null) node.ImageKey = "tree_folder_closed";
-                if (node.SelectedImageKey  == null) node.SelectedImageKey = "selected";
+                if (node.ImageKey == null) node.ImageKey = TREE_FOLDER_CLOSED;
+                if (node.SelectedImageKey  == null) node.SelectedImageKey = TREE_FOLDER_CLOSED_SELECTED;
                 // add a pseudo-node (it is necessary to display a plus sign), which is then deleted when the branch is actually loaded
                 if (CanExpandGetter(node.Tag) == true)
                 {
@@ -167,7 +172,7 @@ namespace FrwSoftware
         {
             try
             {
-                if (ChangeNodeImageOnExpand) e.Node.ImageKey = "tree_folder_opened";
+                if (ChangeNodeImageOnExpand) e.Node.ImageKey = TREE_FOLDER_OPENED;
                 if (e.Node.Nodes[0].Text == PSEVDO_NODE_TEXT) //alt if (e.Node.Nodes.Count == 1 && e.Node.Nodes[0].Tag == null) {
                 {
                     this.LoadBrahch(e.Node, 0, 1);
@@ -181,7 +186,7 @@ namespace FrwSoftware
         protected void tree_BeforeCollapse(object sender, TreeViewCancelEventArgs e)
         {
             try { 
-               if (ChangeNodeImageOnExpand) e.Node.ImageKey = "tree_folder_closed";
+               if (ChangeNodeImageOnExpand) e.Node.ImageKey = TREE_FOLDER_CLOSED;
             }
             catch (Exception ex)
             {

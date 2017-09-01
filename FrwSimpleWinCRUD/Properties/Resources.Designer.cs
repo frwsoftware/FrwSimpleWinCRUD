@@ -63,16 +63,6 @@ namespace FrwSoftware.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap add {
-            get {
-                object obj = ResourceManager.GetObject("add", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap AllPics_01 {
             get {
                 object obj = ResourceManager.GetObject("AllPics_01", resourceCulture);
@@ -263,9 +253,9 @@ namespace FrwSoftware.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap run2 {
+        internal static System.Drawing.Bitmap tree_closed {
             get {
-                object obj = ResourceManager.GetObject("run2", resourceCulture);
+                object obj = ResourceManager.GetObject("tree_closed", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -273,9 +263,9 @@ namespace FrwSoftware.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap tree_folder_closed {
+        internal static System.Drawing.Bitmap tree_closed_arrow {
             get {
-                object obj = ResourceManager.GetObject("tree_folder_closed", resourceCulture);
+                object obj = ResourceManager.GetObject("tree_closed_arrow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -283,9 +273,9 @@ namespace FrwSoftware.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap tree_folder_opened {
+        internal static System.Drawing.Bitmap tree_open {
             get {
-                object obj = ResourceManager.GetObject("tree_folder_opened", resourceCulture);
+                object obj = ResourceManager.GetObject("tree_open", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -293,9 +283,9 @@ namespace FrwSoftware.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap treeitem_journalArticle {
+        internal static System.Drawing.Bitmap tree_open_arrow {
             get {
-                object obj = ResourceManager.GetObject("treeitem_journalArticle", resourceCulture);
+                object obj = ResourceManager.GetObject("tree_open_arrow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

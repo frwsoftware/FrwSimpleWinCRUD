@@ -257,6 +257,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="FrwSimpleWinCRUD.nuspec" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -345,25 +346,10 @@
     <None Include="Resources\AllPics_01.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Images\add.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Images\attachment.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Images\book_open.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Images\run2.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Images\tree_folder_closed.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Images\tree_folder_opened.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Images\treeitem-journalArticle.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AllPics_02.png" />
@@ -418,6 +404,18 @@
       <Project>{0a396f66-2b49-4fc6-80e3-2158b9bcc481}</Project>
       <Name>FrwSimpleJsonORM</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\tree_open_arrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\tree_closed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\tree_closed_arrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\tree_open.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

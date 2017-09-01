@@ -529,7 +529,14 @@ namespace FrwSoftware
                         }
                         if (form == null) { 
                             string typeStr = xml.getAttrValue(dc, "Type");
-                            form = (IContentContainer)TypeHelper.FindTypeAddCreateNewInstance(typeStr);
+                            if (typeStr != null)
+                            {
+                                form = (IContentContainer)TypeHelper.FindTypeAddCreateNewInstance(typeStr);
+                            }
+                            else
+                            {
+                                form = (IContentContainer)Activator.CreateInstance(MainAppFormType);
+                            }
                         }
                         //Form form = GetMainForm();
                         //? So that the size setting works, you must also install the WindowState and StartPosition in the form designer

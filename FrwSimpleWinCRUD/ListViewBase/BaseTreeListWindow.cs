@@ -42,10 +42,10 @@ namespace FrwSoftware
             treeControl.ShowNodeToolTips = true;
 
             treeControl.ImageList = new ImageList();
-            treeControl.ImageList.Images.Add("tree_folder_closed", Properties.Resources.tree_folder_closed);
-            treeControl.ImageList.Images.Add("tree_folder_opened", Properties.Resources.tree_folder_opened);
-            //treeControl.ImageList.Images.Add("blank", Properties.Resources.blank);
-            treeControl.ImageList.Images.Add("selected", Properties.Resources.run2);
+            treeControl.ImageList.Images.Add(BaseTreeControl.TREE_FOLDER_CLOSED, Properties.Resources.tree_closed);
+            treeControl.ImageList.Images.Add(BaseTreeControl.TREE_FOLDER_OPENED, Properties.Resources.tree_open);
+            treeControl.ImageList.Images.Add(BaseTreeControl.TREE_FOLDER_OPENED_SELECTED, Properties.Resources.tree_open_arrow);
+            treeControl.ImageList.Images.Add(BaseTreeControl.TREE_FOLDER_CLOSED_SELECTED, Properties.Resources.tree_closed_arrow);
 
             treeControl.OnTreeContextMenuEvent += TreeControl_OnTreeContextMenuEvent;
             treeControl.DragDrop += TreeControl_DragDrop;
