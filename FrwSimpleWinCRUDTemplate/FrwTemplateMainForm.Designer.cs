@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrwTemplateMainForm));
             this.toolBar = new System.Windows.Forms.ToolStrip();
             this.mainMenu = new System.Windows.Forms.MenuStrip();
             this.menuItemFile = new System.Windows.Forms.ToolStripMenuItem();
@@ -42,7 +43,8 @@
             // 
             // dockPanel
             // 
-            this.dockPanel.Size = new System.Drawing.Size(798, 331);
+            this.dockPanel.Location = new System.Drawing.Point(0, 53);
+            this.dockPanel.Size = new System.Drawing.Size(798, 256);
             // 
             // toolBar
             // 
@@ -126,6 +128,7 @@
             this.Controls.Add(this.mainMenu);
             this.Controls.Add(this.statusBar);
             this.DocPanelBounds = new System.Drawing.Rectangle(19, 19, 816, 378);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrwTemplateMainForm";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.FrwTemplateMainForm_Load);

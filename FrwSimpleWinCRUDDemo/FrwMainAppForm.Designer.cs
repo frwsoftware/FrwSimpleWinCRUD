@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrwMainAppForm));
             this.toolBar = new System.Windows.Forms.ToolStrip();
             this.statusBar = new System.Windows.Forms.StatusStrip();
             this.mainMenu = new System.Windows.Forms.MenuStrip();
@@ -127,6 +128,7 @@
             this.Controls.Add(this.mainMenu);
             this.Controls.Add(this.statusBar);
             this.DocPanelBounds = new System.Drawing.Rectangle(19, 19, 556, 400);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrwMainAppForm";
             this.Text = "SimpleWinCRUDDemo - Chinook Database";
             this.Load += new System.EventHandler(this.FrwMainAppForm_Load);
