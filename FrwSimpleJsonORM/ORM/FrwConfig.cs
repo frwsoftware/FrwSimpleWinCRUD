@@ -6,20 +6,24 @@ using Newtonsoft.Json;
 
 namespace FrwSoftware
 {
-    //Properties.Settings.Default path
-    //https://msdn.microsoft.com/en-us/library/system.environment.specialfolder.aspx 
 
     public class JSettingChangedEventArgs : EventArgs
     {
         public JSetting Setting { get; set; }
     }
+
+    /// <summary>
+    /// occurs when settings value changed 
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     public delegate void JSettingChangedEventHandler(object sender, JSettingChangedEventArgs e);
 
     public class JSetting
     {
         public event JSettingChangedEventHandler ValueChanged;
         public string Name { get; set; }
-        public string ValueTypeName { get; set; }
+        public string ValueTypeName { get; set; }//to save in json file
         public object Value { get; set; }
         public string Description { get; set; }
         public bool IsUser { get; set; }//Custom settings are displayed in the settings window 
@@ -34,6 +38,10 @@ namespace FrwSoftware
             }
         }
     }
+
+    /// <summary>
+    /// Configuration manager
+    /// </summary>
     public class FrwConfig
     {
 
@@ -60,12 +68,31 @@ namespace FrwSoftware
         private static FrwConfig instance;
 
         public bool DevelopMode { get; set; }
+        /// <summary>
+        ///Global directory. 
+        //In the simplest case, the global directory is the same as the program's start directory.
+        //But sometimes it is convenient to define it in a special way. For example, then you can work 
+        //with the same database files and settings in debug and working mode without permanently copying 
+        //them to the working directory from the project directory and back. 
+        /// </summary>
         public string GlobalDir { get; set; }
-        public string ComputerUserDir { get; set; }//Directory for recording settings that need to be stored on a specific computer 
+        /// <summary>
+        ///Directory for recording settings that need to be stored on a specific computer         
+        /// </summary>
+        public string ComputerUserDir { get; set; }
+        /// <summary>
+        ///Profile directory (database, saving state of winform objects, user settings, etc.) 
+        /// </summary>
         public string ProfileDir { get; set; }
+        /// <summary>
+        /// User temporary directiory
+        /// </summary>
         public string UserTempDir { get; set; }
         const string APPCONFIG_SUFFIX = "appconfig";
 
+        /// <summary>
+        /// Subdirecrory for user settings and winform objected saved state
+        /// </summary>
         public string ProfileConfigDir
         {
             get {
@@ -73,9 +100,13 @@ namespace FrwSoftware
                 else return APPCONFIG_SUFFIX;
             }
         }
-        Dictionary<string, JSetting> settings = new Dictionary<string, JSetting>();
-        private string settingsFileName = "app.json";
 
+        protected Dictionary<string, JSetting> settings = new Dictionary<string, JSetting>();
+        protected string settingsFileName = "app.json";
+
+        /// <summary>
+        /// User settings list 
+        /// </summary>
         public IEnumerable<JSetting> Settings
         {
             get
@@ -83,7 +114,7 @@ namespace FrwSoftware
                 return settings.Values;
             }
         }
-
+        #region propery get anad set
         public JSetting GetProperty(string name)
         {
             JSetting setting = null;
@@ -157,14 +188,20 @@ namespace FrwSoftware
                 return setting;
             }
         }
+        #endregion
+
+        /// <summary>
+        /// Virtual method for create you own user settings
+        /// </summary>
         virtual protected void CreateProperties()
         {
         }
 
+        /// <summary>
+        /// Loads all user settings. 
+        /// </summary>
         public void LoadConfig()
         {
-
-
             string filename = Path.Combine(ProfileConfigDir, settingsFileName);
             FileInfo fileInfo = new FileInfo(filename);
             DirectoryInfo dir = fileInfo.Directory;
@@ -193,6 +230,10 @@ namespace FrwSoftware
                     settings.Add(s.Name, s);
                 }
             }
+
+            //Properties.Settings.Default path
+            //https://msdn.microsoft.com/en-us/library/system.environment.specialfolder.aspx 
+
             //stage 2
             filename = Path.Combine(ComputerUserDir, settingsFileName);
             fileInfo = new FileInfo(filename);
@@ -225,6 +266,9 @@ namespace FrwSoftware
             }
             CreateProperties();
         }
+        /// <summary>
+        /// Saves all user settings
+        /// </summary>
         public void SaveConfig()
         {
             foreach (var s in settings.Values)

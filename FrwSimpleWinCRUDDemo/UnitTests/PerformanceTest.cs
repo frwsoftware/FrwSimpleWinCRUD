@@ -44,7 +44,7 @@ namespace FrwSoftware
             {
                 artist = (Artist)Dm.Instance.EmptyObject(typeof(Artist), null);
                 artist.Name = "Artist " + i;
-                Dm.Instance.InsertOrUpdateObject(artist);
+                Dm.Instance.SaveObject(artist);
                 //if (saveFileOnEachOperation) Dm.Instance.SaveDataList(typeof(Artist));
             }
 
@@ -55,7 +55,7 @@ namespace FrwSoftware
             {
                 album = (Album)Dm.Instance.EmptyObject(typeof(Album), null);
                 album.Title = "Album " + i;
-                Dm.Instance.InsertOrUpdateObject(album);
+                Dm.Instance.SaveObject(album);
                 if (saveFileOnEachOperation) Dm.Instance.SaveEntityData(typeof(Album));
             }
             long tend = DateTime.Now.Ticks;
@@ -66,7 +66,7 @@ namespace FrwSoftware
             tstart = DateTime.Now.Ticks;
             for (i = 0; i < count; i++)
             {
-                album = (Album)Dm.Instance.FindByPrimaryKey<Album>(i.ToString());
+                album = (Album)Dm.Instance.Find<Album>(i.ToString());
             }
             tend = DateTime.Now.Ticks;
             mes.Append("Find by PK " + i + " records with time " + (tend - tstart) / 10000 + " ms. " + (tend - tstart) / i + " ticks per record");
@@ -84,7 +84,7 @@ namespace FrwSoftware
             foreach (var a in list)
             {
                 a.Title = a.Title + " Updated";
-                Dm.Instance.InsertOrUpdateObject(a);
+                Dm.Instance.SaveObject(a);
                 if (saveFileOnEachOperation) Dm.Instance.SaveEntityData(typeof(Album));
             }
             tend = DateTime.Now.Ticks;
@@ -97,7 +97,7 @@ namespace FrwSoftware
             foreach (var a in list)
             {
                 a.Artist = arlist[i];
-                Dm.Instance.InsertOrUpdateObject(a);
+                Dm.Instance.SaveObject(a);
                 if (saveFileOnEachOperation) Dm.Instance.SaveEntityData(typeof(Album));
                 i++;
             }
@@ -111,7 +111,7 @@ namespace FrwSoftware
             foreach (var a in list)
             {
                 a.Title = a.Title + " Updated";
-                Dm.Instance.InsertOrUpdateObject(a);
+                Dm.Instance.SaveObject(a);
                 if (saveFileOnEachOperation) Dm.Instance.SaveEntityData(typeof(Album));
             }
             tend = DateTime.Now.Ticks;
@@ -124,7 +124,7 @@ namespace FrwSoftware
             foreach (var a in arlist)
             {
                 a.Albums.Clear();
-                Dm.Instance.InsertOrUpdateObject(a);
+                Dm.Instance.SaveObject(a);
                 if (saveFileOnEachOperation) Dm.Instance.SaveEntityData(typeof(Artist));
                 i++;
             }

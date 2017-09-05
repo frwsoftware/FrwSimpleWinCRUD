@@ -114,7 +114,7 @@ namespace FrwSoftware
             JDocPanelLayout layout = Dm.Instance.EmptyObject<JDocPanelLayout>(null);
             layout.Name = name;
             SaveLayout(layout);
-            Dm.Instance.InsertOrUpdateObject(layout);
+            Dm.Instance.SaveObject(layout);
         }
 
         // the main function of creating a list object
@@ -661,7 +661,7 @@ namespace FrwSoftware
                     IList newObjects = listDialog.SelectedObjects;
                     object value = newObjects[0];
                     AttrHelper.SetPropertyValue(rowObject, aspectName, value);
-                    Dm.Instance.InsertOrUpdateObject(rowObject);
+                    Dm.Instance.SaveObject(rowObject);
                     //Dm.Instance.UpdateRelation(rowObject, aspectName, value );
                     //value = AttrHelper.GetPropertyValue(rowObject, aspectName);
                     //newValue = (value != null) ? Dm.MakeStringFromObjectList(new List<object>() { value }) : null;
@@ -737,7 +737,7 @@ namespace FrwSoftware
                     {
                         oldList.Add(newListItem);
                     }
-                    Dm.Instance.InsertOrUpdateObject(rowObject);
+                    Dm.Instance.SaveObject(rowObject);
                     //Dm.Instance.UpdateRelation(rowObject, aspectName, listDialog.SourceObjects);
                     //list = (IList)AttrHelper.GetPropertyValue(rowObject, aspectName);
                     //string s = Dm.MakeStringFromObjectList(list);
@@ -766,7 +766,7 @@ namespace FrwSoftware
                     {
                         oldList.Add(newListItem);
                     }
-                    Dm.Instance.InsertOrUpdateObject(rowObject);
+                    Dm.Instance.SaveObject(rowObject);
                     //Dm.Instance.UpdateRelation(rowObject, aspectName, listDialog.SourceObjects);
                     //list = (IList)AttrHelper.GetPropertyValue(rowObject, aspectName);
                     newValue = Dm.Instance.GetCustomPropertyValue(rowObject, aspectName);

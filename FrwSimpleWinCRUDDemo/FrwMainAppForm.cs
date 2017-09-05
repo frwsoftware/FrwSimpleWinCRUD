@@ -140,8 +140,8 @@ namespace FrwSoftware
         
             groupItem = new ToolStripMenuItem("Example database");
             menuItemDict.DropDownItems.Add(groupItem);
-            CreateMainMenuItemForEntityType(groupItem, typeof(JExampleDto));
-            CreateMainMenuItemForEntityType(groupItem, typeof(JExampleDto2));
+            CreateMainMenuItemForEntityType(groupItem, typeof(TeacherDto));
+            CreateMainMenuItemForEntityType(groupItem, typeof(StudentDto));
 
             /////////////////////////////////////
 

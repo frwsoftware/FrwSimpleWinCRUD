@@ -517,7 +517,7 @@ namespace FrwSoftware
                             bool bo = false;
                             object newValue = AppManager.Instance.EditCustomPropertyValue(rowObject, column.AspectName, out bo, this);
                             b.Text = newValue as string;
-                            Dm.Instance.InsertOrUpdateObject(rowObject);
+                            Dm.Instance.SaveObject(rowObject);
                             RefreshObject(rowObject);
                             //((ObjectListView)sender).RefreshItem(e.ListViewItem);
                             b.Dispose();
@@ -528,7 +528,7 @@ namespace FrwSoftware
                     else
                     {
                         e.NewValue = AppManager.Instance.EditCustomPropertyValue(rowObject, column.AspectName, out e.Cancel, this);
-                        Dm.Instance.InsertOrUpdateObject(rowObject);
+                        Dm.Instance.SaveObject(rowObject);
                         RefreshObject(rowObject);
                         //((ObjectListView)sender).RefreshItem(e.ListViewItem);
                     }

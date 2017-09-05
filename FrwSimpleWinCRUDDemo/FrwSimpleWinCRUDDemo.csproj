@@ -132,8 +132,8 @@
     <Compile Include="Model\Chinook\MediaType.cs" />
     <Compile Include="Model\Chinook\Playlist.cs" />
     <Compile Include="Model\Chinook\Track.cs" />
-    <Compile Include="Model\Example\JExampleDto.cs" />
-    <Compile Include="Model\Example\JExampleDto2.cs" />
+    <Compile Include="Model\Example\TeacherDto.cs" />
+    <Compile Include="Model\Example\StudentDto.cs" />
     <Compile Include="Model\TestChinook\Album.cs" />
     <Compile Include="Model\TestChinook\Artist.cs" />
     <Compile Include="Model\Test\TestDto1.cs" />

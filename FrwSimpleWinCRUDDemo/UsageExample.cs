@@ -4,89 +4,141 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using FrwSoftware.Model.Example;
 
 namespace FrwSoftware
 {
     class UsageExample
     {
-        static void ExampleOdDataManipulation()
+        static void ExampleOfDataManipulation()
         {
-            //get all data
-            IList<JExampleDto> list = Dm.Instance.FindAll<JExampleDto>();
-            IList list2 = Dm.Instance.FindAll(typeof(JExampleDto));
+            ///////////////////////////////////////////////////
+            //Simple operations
+            ///////////////////////////////////////////////////
 
-            //find by params
-            JExampleDto dtofinded = Dm.Instance.FindAll<JExampleDto>().FirstOrDefault<JExampleDto>(c => c.Field4 == "www");
-
-            //find, create (empty), insert, update
+            //Find by primary key
             object pk = "1";
-            JExampleDto dto = Dm.Instance.FindByPrimaryKey<JExampleDto>(pk);
-            if (dto == null)
-            {
-                dto = Dm.Instance.EmptyObject<JExampleDto>(null);
-            }
-            Dm.Instance.InsertOrUpdateObject(dto);
+            TeacherDto teacher1 = Dm.Instance.Find<TeacherDto>(pk);
+            //or
+            StudentDto student1 = (StudentDto)Dm.Instance.Find(typeof(StudentDto), pk);
 
-            JExampleDto dto1 = (JExampleDto)Dm.Instance.FindByPrimaryKey(typeof(JExampleDto), pk);
-            if (dto1 == null)
-            {
-                dto1 = (JExampleDto)Dm.Instance.EmptyObject(typeof(JExampleDto), null);
-            }
-            Dm.Instance.InsertOrUpdateObject(dto1);
+            //Getting all entity data
+            IList<TeacherDto> list = Dm.Instance.FindAll<TeacherDto>();
+            //or 
+            IList teachers = Dm.Instance.FindAll(typeof(TeacherDto));
 
-            //remove 
-            Dm.Instance.DeleteObject(dto);
+            //Note: do not use list directly to Add or Remove elements. Use SaveObject and DeleteObject.
 
-            //remove all
-            Dm.Instance.DeleteAllObjects(typeof(JExampleDto));
+            //Find by params. 
+            TeacherDto teacherWithSpecName = Dm.Instance.FindAll<TeacherDto>().FirstOrDefault(c => c.LastName == "Brown");
+            //or
+            IEnumerable filteredList = Dm.Instance.FindByParams(typeof(TeacherDto),
+                new Dictionary<string, object> { { "FirstName", "John" } });
 
-            /////////////////
-            //relations 
-            ////////////////
-            //many to one 
-            //resolve - auto
-            //access fields 
-            string d = dto.JExampleDto2.Field1;
+            //Create, insert, update
+
+            //Create new entity
+            //recomended way
+            TeacherDto teacher2 = Dm.Instance.EmptyObject<TeacherDto>();
+            //or    dto = (JExampleDto)Dm.Instance.EmptyObject(typeof(JExampleDto));
+            teacher2.LastName = "Brown";
+            Dm.Instance.SaveObject(teacher2);
+
+            //not recomended way
+            TeacherDto teacher3 = new TeacherDto();
+            teacher3.LastName = "Brown";
+            Dm.Instance.SaveObject(teacher3);
+
+            //Remove entity
+            Dm.Instance.DeleteObject(teacher2);
+
+            //Remove all entities
+            Dm.Instance.DeleteAllObjects(typeof(TeacherDto));
+
+            ///////////////////////////////////////////////////
+            //Working with relationship
+            ///////////////////////////////////////////////////
+
+            //Many to one relationship
+            //get
+            string favoritStudentFirstName = teacher2.FavoritStudent.FirstName;
             //set 
-            JExampleDto2 dto2 = (JExampleDto2)Dm.Instance.FindByPrimaryKey(typeof(JExampleDto2), pk);
-            dto.JExampleDto2 = dto2;
-            Dm.Instance.InsertOrUpdateObject(dto);
-            //uset
-            dto.JExampleDto2 = null;
-            Dm.Instance.InsertOrUpdateObject(dto);
+            teacher2.FavoritStudent = student1;
+            Dm.Instance.SaveObject(teacher2);
+            //unset (set null)
+            teacher2.FavoritStudent = null;
+            Dm.Instance.SaveObject(teacher2);
 
-
-            /////////////////////////////////
-            //one to many
-            JExampleDto2 dto3 = Dm.Instance.FindByPrimaryKey<JExampleDto2>("3");
-            JExampleDto2 dto4 = Dm.Instance.FindByPrimaryKey<JExampleDto2>("4");
-            JExampleDto2 dto5 = Dm.Instance.FindByPrimaryKey<JExampleDto2>("5");
-            dto.JExampleDto2s.Add(dto3);
-            dto.JExampleDto2s.Add(dto4);
-            dto.JExampleDto2s.Add(dto5);
-            Dm.Instance.InsertOrUpdateObject(dto);
+            //One to many relationship
+            //Set
+            StudentDto student10 = Dm.Instance.Find<StudentDto>("10");
+            StudentDto student11 = Dm.Instance.Find<StudentDto>("11");
+            StudentDto student12 = Dm.Instance.Find<StudentDto>("12");
+            teacher2.ControledGroup.Add(student10);
+            teacher2.ControledGroup.Add(student11);
+            teacher2.ControledGroup.Add(student12);
+            Dm.Instance.SaveObject(teacher2);
             //unset
-            dto.JExampleDto2s.Remove(dto5);
-            Dm.Instance.InsertOrUpdateObject(dto);
-            //uset all
-            dto.JExampleDto2s.Clear();
-            Dm.Instance.InsertOrUpdateObject(dto);
+            teacher2.ControledGroup.Remove(student12);
+            Dm.Instance.SaveObject(teacher2);
+            //unset all
+            teacher2.ControledGroup.Clear();
+            Dm.Instance.SaveObject(teacher2);
 
             /////////////////////////////////
-            //many to many
-            //same as one to many 
+            //Many to many  relationship
+            //same as one to many relationship
             //set
-            dto.JExampleDto2ss.Add(dto5);
-            Dm.Instance.InsertOrUpdateObject(dto);
+            teacher2.Students.Add(student12);
+            Dm.Instance.SaveObject(teacher2);
             //unset
-            dto.JExampleDto2ss.Remove(dto5);
-            Dm.Instance.InsertOrUpdateObject(dto);
-            //uset all
-            dto.JExampleDto2ss.Clear();
-            Dm.Instance.InsertOrUpdateObject(dto);
+            teacher2.Students.Remove(student12);
+            Dm.Instance.SaveObject(teacher2);
+            //unset all
+            teacher2.Students.Clear();
+            Dm.Instance.SaveObject(teacher2);
 
         }
+        /// <summary>
+        /// We recommend that you use our project templates (FrwSimpleWinCRUDTemplate) to build your own application. 
+        /// But if you prefer not to use our templates, then you need to call the following minimum sequence of methods 
+        /// when starting the application 
+        /// </summary>
+        static public void StartupExample()
+        {
+            MainAppUtils.CheckForSingleInstance();
+            //Initializes all required objects. If you need to initialize objects individually or perform a 
+            //special initialization, copy the code from the body of this method and modify it.
+            MainAppUtils.InitAppPaths();
+            //set type of your main application form 
+            AppManager.Instance.MainAppFormType = typeof(MyMainForm);
+            MyMainForm form = (MyMainForm)AppManager.Instance.LoadDocPanelContainersState();
+            Application.Run(form);
+        }
+
+        /// <summary>
+        /// We recommend that you use our project templates (FrwSimpleWinCRUDTemplate) to build your own application. 
+        /// But if you prefer not to use our templates, then you need to call the following minimum sequence of methods 
+        /// when completing the application
+        /// </summary>
+        /// <param name="sender">Main form that closing application (Close button pressed) </param>
+        static public void ShutdownExample(object sender)
+        {
+            //on form closing event
+            AppManager.Instance.SaveDocPanelContainersState();
+            AppManager.Instance.CloseAllDocPanelContainers((Form)sender);
+            //on form closed event
+            //Calls the unloading code (including database saving and winform object state saving) of all required objects. 
+            //If you want to upload objects separately or perform a special upload, copy the code 
+            //from the body of this method and modify it.
+            MainAppUtils.DestroyApp();
+        }
+
+    }
+    //class only for using in this example
+    class MyMainForm : BaseMainAppForm
+    {
 
     }
 }

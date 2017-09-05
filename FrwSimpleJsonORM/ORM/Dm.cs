@@ -117,7 +117,7 @@ namespace FrwSoftware
         {
             Type type = TypeHelper.FindType(fullTypeName);
             if (type == null) throw new InvalidOperationException("Type not found for: " + fullTypeName);
-            return Dm.instance.FindByPrimaryKey(type, pkValue);
+            return Dm.instance.Find(type, pkValue);
         }
 
 
@@ -587,7 +587,7 @@ namespace FrwSoftware
                     IList oldList = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(foreinEntityType));
                     foreach (var foreinKeyValue in cValues)
                     {
-                        object sourceEntityValue = FindByPrimaryKey(foreinEntityType, foreinKeyValue);
+                        object sourceEntityValue = Find(foreinEntityType, foreinKeyValue);
                         oldList.Add(sourceEntityValue);
                     }
                     //set
@@ -618,7 +618,7 @@ namespace FrwSoftware
                             }
                             if (sourcePKValue.Equals(fk1Value) && fk2ValueR.Equals(fk2Value))
                             {
-                                DeleteFromJoinTable(ts[0], ts[1], manyToManyAttr.JoinName, l.Pk1, l.Pk2);
+                                DeleteJoinTableRow(ts[0], ts[1], manyToManyAttr.JoinName, l.Pk1, l.Pk2);
                                 break;
                             }
                         }
@@ -626,8 +626,8 @@ namespace FrwSoftware
                     foreach (var ro in addList)
                     {
                         var fk2ValueR = pPK2.GetValue(ro);//get from primiry key addList
-                        if (reverse) InsertOrUpdateJoinTable(ts[0], ts[1], manyToManyAttr.JoinName, fk2ValueR, sourcePKValue);
-                        else InsertOrUpdateJoinTable(ts[0], ts[1], manyToManyAttr.JoinName, sourcePKValue, fk2ValueR);
+                        if (reverse) SaveJoinTableRow(ts[0], ts[1], manyToManyAttr.JoinName, fk2ValueR, sourcePKValue);
+                        else SaveJoinTableRow(ts[0], ts[1], manyToManyAttr.JoinName, sourcePKValue, fk2ValueR);
                     }
                     if (addList.Count > 0 || removeList.Count > 0)
                     {
@@ -676,7 +676,7 @@ namespace FrwSoftware
 
         }
 
-        virtual public void InsertOrUpdateJoinTable(Type t1, Type t2, string joinTableName, object pk1Value, object pk2Value)
+        virtual public void SaveJoinTableRow(Type t1, Type t2, string joinTableName, object pk1Value, object pk2Value)
         {
             JoinEntityData cross = FindAllJoinData(t1, t2, joinTableName);
 
@@ -694,7 +694,7 @@ namespace FrwSoftware
             }
             if (!found) cross.DataList.Add(joinObject);
         }
-        virtual protected void DeleteFromJoinTable(Type t1, Type t2, string joinTableName, object pk1Value, object pk2Value)
+        virtual protected void DeleteJoinTableRow(Type t1, Type t2, string joinTableName, object pk1Value, object pk2Value)
         {
             JoinEntityData join = FindAllJoinData(t1, t2, joinTableName);
             foreach (var c in join.DataList)
@@ -780,7 +780,7 @@ namespace FrwSoftware
                 IList values = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(foreinEntityType));
                 foreach (var foreinKeyValue in cValues)
                 {
-                    object sourceEntityValue = FindByPrimaryKey(foreinEntityType, foreinKeyValue);
+                    object sourceEntityValue = Find(foreinEntityType, foreinKeyValue);
                     values.Add(sourceEntityValue);
                 }
                 p.SetValue(rowObject, values);
@@ -856,11 +856,11 @@ namespace FrwSoftware
         /// <param name="entityType"></param>
         /// <param name="primaryKeValue"></param>
         /// <returns></returns>
-        public T FindByPrimaryKey<T>(object primaryKeValue)
+        public T Find<T>(object primaryKeValue)
         {
-            return (T)FindByPrimaryKey(typeof(T), primaryKeValue);
+            return (T)Find(typeof(T), primaryKeValue);
         }
-        virtual public object FindByPrimaryKey(Type entityType, object primaryKeValue)
+        virtual public object Find(Type entityType, object primaryKeValue)
         {
             if (primaryKeValue == null) throw new ArgumentException();// return null;
             //Type pkType = primaryKeValue.GetType();
@@ -889,11 +889,11 @@ namespace FrwSoftware
         /// </summary>
         /// <param name="t"></param>
         /// <returns></returns>
-        public T EmptyObject<T>(IDictionary<string, object> pars)
+        public T EmptyObject<T>(IDictionary<string, object> pars = null)
         {
             return (T)EmptyObject(typeof(T), pars);
         }
-        virtual public object EmptyObject(Type t, IDictionary<string, object> pars)
+        virtual public object EmptyObject(Type t, IDictionary<string, object> pars = null)
         {
             object o = Activator.CreateInstance(t);
             PropertyInfo pPK = AttrHelper.GetProperty<JPrimaryKey>(t);
@@ -1030,7 +1030,7 @@ namespace FrwSoftware
                     bool changed = false;
                     foreach (JoinEntityDataItem v in cValues)
                     {
-                        DeleteFromJoinTable(s.DataType1, s.DataType2, s.JoinTableName, v.Pk1, v.Pk2);//use this virtual function  instead of cross.DataList.Remove(v);
+                        DeleteJoinTableRow(s.DataType1, s.DataType2, s.JoinTableName, v.Pk1, v.Pk2);//use this virtual function  instead of cross.DataList.Remove(v);
                         changed = true;
                     }
                     if (changed)
@@ -1125,7 +1125,7 @@ namespace FrwSoftware
             Type t = o.GetType();
             SetEntityModified(t);
         }
-        virtual public void InsertOrUpdateObject(object o)
+        virtual public void SaveObject(object o)
         {
             if (o == null) return;
             Type t = o.GetType();
@@ -1134,11 +1134,11 @@ namespace FrwSoftware
             else UpdateObject(o);
             UpdateRelations(o);
         }
-        virtual public void InsertOrUpdateObjectOrProperty(object o, string updatedPropertyName)
+        virtual public void SaveObject(object o, string updatedPropertyName)
         {
             if (o == null) return;
-            else if (updatedPropertyName != null) InsertOrUpdateObject(o);//todo
-            else InsertOrUpdateObject(o);
+            else if (updatedPropertyName != null) SaveObject(o);//todo
+            else SaveObject(o);
         }
         
         public void SetEntityModified<T>()
@@ -1391,7 +1391,7 @@ namespace FrwSoftware
                             object pkValue = pkProp.GetValue(pvSaved);
                             if (pkValue != null)
                             {
-                                pvReal = FindByPrimaryKey(pt, pkValue);
+                                pvReal = Find(pt, pkValue);
                             }
                             else
                             {

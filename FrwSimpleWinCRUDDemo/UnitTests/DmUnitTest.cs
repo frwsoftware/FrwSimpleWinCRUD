@@ -41,8 +41,8 @@ namespace FrwSimpleWinCRUDUnitTestProject
 
             Assert.IsFalse(Dm.Instance.IsEntityModified(typeof(Album)));
 
-            Dm.Instance.InsertOrUpdateObject(album0);
-            Dm.Instance.InsertOrUpdateObject(album2);
+            Dm.Instance.SaveObject(album0);
+            Dm.Instance.SaveObject(album2);
 
             Assert.IsTrue(Dm.Instance.IsEntityModified(typeof(Album)));
             Dm.Instance.SaveEntityData(typeof(Album));
@@ -54,12 +54,12 @@ namespace FrwSimpleWinCRUDUnitTestProject
             track2.Name = "222";
             Track track3 = (Track)Dm.Instance.EmptyObject(typeof(Track), null);
             track3.Name = "333";
-            Dm.Instance.InsertOrUpdateObject(track0);
-            Dm.Instance.InsertOrUpdateObject(track2);
-            Dm.Instance.InsertOrUpdateObject(track3);
+            Dm.Instance.SaveObject(track0);
+            Dm.Instance.SaveObject(track2);
+            Dm.Instance.SaveObject(track3);
 
             //simple find
-            Assert.AreSame(album0, (Album)Dm.Instance.FindByPrimaryKey(typeof(Album), album0.AlbumId));
+            Assert.AreSame(album0, (Album)Dm.Instance.Find(typeof(Album), album0.AlbumId));
 
             IEnumerable<Track> found =  Dm.Instance.FindByParams<Track>(new Dictionary<string, object> { { "Name", "222" }});
             Assert.IsFalse(found.Contains(track0));
@@ -69,19 +69,19 @@ namespace FrwSimpleWinCRUDUnitTestProject
             //many to one
             //set
             track0.Album = album2;
-            Dm.Instance.InsertOrUpdateObject(track0);
+            Dm.Instance.SaveObject(track0);
             Assert.IsNull(album0.Tracks.FirstOrDefault<Track>());
             Assert.AreSame(album2.Tracks.FirstOrDefault<Track>(), track0);
             //unset
             track0.Album = null;
-            Dm.Instance.InsertOrUpdateObject(track0);
+            Dm.Instance.SaveObject(track0);
             Assert.IsFalse(album2.Tracks.Contains(track0));
 
             //reverse set
             track0.Album = album2;
-            Dm.Instance.InsertOrUpdateObject(track0);
+            Dm.Instance.SaveObject(track0);
             album2.Tracks.Remove(track0);
-            Dm.Instance.InsertOrUpdateObject(album2);
+            Dm.Instance.SaveObject(album2);
             Assert.AreEqual(album2.Tracks.Count, 0);
             Assert.IsNull(track0.Album);
 
@@ -90,7 +90,7 @@ namespace FrwSimpleWinCRUDUnitTestProject
             track0.Album = albumNotSaved;
             try
             {
-                Dm.Instance.InsertOrUpdateObject(track0);
+                Dm.Instance.SaveObject(track0);
                 Assert.Fail("No exeption generated when update with not saved object");
             }
             catch
@@ -102,7 +102,7 @@ namespace FrwSimpleWinCRUDUnitTestProject
             ////one to many 
             //add
             album0.Tracks.Add(track0);
-            Dm.Instance.InsertOrUpdateObject(album0);
+            Dm.Instance.SaveObject(album0);
             Track t1 = album0.Tracks.FirstOrDefault<Track>();
             Assert.AreSame(t1, track0);
             Assert.AreSame(track0.Album, album0);
@@ -113,13 +113,13 @@ namespace FrwSimpleWinCRUDUnitTestProject
             Assert.IsFalse(Dm.Instance.IsEntityModified(typeof(Track)));
             //set
             album2.Tracks.Add(track0);
-            Dm.Instance.InsertOrUpdateObject(album2);
+            Dm.Instance.SaveObject(album2);
             Assert.AreEqual(track0.Album, album2);
             Assert.IsTrue(album2.Tracks.Contains(track0));
             Assert.IsFalse(album0.Tracks.Contains(track0));
             //set
             album0.Tracks.Add(track0);
-            Dm.Instance.InsertOrUpdateObject(album0);
+            Dm.Instance.SaveObject(album0);
             Assert.AreEqual(track0.Album, album0);
             Assert.IsTrue(album0.Tracks.Contains(track0));
             Assert.IsFalse(album2.Tracks.Contains(track0));
@@ -131,7 +131,7 @@ namespace FrwSimpleWinCRUDUnitTestProject
             album2.Tracks.Add(trackNotSaved);
             try
             {
-                Dm.Instance.InsertOrUpdateObject(track0);
+                Dm.Instance.SaveObject(track0);
                 Assert.Fail("No exeption generated when update with not saved object");
             }
             catch {
@@ -150,17 +150,17 @@ namespace FrwSimpleWinCRUDUnitTestProject
             Playlist playlist2 = (Playlist)Dm.Instance.EmptyObject<Playlist>(null);
             Playlist playlist3 = (Playlist)Dm.Instance.EmptyObject<Playlist>(null);
 
-            Dm.Instance.InsertOrUpdateObject(playlist0);
-            Dm.Instance.InsertOrUpdateObject(playlist2);
-            Dm.Instance.InsertOrUpdateObject(playlist3);
+            Dm.Instance.SaveObject(playlist0);
+            Dm.Instance.SaveObject(playlist2);
+            Dm.Instance.SaveObject(playlist3);
 
             track0.Playlists.Add(playlist0);
             track0.Playlists.Add(playlist2);
-            Dm.Instance.InsertOrUpdateObject(track0);
+            Dm.Instance.SaveObject(track0);
 
             track2.Playlists.Add(playlist2);
             track2.Playlists.Add(playlist3);
-            Dm.Instance.InsertOrUpdateObject(track2);
+            Dm.Instance.SaveObject(track2);
 
             Assert.IsTrue(track0.Playlists.Contains(playlist0));
             Assert.IsTrue(track0.Playlists.Contains(playlist2));
@@ -197,7 +197,7 @@ namespace FrwSimpleWinCRUDUnitTestProject
 
             //change
             track2.Playlists.Add(playlist0);
-            Dm.Instance.InsertOrUpdateObject(track2);
+            Dm.Instance.SaveObject(track2);
 
             Assert.IsTrue(track0.Playlists.Contains(playlist0));
             Assert.IsTrue(track0.Playlists.Contains(playlist2));
@@ -236,10 +236,10 @@ namespace FrwSimpleWinCRUDUnitTestProject
             //change
             track2.Playlists.Remove(playlist0);
             track2.Playlists.Remove(playlist2);
-            Dm.Instance.InsertOrUpdateObject(track2);
+            Dm.Instance.SaveObject(track2);
 
             track3.Playlists.Add(playlist3);
-            Dm.Instance.InsertOrUpdateObject(track3);
+            Dm.Instance.SaveObject(track3);
 
 
             Assert.IsTrue(track0.Playlists.Contains(playlist0));
@@ -280,7 +280,7 @@ namespace FrwSimpleWinCRUDUnitTestProject
             track0.Playlists.Add(PlaylistNotSaved);
             try
             {
-                Dm.Instance.InsertOrUpdateObject(track0);
+                Dm.Instance.SaveObject(track0);
                 Assert.Fail("No exeption generated when update with not saved object");
             }
             catch {
@@ -292,9 +292,9 @@ namespace FrwSimpleWinCRUDUnitTestProject
             Employee employee0 = (Employee)Dm.Instance.EmptyObject(typeof(Employee), null);
             Employee employee2 = (Employee)Dm.Instance.EmptyObject(typeof(Employee), null);
             Employee employee3 = (Employee)Dm.Instance.EmptyObject(typeof(Employee), null);
-            Dm.Instance.InsertOrUpdateObject(employee0);
-            Dm.Instance.InsertOrUpdateObject(employee2);
-            Dm.Instance.InsertOrUpdateObject(employee3);
+            Dm.Instance.SaveObject(employee0);
+            Dm.Instance.SaveObject(employee2);
+            Dm.Instance.SaveObject(employee3);
 
             //Dm.Instance.ResolveToManyRelations(employee0);
             //Dm.Instance.ResolveToManyRelations(employee2);
@@ -302,8 +302,8 @@ namespace FrwSimpleWinCRUDUnitTestProject
 
             employee0.ReportsToManager = employee2;
             employee2.ReportsToManager = employee3;
-            Dm.Instance.InsertOrUpdateObject(employee0);
-            Dm.Instance.InsertOrUpdateObject(employee2);
+            Dm.Instance.SaveObject(employee0);
+            Dm.Instance.SaveObject(employee2);
 
             Assert.IsTrue(employee0.WhoReportsToManager.Count == 0);
             Assert.IsTrue(employee2.WhoReportsToManager.Contains(employee0));
@@ -339,75 +339,75 @@ namespace FrwSimpleWinCRUDUnitTestProject
             TestDto1 t1_10 = (TestDto1)Dm.Instance.EmptyObject(typeof(TestDto1), null);
             TestDto1 t1_11 = (TestDto1)Dm.Instance.EmptyObject(typeof(TestDto1), null);
             TestDto1 t1_12 = (TestDto1)Dm.Instance.EmptyObject(typeof(TestDto1), null);
-            Dm.Instance.InsertOrUpdateObject(t1_1);
-            Dm.Instance.InsertOrUpdateObject(t1_2);
-            Dm.Instance.InsertOrUpdateObject(t1_3);
-            Dm.Instance.InsertOrUpdateObject(t1_4);
-            Dm.Instance.InsertOrUpdateObject(t1_5);
-            Dm.Instance.InsertOrUpdateObject(t1_6);
-            Dm.Instance.InsertOrUpdateObject(t1_7);
-            Dm.Instance.InsertOrUpdateObject(t1_8);
-            Dm.Instance.InsertOrUpdateObject(t1_9);
-            Dm.Instance.InsertOrUpdateObject(t1_10);
-            Dm.Instance.InsertOrUpdateObject(t1_11);
-            Dm.Instance.InsertOrUpdateObject(t1_12);
+            Dm.Instance.SaveObject(t1_1);
+            Dm.Instance.SaveObject(t1_2);
+            Dm.Instance.SaveObject(t1_3);
+            Dm.Instance.SaveObject(t1_4);
+            Dm.Instance.SaveObject(t1_5);
+            Dm.Instance.SaveObject(t1_6);
+            Dm.Instance.SaveObject(t1_7);
+            Dm.Instance.SaveObject(t1_8);
+            Dm.Instance.SaveObject(t1_9);
+            Dm.Instance.SaveObject(t1_10);
+            Dm.Instance.SaveObject(t1_11);
+            Dm.Instance.SaveObject(t1_12);
 
             TestDto2 t2_1 = (TestDto2)Dm.Instance.EmptyObject(typeof(TestDto2), null);
             TestDto2 t2_2 = (TestDto2)Dm.Instance.EmptyObject(typeof(TestDto2), null);
-            Dm.Instance.InsertOrUpdateObject(t2_1);
-            Dm.Instance.InsertOrUpdateObject(t2_2);
+            Dm.Instance.SaveObject(t2_1);
+            Dm.Instance.SaveObject(t2_2);
             TestDto3 t3_1 = (TestDto3)Dm.Instance.EmptyObject(typeof(TestDto3), null);
             TestDto3 t3_2 = (TestDto3)Dm.Instance.EmptyObject(typeof(TestDto3), null);
-            Dm.Instance.InsertOrUpdateObject(t3_1);
-            Dm.Instance.InsertOrUpdateObject(t3_2);
+            Dm.Instance.SaveObject(t3_1);
+            Dm.Instance.SaveObject(t3_2);
             TestDto4 t4_1 = (TestDto4)Dm.Instance.EmptyObject(typeof(TestDto4), null);
             TestDto4 t4_2 = (TestDto4)Dm.Instance.EmptyObject(typeof(TestDto4), null);
-            Dm.Instance.InsertOrUpdateObject(t4_1);
-            Dm.Instance.InsertOrUpdateObject(t4_2);
+            Dm.Instance.SaveObject(t4_1);
+            Dm.Instance.SaveObject(t4_2);
             TestDto5 t5_1 = (TestDto5)Dm.Instance.EmptyObject(typeof(TestDto5), null);
             TestDto5 t5_2 = (TestDto5)Dm.Instance.EmptyObject(typeof(TestDto5), null);
-            Dm.Instance.InsertOrUpdateObject(t5_1);
-            Dm.Instance.InsertOrUpdateObject(t5_2);
+            Dm.Instance.SaveObject(t5_1);
+            Dm.Instance.SaveObject(t5_2);
 
             TestDto6 t6_1 = (TestDto6)Dm.Instance.EmptyObject(typeof(TestDto6), null);
             TestDto6 t6_2 = (TestDto6)Dm.Instance.EmptyObject(typeof(TestDto6), null);
-            Dm.Instance.InsertOrUpdateObject(t6_1);
-            Dm.Instance.InsertOrUpdateObject(t6_2);
+            Dm.Instance.SaveObject(t6_1);
+            Dm.Instance.SaveObject(t6_2);
 
             TestDto7 t7_1 = (TestDto7)Dm.Instance.EmptyObject(typeof(TestDto7), null);
             TestDto7 t7_2 = (TestDto7)Dm.Instance.EmptyObject(typeof(TestDto7), null);
-            Dm.Instance.InsertOrUpdateObject(t7_1);
-            Dm.Instance.InsertOrUpdateObject(t7_2);
+            Dm.Instance.SaveObject(t7_1);
+            Dm.Instance.SaveObject(t7_2);
 
             TestDto8 t8_1 = (TestDto8)Dm.Instance.EmptyObject(typeof(TestDto8), null);
             TestDto8 t8_2 = (TestDto8)Dm.Instance.EmptyObject(typeof(TestDto8), null);
-            Dm.Instance.InsertOrUpdateObject(t8_1);
-            Dm.Instance.InsertOrUpdateObject(t8_2);
+            Dm.Instance.SaveObject(t8_1);
+            Dm.Instance.SaveObject(t8_2);
 
             //set relationships
             t1_1.TestDto2 = t2_1;
             t1_1.TestDto2_1 = t2_2;
-            Dm.Instance.InsertOrUpdateObject(t1_1);
+            Dm.Instance.SaveObject(t1_1);
             t1_2.TestDto3s.Add(t3_1);
-            Dm.Instance.InsertOrUpdateObject(t1_2);
+            Dm.Instance.SaveObject(t1_2);
             t1_3.TestDto4s.Add(t4_1);
-            Dm.Instance.InsertOrUpdateObject(t1_3);
+            Dm.Instance.SaveObject(t1_3);
             t5_1.TestDto1s.Add(t1_4);
-            Dm.Instance.InsertOrUpdateObject(t5_1);
+            Dm.Instance.SaveObject(t5_1);
             t1_5.TestDto6 = t6_1;
-            Dm.Instance.InsertOrUpdateObject(t1_5);
+            Dm.Instance.SaveObject(t1_5);
             t7_1.TestDto1 = t1_6;
-            Dm.Instance.InsertOrUpdateObject(t7_1);
+            Dm.Instance.SaveObject(t7_1);
             Assert.IsTrue(t7_1.TestDto1 == t1_6);
             t1_7.TestDto8s.Add(t8_1);
-            Dm.Instance.InsertOrUpdateObject(t1_7);
+            Dm.Instance.SaveObject(t1_7);
             //self
             t1_8.ParentTestDto1 = t1_9;
-            Dm.Instance.InsertOrUpdateObject(t1_8);
+            Dm.Instance.SaveObject(t1_8);
             t1_10.ParentTestDto1 = t1_10;
-            Dm.Instance.InsertOrUpdateObject(t1_10);
+            Dm.Instance.SaveObject(t1_10);
             t1_11.ParentTestDto1 = t1_12;
-            Dm.Instance.InsertOrUpdateObject(t1_11);
+            Dm.Instance.SaveObject(t1_11);
 
             //test
             Assert.IsTrue(t2_1.TestDto1s.Contains(t1_1));

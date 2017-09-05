@@ -126,13 +126,13 @@ namespace FrwSoftware
             // since we are editing the storage object directly
             // this call can be purely nominal (if not overridden in the vault)
             // and used to set the modification flag in the repository
-            Dm.Instance.InsertOrUpdateObjectOrProperty(o, updatedPropertyName);
+            Dm.Instance.SaveObject(o, updatedPropertyName);
             //Dm.Instance.UpdateRelations(o);//todo move to InsertOrUpdateObjectOrProperty ? 
         }
         virtual protected void AddObjectInStorage(object o)
         {
             //add it to storage
-            Dm.Instance.InsertOrUpdateObject(o);
+            Dm.Instance.SaveObject(o);
         }
         virtual protected bool RemoveObjectFromInStorage(object[] o)
         {
@@ -660,7 +660,7 @@ namespace FrwSoftware
                             {
                                 //todo test for single
                                 p.SetValue(destListItem, (sourceObjects as IList)[0]);
-                                Dm.Instance.InsertOrUpdateObject(destListItem);
+                                Dm.Instance.SaveObject(destListItem);
                             }
                             else if (AttrHelper.IsGenericListTypeOf(pt, pasteType))
                             {
@@ -668,7 +668,7 @@ namespace FrwSoftware
                                 foreach (var ll in (sourceObjects as IList)) { 
                                     l.Add(ll);//todo exists
                                 }
-                                Dm.Instance.InsertOrUpdateObject(destListItem);
+                                Dm.Instance.SaveObject(destListItem);
                             }
                             RefreshObject(destListItem);
                         }
@@ -706,7 +706,7 @@ namespace FrwSoftware
                             //todo button xak ?
                             bool cancel = false;
                             object newValue = AppManager.Instance.EditCustomPropertyValue(rowObject, aspectName, out cancel, this);
-                            Dm.Instance.InsertOrUpdateObject(rowObject);
+                            Dm.Instance.SaveObject(rowObject);
                             RefreshObject(rowObject);
                         }
                         catch (Exception ex)

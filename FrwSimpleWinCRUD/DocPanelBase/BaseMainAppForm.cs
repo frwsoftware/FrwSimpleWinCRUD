@@ -399,7 +399,7 @@ namespace FrwSoftware
                 {
                     layout.Name = dlg.TextToEdit;
                     AppManager.Instance.SaveLayout(layout);
-                    Dm.Instance.InsertOrUpdateObject(layout);
+                    Dm.Instance.SaveObject(layout);
                 }
             };
             groupItem.DropDownItems.Add(menuItem);

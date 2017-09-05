@@ -84,12 +84,21 @@ namespace FrwSoftware
 
         static public void InitAppPaths()
         {
+            //crearte config manager instance 
             if (!FrwConfig.IsInstanceSet)
             {
                 FrwConfig.Instance = new FrwSimpleWinCRUDConfig();
             }
+            ////////////////////////////////////////////
             //set paths
+            ////////////////////////////////////////////
+            //executing assemply path
             string runPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase).Substring(6);
+            //Global directory. 
+            //In the simplest case, the global directory is the same as the program's start directory.
+            //But sometimes it is convenient to define it in a special way. For example, then you can work 
+            //with the same database files and settings in debug and working mode without permanently copying 
+            //them to the working directory from the project directory and back. 
             if (FrwConfig.Instance.GlobalDir == null)
             {
                 FrwConfig.Instance.GlobalDir = runPath;
@@ -98,6 +107,7 @@ namespace FrwSoftware
             {
                 FrwConfig.Instance.GlobalDir = Path.Combine(runPath, FrwConfig.Instance.GlobalDir);
             }
+            //profile directory (database, saving state of winform objects, user settings, etc.) 
             if (FrwConfig.Instance.ProfileDir == null)
             {
                 FrwConfig.Instance.ProfileDir = Path.Combine(FrwConfig.Instance.GlobalDir, FrwConfig.DEFAULT_PROFILE_PREFIX);
@@ -107,17 +117,19 @@ namespace FrwSoftware
                 FrwConfig.Instance.ProfileDir = Path.Combine(runPath, FrwConfig.Instance.ProfileDir);
             }
             // mode definition: working or debugging
-            FrwConfig.Instance.DevelopMode = (FrwConfig.Instance.GlobalDir.IndexOf("\\Debug\\") > -1 || FrwConfig.Instance.GlobalDir.IndexOf("\\Release\\") > -1);
+            FrwConfig.Instance.DevelopMode = (runPath.IndexOf("\\Debug\\") > -1 || runPath.IndexOf("\\Release\\") > -1);
+            //direcory for user settinns that attached to this computer 
             FrwConfig.Instance.ComputerUserDir = new FileInfo(ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath).DirectoryName;  //comp specific settings
-            //check fo exists
+            //check for exists
             if (!Directory.Exists(FrwConfig.Instance.GlobalDir)) new Exception(FrwCRUDRes.Application_Folder_Not_Found + FrwConfig.Instance.GlobalDir);
             if (!Directory.Exists(FrwConfig.Instance.ProfileDir)) new Exception(FrwCRUDRes.Application_Folder_Not_Found + FrwConfig.Instance.ProfileDir);
             if (!Directory.Exists(FrwConfig.Instance.ComputerUserDir)) new Exception(FrwCRUDRes.Application_Folder_Not_Found + FrwConfig.Instance.ComputerUserDir);
+            //directory for temp
             FrwConfig.Instance.UserTempDir = Path.GetTempPath();
-            //init 
+            //load settings 
             FrwConfig.Instance.LoadConfig();
+            //create database manager instance (includes database loading and relationship resolving) 
             Dm.Instance.Init();
-
 
         }
 
