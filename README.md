@@ -6,8 +6,11 @@ With SimpleWinCRUD C# class library you can create a completely portable applica
 
 ## Usage and samples 
 
-See  [project wiki](https://github.com/frwsoftware/FrwSimpleWinCRUD/wiki/Usage)
+See  [Project Wiki Usage](https://github.com/frwsoftware/FrwSimpleWinCRUD/wiki/Usage)
 
+## Screenshots
+
+See [Project Wiki Screenshots](https://github.com/frwsoftware/FrwSimpleWinCRUD/wiki/Screenshots)
 
 ## Features
 

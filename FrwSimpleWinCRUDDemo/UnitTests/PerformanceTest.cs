@@ -106,19 +106,6 @@ namespace FrwSoftware
             Thread.Sleep(1000); //Sleep to give the system time to recover for next run
 
             mes.Append("\r\n");
-            list = Dm.Instance.FindAll<Album>();
-            tstart = DateTime.Now.Ticks;
-            foreach (var a in list)
-            {
-                a.Title = a.Title + " Updated";
-                Dm.Instance.SaveObject(a);
-                if (saveFileOnEachOperation) Dm.Instance.SaveEntityData(typeof(Album));
-            }
-            tend = DateTime.Now.Ticks;
-            mes.Append("Update " + (saveFileOnEachOperation ? "(save) " : "") + i + " records with time " + (tend - tstart) / 10000 + " ms. " + (tend - tstart) / i + " ticks per record");
-            Thread.Sleep(1000); //Sleep to give the system time to recover for next run
-
-            mes.Append("\r\n");
             tstart = DateTime.Now.Ticks;
             i = 0;
             foreach (var a in arlist)
