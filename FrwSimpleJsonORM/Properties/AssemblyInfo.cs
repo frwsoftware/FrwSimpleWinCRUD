@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("FrwSimpleJsonORM")]
-[assembly: AssemblyDescription("Simple Json ORM")]
+[assembly: AssemblyDescription("Simple Json ORM.  FrwSimpleJsonORM implements basic CRUD Functionality (create, read, update, delete).  Data and user settings stores in fast JSON file storage.  Part of SimpleWinCRUD project - the Open-Source Library for quick WinForm CRUD application creation")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("FrwSoftware")]
 [assembly: AssemblyProduct("FrwSimpleJsonORM")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.2.1.0")]
-[assembly: AssemblyFileVersion("1.2.1.0")]
+[assembly: AssemblyVersion("1.2.2.0")]
+[assembly: AssemblyFileVersion("1.2.2.0")]

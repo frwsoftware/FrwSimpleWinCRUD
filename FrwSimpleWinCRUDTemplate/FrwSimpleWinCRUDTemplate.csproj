@@ -36,12 +36,12 @@
     <ApplicationIcon>simplewincrud.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FrwSoftware.FrwSimpleJsonORM, Version=1.2.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FrwSoftware.FrwSimpleJsonORM.1.2.1\lib\net452\FrwSoftware.FrwSimpleJsonORM.dll</HintPath>
+    <Reference Include="FrwSoftware.FrwSimpleJsonORM, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FrwSoftware.FrwSimpleJsonORM.1.2.2\lib\net452\FrwSoftware.FrwSimpleJsonORM.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="FrwSoftware.FrwSimpleWinCRUD, Version=1.2.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FrwSoftware.FrwSimpleWinCRUD.1.2.1\lib\net452\FrwSoftware.FrwSimpleWinCRUD.dll</HintPath>
+    <Reference Include="FrwSoftware.FrwSimpleWinCRUD, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FrwSoftware.FrwSimpleWinCRUD.1.2.2\lib\net452\FrwSoftware.FrwSimpleWinCRUD.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.5.1.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">

@@ -475,7 +475,7 @@ namespace FrwSoftware
                 {
                     File.WriteAllText(filename, newConfigStr, Encoding.UTF8);
                     configFileStr = newConfigStr;
-                    Log.ProcessDebug("@@@@@ Saved config for OLV list  " + SourceObjectType);
+                    //Log.ProcessDebug("@@@@@ Saved config for OLV list  " + SourceObjectType);
                 }
             }
             catch (Exception ex)

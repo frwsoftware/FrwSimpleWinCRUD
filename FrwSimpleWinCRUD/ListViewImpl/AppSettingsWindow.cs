@@ -34,7 +34,7 @@ namespace FrwSoftware
         }
         override public void SaveConfig()
         {
-            Log.ProcessDebug("@@@@@ Saved config for AppSettingsWindow  ");
+            //Log.ProcessDebug("@@@@@ Saved config for AppSettingsWindow  ");
 
         }
 

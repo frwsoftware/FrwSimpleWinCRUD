@@ -656,7 +656,7 @@ namespace FrwSoftware
             {
                 File.WriteAllText(configFile, newConfigLayoutStr);
                 configLayoutStr = newConfigLayoutStr;
-                Log.ProcessDebug("@@@@@ Saved config for main window " + DocPanelIndex);
+                //Log.ProcessDebug("@@@@@ Saved config for main window " + DocPanelIndex);
             }
 
             ////////////////////////////////////////////////
@@ -671,7 +671,7 @@ namespace FrwSoftware
                 {
                     File.WriteAllText(filename, newConfigStr, Encoding.UTF8);
                     configFileStr = newConfigStr;
-                    Log.ProcessDebug("@@@@@ Saved json config for main window " + DocPanelIndex);
+                    //Log.ProcessDebug("@@@@@ Saved json config for main window " + DocPanelIndex);
                 }
             }
             catch (Exception ex)

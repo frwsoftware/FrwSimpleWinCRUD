@@ -6,8 +6,8 @@
     <title>$title$</title>
     <authors>$author$</authors>
     <owners>$author$</owners>
-    <licenseUrl>https://github.com/frwsoftware/SimpleWinCRUD</licenseUrl>
-    <projectUrl>https://github.com/frwsoftware/SimpleWinCRUD</projectUrl>
+    <licenseUrl>https://github.com/frwsoftware/FrwSimpleWinCRUD</licenseUrl>
+    <projectUrl>https://github.com/frwsoftware/FrwSimpleWinCRUD</projectUrl>
     <iconUrl>https://github.com/frwsoftware/FrwSimpleWinCRUD/blob/master/simplewincrud.ico?raw=true</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>

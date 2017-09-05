@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("FrwSimpleWinCRUD")]
-[assembly: AssemblyDescription("With SimpleWinCRUD  C# class library you can create a completely portable application for working with dictionary data. It implements CRUD concept.  GUI is based on WinForms api and  supports the look and feel of Visual Studio. Uses fast JSON file storage.")]
+[assembly: AssemblyDescription("The Open-Source Library for quick WinForm CRUD application creation. With SimpleWinCRUD C# class library you can create a completely portable application for working with personal or corporate reference data. For example, contact lists, phone directories, bookmarks, password lists, etc. The application integrates several open solutions.  SimpleWinCRUD implements basic CRUD Functionality (create, read, update, delete). Windows GUI of SimpleWinCRUD C# class library is based on WinForms api and supports the look and feel of Visual Studio. Data and user settings stores in fast JSON file storage.  The application integrates several opensource solutions.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("FrwSoftware")]
 [assembly: AssemblyProduct("FrwSimpleWinCRUD")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.2.1.0")]
-[assembly: AssemblyFileVersion("1.2.1.0")]
+[assembly: AssemblyVersion("1.2.2.0")]
+[assembly: AssemblyFileVersion("1.2.2.0")]
