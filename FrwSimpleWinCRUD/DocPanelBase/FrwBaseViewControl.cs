@@ -54,6 +54,9 @@ namespace FrwSoftware
         public virtual void SaveConfig()
         {
         }
+        public virtual void CloseContent()
+        {
+        }
         public virtual bool CompareKeyParams(IDictionary<string, object> pars)
         {
             return true;

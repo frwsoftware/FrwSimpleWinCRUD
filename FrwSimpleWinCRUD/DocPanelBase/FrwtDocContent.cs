@@ -63,5 +63,10 @@ namespace FrwSoftware
             Console.WriteLine("Savig config in FrwDocContent = " + contentControl);
             ContentControl.SaveConfig();
         }
+
+        private void FrwDocContent_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            ContentControl.CloseContent();
+        }
     }
 }

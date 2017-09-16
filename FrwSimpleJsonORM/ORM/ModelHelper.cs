@@ -88,7 +88,7 @@ namespace FrwSoftware
             var sb = new StringBuilder();
             foreach (var p in props)
             {
-                if (excludes!= null && Array.Exists(excludes, element => element == p.Name))  continue;
+                if (excludes != null && Array.Exists(excludes, element => element == p.Name)) continue;
                 if (includes != null && !Array.Exists(includes, element => element == p.Name)) continue;
                 JManyToOne manyToOneAttr = AttrHelper.GetAttribute<JManyToOne>(t, p.Name);
                 JIgnore ignoreAttr = AttrHelper.GetAttribute<JIgnore>(t, p.Name);
@@ -108,8 +108,24 @@ namespace FrwSoftware
 
 
 
-    }
-    #endregion
 
+        #endregion
+
+        static public string GetNameForObject(object o)
+        {
+            if (o == null) return null;
+            Type t = o.GetType();
+            PropertyInfo pName = AttrHelper.GetProperty<JNameProperty>(t);
+            if (pName != null)
+            {
+                object on = pName.GetValue(o);
+                return (on != null ? on.ToString() : null);
+            }
+            else
+            {
+                return o.ToString();
+            }
+        }
+    }
 
 }

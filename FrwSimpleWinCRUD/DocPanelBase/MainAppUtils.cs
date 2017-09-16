@@ -164,7 +164,7 @@ namespace FrwSoftware
             {
                 Log.ShowError(ex);
             }
-            Log.ProcessDebug("Application ended");
+            //Log.ProcessDebug("Application ended");
             try
             {
                 Log.CloseAndFlush();

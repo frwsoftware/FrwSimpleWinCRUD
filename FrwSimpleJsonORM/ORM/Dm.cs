@@ -83,6 +83,8 @@ namespace FrwSoftware
         }
         private static Dm instance;
 
+        static public string TempDirPrefix = "tempDir";
+        static public string TemplatesDirPrefix = "templatesDir";
         public const string STORAGE_PREFIX = "storage:";//Prefix for internal storage
         protected const string DATA_STORAGE = "dataStorage";//Data warehouse prefix in the profile
         public const int TRUNCATED_VALUE_MAX_ITEM_COUNT = 10;

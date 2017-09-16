@@ -40,22 +40,24 @@
             this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.testMenuItem});
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(254, 38);
+            this.contextMenuStrip.Size = new System.Drawing.Size(186, 28);
             // 
             // testMenuItem
             // 
             this.testMenuItem.Name = "testMenuItem";
-            this.testMenuItem.Size = new System.Drawing.Size(253, 34);
+            this.testMenuItem.Size = new System.Drawing.Size(185, 24);
             this.testMenuItem.Text = "Тестовое меню";
             // 
-            // JustDocContent
+            // FrwDocContent
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(276, 236);
-            this.Name = "JustDocContent";
+            this.ClientSize = new System.Drawing.Size(201, 157);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Name = "FrwDocContent";
             this.TabPageContextMenuStrip = this.contextMenuStrip;
             this.Text = "JustDocContent";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrwDocContent_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.DocContent_FormClosed);
             this.contextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);

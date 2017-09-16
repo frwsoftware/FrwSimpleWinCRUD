@@ -39,7 +39,18 @@ namespace FrwSoftware
         {
             return Path.GetFullPath(Path.GetDirectoryName(path));
         }
-
-
+        static public bool IsFilePath(string path)
+        {
+            Uri u;
+            try
+            {
+                u = new Uri(path);
+                return u.IsFile;
+            }
+            catch (Exception)
+            {
+                return true;
+            }
+        }
     }
 }

@@ -93,7 +93,7 @@ namespace FrwSoftware
         }
         private void Content_FormClosed(object sender, FormClosedEventArgs e)
         {
-            //!! this event do not occurs for HideOnClose windows
+            //!! this event does not occurs for HideOnClose windows
             if (sender is FrwDocContent)
             {
                 AppManager.Instance.RemoveDocContent(((FrwDocContent)sender).ContentControl);
