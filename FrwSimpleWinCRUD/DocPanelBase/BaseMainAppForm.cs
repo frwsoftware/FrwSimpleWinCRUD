@@ -418,8 +418,6 @@ namespace FrwSoftware
             groupItem.DropDownItems.Add(menuItem);
 
             menuItem = new ToolStripMenuItem(FrwCRUDRes.UpdateCurrentConfiguration);
-            //menuItem = new ToolStripMenuItem("Обновить текущую конфигурацию виджетов " + ((AppManager.Instance.CurrentLayout != null) ? ("(" + AppManager.Instance.CurrentLayout.Name + ")") : "") );
-            //menuItem.Enabled = (AppManager.Instance.CurrentLayout != null);
             menuItem.Click += (s, em) =>
             {
                 AppManager.Instance.SaveLayout(AppManager.Instance.CurrentLayout);

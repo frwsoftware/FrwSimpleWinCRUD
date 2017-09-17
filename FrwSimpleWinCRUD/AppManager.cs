@@ -675,11 +675,7 @@ namespace FrwSoftware
                     object value = newObjects[0];
                     AttrHelper.SetPropertyValue(rowObject, aspectName, value);
                     Dm.Instance.SaveObject(rowObject);
-                    //Dm.Instance.UpdateRelation(rowObject, aspectName, value );
-                    //value = AttrHelper.GetPropertyValue(rowObject, aspectName);
-                    //newValue = (value != null) ? Dm.MakeStringFromObjectList(new List<object>() { value }) : null;
                     newValue = Dm.Instance.GetCustomPropertyValue(rowObject, aspectName);
-                    //todo set null 
 
                 }//todo set null
                 cancelEdit = true;
@@ -739,7 +735,12 @@ namespace FrwSoftware
                     Dm.Instance.ResolveRelation(rowObject, aspectName);
                     list = (IList)AttrHelper.GetPropertyValue(rowObject, aspectName);
                 }
-                listDialog.SourceObjects = list;
+                IList tempLIst = new List<object>();
+                foreach (var item in list)
+                {
+                    tempLIst.Add(item);
+                }
+                listDialog.SourceObjects = tempLIst;
                 DialogResult res = listDialog.ShowDialog(owner);
                 if (res == DialogResult.OK && listDialog.SourceObjects != null)
                 {
@@ -751,11 +752,7 @@ namespace FrwSoftware
                         oldList.Add(newListItem);
                     }
                     Dm.Instance.SaveObject(rowObject);
-                    //Dm.Instance.UpdateRelation(rowObject, aspectName, listDialog.SourceObjects);
-                    //list = (IList)AttrHelper.GetPropertyValue(rowObject, aspectName);
-                    //string s = Dm.MakeStringFromObjectList(list);
                     newValue = Dm.Instance.GetCustomPropertyValue(rowObject, aspectName);
-                    //newValue = s;
                 }
                 cancelEdit = true;
             }
@@ -763,12 +760,18 @@ namespace FrwSoftware
             {
                 SimpleMultivalueFieldItemListDialog listDialog = new SimpleMultivalueFieldItemListDialog(AttrHelper.GetGenericListArgType(p.PropertyType));
                 IList list = (IList)AttrHelper.GetPropertyValue(rowObject, aspectName);
+             
                 if (list == null)
                 {
                     Dm.Instance.ResolveRelation(rowObject, aspectName);
                     list = (IList)AttrHelper.GetPropertyValue(rowObject, aspectName);
                 }
-                listDialog.SourceObjects = list;
+                IList tempLIst = new List<object>();
+                foreach (var item in list)
+                {
+                    tempLIst.Add(item);
+                }
+                listDialog.SourceObjects = tempLIst;
                 DialogResult res = listDialog.ShowDialog(owner);
                 if (res == DialogResult.OK && listDialog.SourceObjects != null)
                 {
@@ -780,11 +783,7 @@ namespace FrwSoftware
                         oldList.Add(newListItem);
                     }
                     Dm.Instance.SaveObject(rowObject);
-                    //Dm.Instance.UpdateRelation(rowObject, aspectName, listDialog.SourceObjects);
-                    //list = (IList)AttrHelper.GetPropertyValue(rowObject, aspectName);
                     newValue = Dm.Instance.GetCustomPropertyValue(rowObject, aspectName);
-                    //string s = Dm.MakeStringFromObjectList(list);
-                    //newValue = s;
                 }
                 cancelEdit = true;
             }
