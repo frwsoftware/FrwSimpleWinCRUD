@@ -699,12 +699,34 @@ namespace FrwSoftware
                     if (res == DialogResult.OK)
                     {
                         IList newObjects = listDialog.SourceObjects;//SourceObjects
-                        List<string> listkeys = new List<string>();
-                        foreach (var newObject in newObjects)
+
+                        if (AttrHelper.IsGenericListTypeOf(typeof(int), p.PropertyType))
                         {
-                            listkeys.Add(((JDictItem)newObject).Key);
+                            List<int> listkeys = new List<int>();
+                            foreach (var newObject in newObjects)
+                            {
+                                listkeys.Add(int.Parse( ((JDictItem)newObject).Key));
+                            }
+                            AttrHelper.SetPropertyValue(rowObject, aspectName, listkeys);
                         }
-                        AttrHelper.SetPropertyValue(rowObject, aspectName, listkeys);
+                        else if (AttrHelper.IsGenericListTypeOf(typeof(long), p.PropertyType))
+                        {
+                            List<long> listkeys = new List<long>();
+                            foreach (var newObject in newObjects)
+                            {
+                                listkeys.Add(long.Parse(((JDictItem)newObject).Key));
+                            }
+                            AttrHelper.SetPropertyValue(rowObject, aspectName, listkeys);
+                        }
+                        else
+                        {
+                            List<string> listkeys = new List<string>();
+                            foreach (var newObject in newObjects)
+                            {
+                                listkeys.Add(((JDictItem)newObject).Key);
+                            }
+                            AttrHelper.SetPropertyValue(rowObject, aspectName, listkeys);
+                        }
                         newValue = Dm.Instance.GetCustomPropertyValue(rowObject, aspectName);
                     }
                 }
@@ -718,7 +740,12 @@ namespace FrwSoftware
                         if (newObjects.Count > 0)
                         {
                             JDictItem d = (JDictItem)newObjects[0];
-                            AttrHelper.SetPropertyValue(rowObject, aspectName, d.Key);
+                            if (p.PropertyType == typeof(int))
+                               AttrHelper.SetPropertyValue(rowObject, aspectName, int.Parse(d.Key));
+                            else if (p.PropertyType == typeof(long))
+                                AttrHelper.SetPropertyValue(rowObject, aspectName, long.Parse(d.Key));
+                            else
+                                AttrHelper.SetPropertyValue(rowObject, aspectName, d.Key);
                             newValue = Dm.Instance.GetCustomPropertyValue(rowObject, aspectName);
                         }
                         else newValue = null;

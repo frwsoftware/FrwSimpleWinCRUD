@@ -1718,8 +1718,9 @@ namespace FrwSoftware
         private IList ResolveDictionary(object rowObject, string aspectName)
         {
             if (rowObject == null) return null;
-            Type sourceEntityType = rowObject.GetType();
-            PropertyInfo pkProp = AttrHelper.GetProperty<JPrimaryKey>(sourceEntityType);
+            PropertyInfo p = AttrHelper.GetProperty(rowObject.GetType(), aspectName);
+            //Type sourceEntityType = rowObject.GetType();
+            //PropertyInfo pkProp = AttrHelper.GetProperty<JPrimaryKey>(sourceEntityType);
             JDictProp dictAttr = AttrHelper.GetAttribute<JDictProp>(rowObject, aspectName);
             if (dictAttr != null)
             {
@@ -1729,13 +1730,14 @@ namespace FrwSoftware
                 {
                     if (dictAttr.AllowMultiValues == true)
                     {
-                        List<string> vList = (List<string>)value;
+                        IList vList = (IList)value;
                         foreach (var v in vList)
                         {
-                            JDictItem dictItem = Dm.Instance.GetDictText(dictAttr.Id, v);
+                            JDictItem dictItem = Dm.Instance.GetDictText(dictAttr.Id, v.ToString());
                             if (dictItem != null) oList.Add(dictItem.Text);
                             else oList.Add("Text not found for: " + v);
                         }
+
                     }
                     else
                     {
