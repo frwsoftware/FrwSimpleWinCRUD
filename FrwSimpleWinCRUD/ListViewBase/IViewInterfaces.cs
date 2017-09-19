@@ -17,6 +17,7 @@ using System.Collections.Generic;
 
 namespace FrwSoftware
 {
+   
     public enum ViewMode
     {
         View, // view detail of the record fields

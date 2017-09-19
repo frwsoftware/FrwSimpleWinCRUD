@@ -67,6 +67,12 @@ namespace FrwSoftware
             }
         }
 
+        private  Type defaultViewWindowType = typeof(BaseViewWindow);
+        public Type DefaultViewWindowType {
+            get { return defaultViewWindowType; }
+            set { defaultViewWindowType = value; }
+        }
+
         public Type MainAppFormType { get; set; }
 
         public const int TRUNCATED_VALUE_MAX_ITEM_COUNT = 10;

@@ -94,6 +94,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppManager.cs" />
+    <Compile Include="ListViewBase\BaseViewWindow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ListViewBase\BaseViewWindow.Designer.cs">
+      <DependentUpon>BaseViewWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="ListViewBase\CustomItem.cs" />
     <Compile Include="DocPanelBase\BaseMainAppForm.cs">
       <SubType>Form</SubType>
@@ -240,6 +246,12 @@
     <Compile Include="ListViewBase\SimpleTextDialog.Designer.cs">
       <DependentUpon>SimpleTextDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="ListViewBase\SimpleViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ListViewBase\SimpleViewControl.designer.cs">
+      <DependentUpon>SimpleViewControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="ListViewBase\SysImageListHelper.cs" />
     <Compile Include="ListViewImpl\AppSettingsPropertyGrid.cs">
       <SubType>Component</SubType>
@@ -306,6 +318,9 @@
     <EmbeddedResource Include="ListViewBase\BasePropertyWindow.resx">
       <DependentUpon>BasePropertyWindow.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ListViewBase\BaseViewWindow.resx">
+      <DependentUpon>BaseViewWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ListViewBase\OLVListSettingDialog.resx">
       <DependentUpon>OLVListSettingDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -347,6 +362,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ListViewBase\SimpleTextDialog.resx">
       <DependentUpon>SimpleTextDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ListViewBase\SimpleViewControl.resx">
+      <DependentUpon>SimpleViewControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ListViewImpl\AppSettingsWindow.resx">
       <DependentUpon>AppSettingsWindow.cs</DependentUpon>
