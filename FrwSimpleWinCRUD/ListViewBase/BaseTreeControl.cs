@@ -86,14 +86,19 @@ namespace FrwSoftware
         public void FullRefresh()
         {
             this.BeginUpdate();
-            //this.Nodes.Clear();
             RecourseRemove(this.Nodes);
             InitialCreateTreeNodeRoot();
             this.EndUpdate();
-            //this.Invalidate();
         }
- 
-        virtual protected void LoadBrahch(TreeNode parentNode, int levelStep, int maxLevelStep)
+
+        /// <summary>
+        /// Load child nodes 
+        /// </summary>
+        /// <param name="parentNode"></param>
+        /// <param name="levelStep">Used for expand until level</param>
+        /// <param name="maxLevelStep">Used for expand until level</param>
+        /// <param name="savedExpansionState">Used for expand saved state level</param>
+        public void LoadBrahch(TreeNode parentNode, int levelStep, int maxLevelStep, IList<string> savedExpansionState)
         {
             levelStep++;
             if (parentNode.Nodes.Count > 0 &&
@@ -112,9 +117,16 @@ namespace FrwSoftware
                     node.Nodes.Add(PSEVDO_NODE_TEXT);
                 }
                 parentNode.Nodes.Add(node);
-                if (levelStep < maxLevelStep)
+                if (savedExpansionState != null)
                 {
-                    LoadBrahch(node, levelStep, maxLevelStep);
+                    if (savedExpansionState.Contains(node.FullPath)){
+                        node.Expand();
+                        LoadBrahch(node, levelStep, maxLevelStep, savedExpansionState);
+                    }
+                }
+                else if (levelStep < maxLevelStep)
+                {
+                    LoadBrahch(node, levelStep, maxLevelStep, savedExpansionState);
                 }
             }
         }
@@ -188,7 +200,7 @@ namespace FrwSoftware
                 if (ChangeNodeImageOnExpand) e.Node.ImageKey = TREE_FOLDER_OPENED;
                 if (e.Node.Nodes[0].Text == PSEVDO_NODE_TEXT) //alt if (e.Node.Nodes.Count == 1 && e.Node.Nodes[0].Tag == null) {
                 {
-                    this.LoadBrahch(e.Node, 0, 1);
+                    this.LoadBrahch(e.Node, 0, 1, null);
                 }
             }
             catch (Exception ex)

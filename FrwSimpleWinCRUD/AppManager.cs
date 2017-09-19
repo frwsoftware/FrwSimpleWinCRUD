@@ -332,14 +332,19 @@ namespace FrwSoftware
         {
             docContentContainers.Add(dc);
             dc.DocPanelIndex = docContentContainers.Count - 1;
-            if (dc is Form) (dc as Form).FormClosed += AppManager_FormClosed;
+            //if (dc is Form) (dc as Form).FormClosed += AppManager_FormClosed;
         }
-
+        public void UnRegisterDocPanelContainer(IContentContainer dc)
+        {
+            docContentContainers.Remove(dc);
+        }
+        /*
         private void AppManager_FormClosed(object sender, FormClosedEventArgs e)
         {
             if (sender is IContentContainer)
                 docContentContainers.Remove(sender as IContentContainer);
         }
+        */
         public void ActivateDocPanelContainers()
         {
             foreach (var c in docContentContainers)
@@ -369,18 +374,6 @@ namespace FrwSoftware
         }
 
 
-        // called when exiting the application
-        public void CloseAllDocPanelContainers(Form initiator)
-        {
-            List<IContentContainer> tmp = new List<IContentContainer>();
-            tmp.AddRange(docContentContainers);
-            foreach (var c in tmp)
-            {   if (c != initiator)
-                {
-                    c.CloseDocPanelContainer();
-                }
-            }
-        }
 
 
         // is called when the main window closes the document
@@ -409,19 +402,20 @@ namespace FrwSoftware
 
         #endregion
         #region saverestorestate
-        public void SaveDocPanelContainersState()
+        public void SaveAndClose(Form initiator)
         {
             FillDocPanelContainersState();
             string configFilePath = GetDockPanelContainersXmlPath();
             xml.SaveDocument(configFilePath);
-            // save window states moved to JustDocContent_FormClosed
-            // but it's also left here, because we do not get into the close event of HideOnClose windows
-            foreach (var b in docContents)
+
+            //close other containers 
+            List<IContentContainer> tmp = new List<IContentContainer>();
+            tmp.AddRange(docContentContainers);
+            foreach (var c in tmp)
             {
-                if (b.HideOnClose == true)
+                if (c != initiator)
                 {
-                    Console.WriteLine("Savig config in AppManager c = " + b);
-                    b.SaveConfig();
+                    c.CloseDocPanelContainer();
                 }
             }
         }

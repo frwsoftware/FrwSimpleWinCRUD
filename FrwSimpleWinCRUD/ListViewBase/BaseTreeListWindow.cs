@@ -21,6 +21,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace FrwSoftware
 {
@@ -69,7 +70,28 @@ namespace FrwSoftware
 
 
         }
-  
+        override public void CreateView()
+        {
+            base.CreateView();
+            LoadConfig();
+            treeControl.BeginUpdate();
+            this.treeControl.InitialCreateTreeNodeRoot();
+            if (savedTreeState != null)
+            {
+                //We can not use the same algorithm as in the Reload method. 
+                //Because child records are actually loaded asynchronously.
+                //We need to call a recursive load directly.
+                foreach (TreeNode n in treeControl.Nodes)
+                {
+                    if (savedTreeState.NodeStates.Contains(n.FullPath))
+                    {
+                        n.Expand();
+                        treeControl.LoadBrahch(n, 0, 1, savedTreeState.NodeStates);
+                    }
+                }
+            }
+            treeControl.EndUpdate();
+        }
 
         virtual protected object AddChildTreeNode(object selectedObject)
         {
@@ -135,7 +157,17 @@ namespace FrwSoftware
         }
         override protected void ReloadList()
         {
+            if (savedTreeState != null)
+            {
+                savedTreeState.NodeStates = treeControl.Nodes.GetExpansionState();
+            }
             treeControl.FullRefresh();
+            if (savedTreeState != null)
+            {
+                treeControl.BeginUpdate();
+                treeControl.Nodes.SetExpansionState(savedTreeState.NodeStates);
+                treeControl.EndUpdate();
+            }
         }
         /*
         virtual public void MoveNode(TreeNode destNode, TreeNode sourceNode, bool cut)
@@ -169,26 +201,20 @@ namespace FrwSoftware
         {
             try
             {
-                //Console.WriteLine("DragDrop " + e.Data + " e.Effect = " + e.Effect);
                 string formats = string.Join("\n", e.Data.GetFormats(false));
-                //Console.WriteLine("Formats " + formats);
                 bool cut;
                 if (e.Effect == DragDropEffects.None) return;
                 else if (e.Effect == DragDropEffects.Move)
                 {
-                    //Console.WriteLine("DragDropEffects.Move ");
                     cut = true;
                 }
                 else if (e.Effect == DragDropEffects.Copy)
                 {
-                    //Console.WriteLine("DragDropEffects.Copy ");
                     cut = false;
                 }
                 else throw new Exception("");
 
                 TreeNode destNode = treeControl.GetHoveringNode(e.X, e.Y);
-                //TreeNode sourceNode = e.Data.GetData(typeof(TreeNode)) as TreeNode;
-
                 bool res = PasteSelectedObjectsFromIDataObject(destNode, e.Data, cut);
                 if (res) MessageBox.Show(FrwCRUDRes.Drag_Record_Successfully + (cut ? FrwCRUDRes.Drage_Moved : FrwCRUDRes.Drag_Copied));
 
@@ -241,7 +267,6 @@ namespace FrwSoftware
         {
             try
             {
-                //Console.WriteLine("DragEnter " + e.Data + " e.Effect = " + e.Effect);
             }
             catch (Exception ex)
             {
@@ -253,7 +278,6 @@ namespace FrwSoftware
         {
             try
             {
-               // Console.WriteLine("DragLive");
             }
             catch (Exception ex)
             {
@@ -268,9 +292,7 @@ namespace FrwSoftware
         {
             try
             {
-                //Console.WriteLine("ItemDrag " + e.Item);
                 DragDropEffects dragDropEffects = DoDragDrop( e.Item, DragDropEffects.All);
-                //Console.WriteLine("ItemDrag dragDropEffects" + dragDropEffects);
             }
             catch (Exception ex)
             {
@@ -302,7 +324,7 @@ namespace FrwSoftware
             return null;
         }
 
-        //обновляет вид объекта в списке (используется из формы редактирования)
+        
         override public void RefreshObject(object o)
         {
             TreeNode n = FindNodeByTagObject(o, null);
@@ -380,9 +402,90 @@ namespace FrwSoftware
                 menuItemList.Add(menuItem);
             }
         }
+        #region save restore config
+        private string configFileStr = null;
+        private TreeListState savedTreeState = null;
+        private void LoadConfig()
+        {
+            try
+            {
+                string filename = GetStateConfigFileName();
+                if (File.Exists(filename))
+                {
+                    configFileStr = File.ReadAllText(filename, Encoding.UTF8);
+                    savedTreeState = JsonSerializeHelper.LoadFromString<TreeListState>(configFileStr);
+                }
+                else savedTreeState = new TreeListState();
+                LoadUserSettings(savedTreeState.UserSettings);
+            }
+            catch (Exception ex)
+            {
+                Log.LogError("Can not read config for " + GetType().ToString(), ex);
+            }
 
+        }
+        override public void SaveConfig()
+        {
+            try
+            {
+                string filename = GetStateConfigFileName();
+                SaveUserSettings(savedTreeState.UserSettings);
+                savedTreeState.NodeStates = treeControl.Nodes.GetExpansionState();
+                string newConfigStr = JsonSerializeHelper.SaveToString(savedTreeState);
+                if (newConfigStr.Equals(configFileStr) == false)
+                {
+                    File.WriteAllText(filename, newConfigStr, Encoding.UTF8);
+                    configFileStr = newConfigStr;
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                Log.LogError("Can not write config for " + GetType().ToString(), ex);
+            }
 
+        }
+        #endregion
+    }
+    public class TreeListState
+    {
+        private IDictionary<string, object> userSettings = new Dictionary<string, object>();
+        public IDictionary<string, object> UserSettings { get { return userSettings; } set { userSettings = value; } }
+
+        private  IList<string> nodeStates = new List<string>();
+        public IList<string> NodeStates { get { return nodeStates; } set { nodeStates = value; } }
     }
 
+    public static class TreeViewExtensions
+    {
+        public static IList<string> GetExpansionState(this TreeNodeCollection nodes)
+        {
+            return nodes.Descendants()
+                        .Where(n => n.IsExpanded)
+                        .Select(n => n.FullPath)
+                        .ToList();
+        }
+        //We can use this algorithm onle in ReloadList method.
+        public static void SetExpansionState(this TreeNodeCollection nodes, IList<string> savedExpansionState)
+        {
+            foreach (var node in nodes.Descendants()
+                                      .Where(n => savedExpansionState.Contains(n.FullPath)))
+            {
+                node.Expand();
+            }
+        }
 
+        public static IEnumerable<TreeNode> Descendants(this TreeNodeCollection c)
+        {
+            foreach (var node in c.OfType<TreeNode>())
+            {
+                yield return node;
+
+                foreach (var child in node.Nodes.Descendants())
+                {
+                    yield return child;
+                }
+            }
+        }
+    }
 }

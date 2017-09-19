@@ -55,7 +55,7 @@ namespace FrwSoftware
                 }
             }
         }
-        public static void ExecuteProgram(string fileName, string arguments)
+        public static void ExecuteProgram(string fileName, string arguments, bool waitForExit = false)
         {
             Process prc = null;
 
@@ -77,12 +77,21 @@ namespace FrwSoftware
                 // Start
                 prc.Start();
 
-                // wait for exit
-                prc.WaitForExit();
+                if (waitForExit)
+                {
+                    // wait for exit
+                    prc.WaitForExit();
+                }
             }
             finally
             {
-                if (prc != null) prc.Close();
+                try
+                {
+                    if (prc != null) prc.Close();
+                }
+                catch (Exception)
+                {
+                }
             }
         }
 

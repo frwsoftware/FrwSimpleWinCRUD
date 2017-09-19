@@ -52,6 +52,7 @@ namespace FrwSoftware
 
             this.Load += BaseMainAppForm_Load;
             this.FormClosing += BaseMainAppForm_FormClosing;
+            this.FormClosing += BaseMainAppForm_FormClosing1;
 
             JSetting s = FrwSimpleWinCRUDConfig.GetApplicationFontProperty();
             if (s != null)
@@ -63,6 +64,8 @@ namespace FrwSoftware
             //create panes
             m_deserializeDockContent = new DeserializeDockContent(GetContentFromPersistString);
         }
+
+  
 
         private void BaseMainAppForm_Load(object sender, EventArgs e)
         {
@@ -85,15 +88,35 @@ namespace FrwSoftware
                 {
 
                 }
+
+                //close 
+                List<IDockContent> contents = new List<IDockContent>();
+                foreach (IDockContent document in dockPanel.Contents)//copy to new collection to prevent exception 
+                {
+                    if (document.DockHandler.DockState != DockState.Document)
+                    {
+                        contents.Add(document);
+                    }
+                }
+                foreach (IDockContent content in contents)
+                {
+                    if (content is Form) (content as Form).Close();
+                    //CloseContent(content);
+                }
+
             }
             catch (Exception ex)
             {
                 Log.ShowError(ex);
             }
         }
+        private void BaseMainAppForm_FormClosing1(object sender, FormClosingEventArgs e)
+        {
+            AppManager.Instance.UnRegisterDocPanelContainer(this);
+        }
         private void Content_FormClosed(object sender, FormClosedEventArgs e)
         {
-            //!! this event does not occurs for HideOnClose windows
+            //!! this event does not occurs for HideOnClose windows because it not closed 
             if (sender is FrwDocContent)
             {
                 AppManager.Instance.RemoveDocContent(((FrwDocContent)sender).ContentControl);
@@ -324,6 +347,8 @@ namespace FrwSoftware
             groupItem = new ToolStripMenuItem(FrwCRUDRes.Close);
             menuItemFile.DropDownItems.Add(groupItem);
 
+
+
             menuItem = new ToolStripMenuItem(FrwCRUDRes.ActiveDocumentWindow);
             menuItem.Click += (s, em) =>
             {
@@ -443,8 +468,9 @@ namespace FrwSoftware
                     Cursor.Current = cursor;
                 }
             };
+            menuItemFile.DropDownItems.Add(menuItem);
 
-            if (NotClosable)
+            if (NotClosable && DocPanelIndex == 0)
             {
                 menuItem = new ToolStripMenuItem(FrwCRUDRes.BaseMainAppForm_HideMainApplicationWindow);//
                 menuItem.Click += (s, em) =>
@@ -463,7 +489,7 @@ namespace FrwSoftware
             else
             {
                 menuItemFile.DropDownItems.Add(menuItem);
-                menuItem = new ToolStripMenuItem(FrwCRUDRes.CloseApplication);
+                menuItem = new ToolStripMenuItem(DocPanelIndex == 0 ? FrwCRUDRes.CloseApplication : FrwCRUDRes.BaseMainAppForm_CloseContainerWindow);
                 menuItem.Click += (s, em) =>
                 {
                     try
@@ -696,7 +722,7 @@ namespace FrwSoftware
         {
             get
             {
-                if (NotClosable) {
+                if (NotClosable && DocPanelIndex == 0) {
                     CreateParams myCp = base.CreateParams;
                     myCp.ClassStyle = myCp.ClassStyle | CP_NOCLOSE_BUTTON;
                     return myCp;

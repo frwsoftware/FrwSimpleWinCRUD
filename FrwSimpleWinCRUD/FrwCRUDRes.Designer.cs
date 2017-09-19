@@ -133,6 +133,15 @@ namespace FrwSoftware {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Close window.
+        /// </summary>
+        internal static string BaseMainAppForm_CloseContainerWindow {
+            get {
+                return ResourceManager.GetString("BaseMainAppForm_CloseContainerWindow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hide main application window.
         /// </summary>
         internal static string BaseMainAppForm_HideMainApplicationWindow {

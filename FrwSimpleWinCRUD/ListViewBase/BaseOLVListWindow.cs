@@ -36,8 +36,8 @@ namespace FrwSoftware
         private bool isTreeList = false;
         public OLVHotItemStyle HotItemStyle { get; set; }
 
-        private System.Windows.Forms.ToolStripButton columnsButton;
-        private System.Windows.Forms.ToolStripTextBox filterTextBox;
+        private ToolStripButton columnsButton;
+        private ToolStripTextBox filterTextBox;
 
         //todo for pagination
         protected int start = 0;
@@ -434,7 +434,7 @@ namespace FrwSoftware
         #region saverestorestate
 
         private string configFileStr = null;
-        override public void LoadConfig()
+        private void LoadConfig()
         {
             try
             {

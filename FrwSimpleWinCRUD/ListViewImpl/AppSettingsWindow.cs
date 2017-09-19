@@ -32,12 +32,7 @@ namespace FrwSoftware
            
             Text = FrwCRUDRes.AppSettingsWindow_Title;
         }
-        override public void SaveConfig()
-        {
-            //Log.ProcessDebug("@@@@@ Saved config for AppSettingsWindow  ");
-
-        }
-
+    
         public void setObjects(object o)
         {
             this.appSettingsPropertyGrid1.SelectedObjects = new object[] { o};

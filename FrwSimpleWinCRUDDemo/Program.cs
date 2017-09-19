@@ -87,8 +87,7 @@ namespace FrwSoftware
             //if (appManager != null)
             //{
             //myMainApplycationForm.Close();
-            AppManager.Instance.SaveDocPanelContainersState();
-            AppManager.Instance.CloseAllDocPanelContainers((Form)sender);
+            AppManager.Instance.SaveAndClose((Form)sender);
             // }
         }
 

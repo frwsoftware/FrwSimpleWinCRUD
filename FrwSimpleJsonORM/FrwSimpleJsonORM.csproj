@@ -71,6 +71,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\Support\WebEntryInfo.cs" />
     <Compile Include="Utils\AttrHelper.cs" />
     <Compile Include="ORM\Attributes.cs" />
     <Compile Include="Utils\DataUtils.cs" />

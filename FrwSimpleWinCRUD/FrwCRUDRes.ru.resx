@@ -513,4 +513,7 @@
   <data name="BaseMainAppForm_HideMainApplicationWindow" xml:space="preserve">
     <value>Скрыть главное окно программы</value>
   </data>
+  <data name="BaseMainAppForm_CloseContainerWindow" xml:space="preserve">
+    <value>Закрыть окно</value>
+  </data>
 </root>

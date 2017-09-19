@@ -59,14 +59,16 @@ namespace FrwSoftware
 
         private void DocContent_FormClosed(object sender, FormClosedEventArgs e)
         {
-            //!! this event do not occurs for HideOnClose windows
-            Console.WriteLine("Savig config in FrwDocContent = " + contentControl);
+            //!! this event occurs only for document windows
+            //Console.WriteLine("!!!!!!!!!!!FormClosed = " + contentControl.GetType() + ((contentControl is IObjectViewProcessor) ? " " + (contentControl as IObjectViewProcessor).SourceObjectType.Name : ""));
             ContentControl.SaveConfig();
         }
 
         private void FrwDocContent_FormClosing(object sender, FormClosingEventArgs e)
         {
-            ContentControl.CloseContent();
+            //!! this event occurs only for document windows
+            //Console.WriteLine("!!!!!!!!!!!FormClosing = " + contentControl.GetType() + ((contentControl is IObjectViewProcessor) ? " " + (contentControl as IObjectViewProcessor).SourceObjectType.Name : "") );
+            ContentControl.ClosingContent();
         }
     }
 }

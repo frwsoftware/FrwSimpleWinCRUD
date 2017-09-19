@@ -47,14 +47,10 @@ namespace FrwSoftware
         {
             
         }
-        public virtual void LoadConfig()
-        {
-
-        }
         public virtual void SaveConfig()
         {
         }
-        public virtual void CloseContent()
+        public virtual void ClosingContent()
         {
         }
         public virtual bool CompareKeyParams(IDictionary<string, object> pars)

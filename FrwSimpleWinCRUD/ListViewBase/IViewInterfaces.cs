@@ -34,7 +34,7 @@ namespace FrwSoftware
         IDictionary<string, object> GetKeyParams();
         void SetKeyParams(IDictionary<string, object> pars);
         void SaveConfig();
-        void CloseContent();//for Clean up any resources being used (use this method instead Dispose())
+        void ClosingContent();//for Clean up any resources being used (use this method instead Dispose())
         bool CompareKeyParams(IDictionary<string, object> pars);
         IContentContainer ContentContainer { get; set; }
     }

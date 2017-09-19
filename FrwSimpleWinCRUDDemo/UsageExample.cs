@@ -139,8 +139,7 @@ namespace FrwSoftware
         static public void ShutdownExample(object sender)
         {
             //on form closing event
-            AppManager.Instance.SaveDocPanelContainersState();
-            AppManager.Instance.CloseAllDocPanelContainers((Form)sender);
+            AppManager.Instance.SaveAndClose((Form)sender);
             //on form closed event
             //Calls the unloading code (including database saving and winform object state saving) of all required objects. 
             //If you want to upload objects separately or perform a special upload, copy the code 
