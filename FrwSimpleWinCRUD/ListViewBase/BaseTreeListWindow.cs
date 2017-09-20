@@ -409,7 +409,16 @@ namespace FrwSoftware
         {
             try
             {
-                string filename = GetStateConfigFileName();
+                string filename = null;
+                if (DlgMode)
+                {
+                    filename = GetStateConfigFileName(true);
+                    if (!File.Exists(filename)) filename = GetStateConfigFileName(false);
+                }
+                else
+                {
+                    filename = GetStateConfigFileName(false);
+                }
                 if (File.Exists(filename))
                 {
                     configFileStr = File.ReadAllText(filename, Encoding.UTF8);
@@ -428,7 +437,7 @@ namespace FrwSoftware
         {
             try
             {
-                string filename = GetStateConfigFileName();
+                string filename = GetStateConfigFileName(DlgMode);
                 SaveUserSettings(savedTreeState.UserSettings);
                 savedTreeState.NodeStates = treeControl.Nodes.GetExpansionState();
                 string newConfigStr = JsonSerializeHelper.SaveToString(savedTreeState);

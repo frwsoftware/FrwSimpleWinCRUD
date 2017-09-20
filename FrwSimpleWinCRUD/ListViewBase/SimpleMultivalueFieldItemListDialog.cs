@@ -172,9 +172,7 @@ namespace FrwSoftware
         {
             try
             {
-                IListProcessor fkList = (IListProcessor)AppManager.Instance.CreateNewContentInstance(typeof(IListProcessor), SourceObjectType, null);
-                SimpleListDialog listDialog = new SimpleListDialog(fkList);
-                fkList.ProcessView();
+                SimpleListDialog listDialog = new SimpleListDialog(SourceObjectType);
                 DialogResult res = listDialog.ShowDialog();
                 if (res == DialogResult.OK && listDialog.SelectedObjects != null && listDialog.SelectedObjects.Count > 0)
                 {

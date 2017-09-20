@@ -78,6 +78,8 @@
             this.Name = "SimpleListDialog";
             this.ShowIcon = false;
             this.Text = "##List";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SimpleListDialog_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SimpleListDialog_FormClosed);
             this.ResumeLayout(false);
 
         }

@@ -410,9 +410,7 @@ namespace FrwSoftware
             menuItem.Click += (s, em) =>
             {
 
-                IListProcessor fkList = (IListProcessor)AppManager.Instance.CreateNewContentInstance(typeof(IListProcessor), typeof(JDocPanelLayout), null);
-                SimpleListDialog listDialog = new SimpleListDialog(fkList);
-                fkList.ProcessView();
+                SimpleListDialog listDialog = new SimpleListDialog(typeof(JDocPanelLayout));
                 DialogResult res = listDialog.ShowDialog();
                 if (res == DialogResult.OK && listDialog.SelectedObjects != null && listDialog.SelectedObjects.Count > 0)
                 {

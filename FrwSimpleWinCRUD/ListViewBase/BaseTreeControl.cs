@@ -106,27 +106,31 @@ namespace FrwSoftware
             {
                 parentNode.Nodes[0].Remove();
             }
-            IEnumerable<TreeNode> list = ChildrenGetter(parentNode);
-            foreach (var node in list)
+            if (ChildrenGetter != null)
             {
-                if (node.ImageKey == null) node.ImageKey = TREE_FOLDER_CLOSED;
-                if (node.SelectedImageKey  == null) node.SelectedImageKey = TREE_FOLDER_CLOSED_SELECTED;
-                // add a pseudo-node (it is necessary to display a plus sign), which is then deleted when the branch is actually loaded
-                if (CanExpandGetter(node.Tag) == true)
+                IEnumerable<TreeNode> list = ChildrenGetter(parentNode);
+                foreach (var node in list)
                 {
-                    node.Nodes.Add(PSEVDO_NODE_TEXT);
-                }
-                parentNode.Nodes.Add(node);
-                if (savedExpansionState != null)
-                {
-                    if (savedExpansionState.Contains(node.FullPath)){
-                        node.Expand();
+                    if (node.ImageKey == null) node.ImageKey = TREE_FOLDER_CLOSED;
+                    if (node.SelectedImageKey == null) node.SelectedImageKey = TREE_FOLDER_CLOSED_SELECTED;
+                    // add a pseudo-node (it is necessary to display a plus sign), which is then deleted when the branch is actually loaded
+                    if (CanExpandGetter(node.Tag) == true)
+                    {
+                        node.Nodes.Add(PSEVDO_NODE_TEXT);
+                    }
+                    parentNode.Nodes.Add(node);
+                    if (savedExpansionState != null)
+                    {
+                        if (savedExpansionState.Contains(node.FullPath))
+                        {
+                            node.Expand();
+                            LoadBrahch(node, levelStep, maxLevelStep, savedExpansionState);
+                        }
+                    }
+                    else if (levelStep < maxLevelStep)
+                    {
                         LoadBrahch(node, levelStep, maxLevelStep, savedExpansionState);
                     }
-                }
-                else if (levelStep < maxLevelStep)
-                {
-                    LoadBrahch(node, levelStep, maxLevelStep, savedExpansionState);
                 }
             }
         }

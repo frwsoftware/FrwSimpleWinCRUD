@@ -67,6 +67,8 @@ namespace FrwSoftware
             }
         }
 
+        public WebEntryInfo CurrentWebEntryInfo { get; set; }//for Hot Key operations
+
         private  Type defaultViewWindowType = typeof(BaseViewWindow);
         public Type DefaultViewWindowType {
             get { return defaultViewWindowType; }
@@ -663,11 +665,9 @@ namespace FrwSoftware
 
             if (manyToOneAttr != null)
             {
-                IListProcessor fkList = (IListProcessor)AppManager.Instance.CreateNewContentInstance(typeof(IListProcessor), p.PropertyType, null);
-                SimpleListDialog listDialog = new SimpleListDialog(fkList);
                 object oldValue = AttrHelper.GetPropertyValue(rowObject, aspectName);
+                SimpleListDialog listDialog = new SimpleListDialog(p.PropertyType);
                 //todo select value in dialog
-                fkList.ProcessView();
                 DialogResult res = listDialog.ShowDialog(owner);
                 if (res == DialogResult.OK && listDialog.SelectedObjects != null && listDialog.SelectedObjects.Count > 0)
                 {

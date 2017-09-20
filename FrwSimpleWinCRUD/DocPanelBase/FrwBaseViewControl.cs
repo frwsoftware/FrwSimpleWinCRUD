@@ -25,9 +25,10 @@ namespace FrwSoftware
         public const string PersistStringTypeParameter = "Type";
         public const string PersistStringPaneUIDParameter = "PaneUID";
         public const string PersistStringRelPaneUIDParameter = "RelPaneUID";
+        public const string PersistStringDlgModeParameter = "DlgMode";
 
-      
 
+        public bool DlgMode { get; set; }
 
         public bool HideOnClose { get; set; }
         //public string Text { get; set; }
@@ -45,7 +46,9 @@ namespace FrwSoftware
         }
         public virtual void SetKeyParams(IDictionary<string, object> pars)
         {
-            
+            object t = DictHelper.Get(pars, PersistStringDlgModeParameter);
+            if (t != null && t is bool) DlgMode = (bool)t;
+            else if (t != null && t is string) DlgMode = bool.Parse(t as string);
         }
         public virtual void SaveConfig()
         {

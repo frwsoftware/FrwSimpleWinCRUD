@@ -50,19 +50,23 @@ namespace FrwSoftware
             }
         
         }
-        public SimpleListDialog(IListProcessor listWindow)
+        public SimpleListDialog(Type type)
         {
             InitializeComponent();
+            this.SuspendLayout();
+
+            listWindow = (IListProcessor)AppManager.Instance.CreateNewContentInstance(typeof(IListProcessor), type,
+                new Dictionary<string, object>() { { FrwBaseViewControl.PersistStringDlgModeParameter, true} });
+
             this.Text = FrwCRUDRes.SimpleListDialog_Title;
 
-            this.SuspendLayout();
-            this.listWindow = listWindow;
             if (listWindow is IParentView)
             {
                 (listWindow as IParentView).OnObjectSelectEvent += ListWindow_OnObjectSelectEvent;
             }
             this.panel1.Controls.Add((Control)listWindow);
             ((Control)listWindow).Dock = DockStyle.Fill;
+            listWindow.ProcessView();
             this.ResumeLayout();
         }
 
@@ -83,6 +87,16 @@ namespace FrwSoftware
         private void cancelButtion_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void SimpleListDialog_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            ListWindow.ClosingContent();
+        }
+
+        private void SimpleListDialog_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            ListWindow.SaveConfig();
         }
     }
 }

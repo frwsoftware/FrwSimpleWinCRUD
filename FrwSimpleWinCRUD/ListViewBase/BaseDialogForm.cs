@@ -28,10 +28,6 @@ namespace FrwSoftware
         public BaseDialogForm()
         {
             InitializeComponent();
-        }
-
-        private void BaseDialogForm_Load(object sender, EventArgs e)
-        {
             try
             {
                 WinFormsUtils.SetNewControlFont(this, FrwSimpleWinCRUDConfig.GetApplicationFont());//if this.AutoScaleMode = Font - Setting the font will change the size of the window 
@@ -40,6 +36,10 @@ namespace FrwSoftware
             {
                 //to can show dialog designer
             }
+        }
+
+        private void BaseDialogForm_Load(object sender, EventArgs e)
+        {
         }
     }
 }

@@ -79,6 +79,8 @@ namespace FrwSoftware
         }
         public override void SetKeyParams(IDictionary<string, object> pars)
         {
+            base.SetKeyParams(pars);
+
             if (pars == null) return;
             object t = DictHelper.Get(pars, "Item");
             if (t != null) {

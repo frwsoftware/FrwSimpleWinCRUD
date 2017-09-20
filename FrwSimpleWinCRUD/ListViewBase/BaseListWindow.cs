@@ -161,9 +161,9 @@ namespace FrwSoftware
 
 
         #region saverestorestate
-        protected string GetStateConfigFileName()
+        protected string GetStateConfigFileName(bool dlgMode)
         {
-            string filename = Path.Combine(FrwConfig.Instance.ProfileConfigDir, GetType().FullName + "_" + this.SourceObjectType.FullName + "_state.config");
+            string filename = Path.Combine(FrwConfig.Instance.ProfileConfigDir, GetType().FullName + "_" + this.SourceObjectType.FullName +  (dlgMode? "_dlgMode" : "") + "_state.config");
             return filename;
         }
 
@@ -1096,8 +1096,9 @@ namespace FrwSoftware
         }
         public override void SetKeyParams(IDictionary<string, object> pars)
         {
-            if (pars == null) return;
+            base.SetKeyParams(pars);
 
+            if (pars == null) return;
 
             object t = DictHelper.Get(pars, "SourceObjectType");
             if (t != null && t is Type) SourceObjectType = t as Type;
