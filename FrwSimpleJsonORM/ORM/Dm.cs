@@ -68,6 +68,41 @@ namespace FrwSoftware
             return x.FullName.CompareTo(y.FullName);
         }
     }
+    public enum CopyRestrictLevel
+    {
+        /// <summary>
+        /// Full copy  
+        ///  many-to-one, one-to-many and many-to-many properies copied as references
+        /// </summary>
+        AllPropertiesFullCopy = 1,
+        /// <summary>
+        /// many-to-one, one-to-many and many-to-many properies copied to new Lists.
+        /// Used to clone before editing. 
+        /// </summary>
+        AllPropertiesNewLists = 2,
+        /// <summary>
+        /// many-to-one, one-to-many and many-to-many properies replaced by entity wtih pk only.
+        /// Used to remote export. 
+        /// </summary>
+        AllPropertiesAllRelPK = 3,
+        /// <summary>
+        /// many-to-one properies replaced by entity wtih pk only.
+        /// one-to-many and many-to-many properies replaced by null
+        /// Used to store to disk;
+        /// </summary>
+        AllPropertiesManytoOnePK = 4,
+        /// <summary>
+        /// many-to-one, one-to-many and many-to-many properies replaced by null.
+        /// </summary>
+        OnlySimleProperties = 5
+    }
+
+    public enum CloneObjectType
+    {
+        ForSave,// AllPropertiesManytoOnePK
+        ForTemp,//AllPropertiesNewLists
+        ForExport//AllPropertiesAllRelPK
+    }
 
 
     public partial class Dm
@@ -536,13 +571,11 @@ namespace FrwSoftware
                                         else if (foreinEntityValue.Equals(rowObject) == false)
                                         {
                                             // old 
-                                            object oldValue = foreinEntityValue;
                                             refFieldInForeinEntity.SetValue(l, rowObject);
 
-
-                                            if (oldValue != null)
+                                            if (foreinEntityValue != null)
                                             {
-                                                IList oldEntityList = (IList)p.GetValue(oldValue);
+                                                IList oldEntityList = (IList)p.GetValue(foreinEntityValue);
                                                 if (oldEntityList != null)
                                                 {
                                                     oldEntityList.Remove(l);
@@ -1307,6 +1340,7 @@ namespace FrwSoftware
             if (o == null) return;
             Type t = o.GetType();
             IList list = FindAll(t);
+            ValidateObject(o);
             if (list.Contains(o) == false) InsertObject(o);
             else UpdateObject(o);
             UpdateRelations(o);
@@ -1318,7 +1352,22 @@ namespace FrwSoftware
             else SaveObject(o);
         }
         
-   
+        private void ValidateObject(object o)
+        {
+            MethodInfo method = AttrHelper.GetMethod(typeof(JValidate), o.GetType());
+            if (method != null)
+            {
+                try
+                {
+                    object result = method.Invoke(o, null);
+                }
+                catch (TargetInvocationException ex)
+                {
+                    Console.WriteLine("ERROR VALIDATING " + ex);
+                }
+            }
+            //return true;
+        }
 
         public void SetEntityModified<T>()
         {
@@ -1683,6 +1732,231 @@ namespace FrwSoftware
             return filename;
         }
 
+        public object GetObjectForExport(object o)
+        {
+            if (o == null) return null;
+            return CloneObject(o, CloneObjectType.ForExport);
+        }
+
+
+        public void SaveImportedRemoteObject(object o)
+        {
+            if (o == null) return;
+            Type t = o.GetType();
+
+            if ( AttrHelper.IsAttributeDefinedForType<JEntity>(t, true) == false)
+            {
+                throw new Exception("Non entity type: " + t.FullName);
+            }
+            //find and replace all rel objects
+            foreach (PropertyInfo p in t.GetProperties())
+            {
+                if (p.GetSetMethod() != null)
+                {
+                    JManyToOne manyToOneAttr = AttrHelper.GetAttribute<JManyToOne>(p);
+                    JOneToMany oneToManyAttr = AttrHelper.GetAttribute<JOneToMany>(p);
+                    JManyToMany manyToManyAttr = AttrHelper.GetAttribute<JManyToMany>(p);
+                    Type foreinEntityType = null;
+                    if (manyToManyAttr != null || oneToManyAttr != null) foreinEntityType = AttrHelper.GetGenericListArgType(p.PropertyType);
+                    else foreinEntityType = p.PropertyType;
+
+                    if (manyToManyAttr != null)
+                    {
+                        object blankObject = p.GetValue(o);
+                        if (blankObject != null)
+                        {
+                            object realObject = FindObjectByPkOnlyObject(blankObject);
+                            if (realObject != null)
+                            {
+                                p.SetValue(o, realObject);
+                            }
+                            else
+                            {
+                                //todo warning
+                            }
+                        }
+                    }
+                    else if (oneToManyAttr != null || manyToManyAttr != null)
+                    {
+                        IList value = (IList)AttrHelper.GetPropertyValue(o, p);
+                        if (value != null)
+                        {
+                            IList values = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(foreinEntityType));
+                            foreach (var blankObject in value)
+                            {
+                                object realObject = FindObjectByPkOnlyObject(blankObject);
+                                if (realObject != null) {
+                                    values.Add(realObject);
+                                }
+                                else
+                                {
+                                    //todo warning
+                                }
+                            }
+                            p.SetValue(o, values);
+                        }
+                    }
+                }
+            }
+
+
+            PropertyInfo pkProp = AttrHelper.GetProperty<JPrimaryKey>(t);
+            object pkValue = pkProp.GetValue(o);
+
+            object o1 = Find(t, pkValue);
+            if (o1 == null) SaveObject(o);
+            else
+            {
+                CopyObjectProperties(o, o1, CopyRestrictLevel.AllPropertiesFullCopy);//todo
+                SaveObject(o1);
+            }
+
+        }
+
+        public object CloneObject(object o, CloneObjectType cloneType)
+        {
+            CopyRestrictLevel copyRectLevel = CopyRestrictLevel.OnlySimleProperties;
+            if (cloneType == CloneObjectType.ForSave) copyRectLevel = CopyRestrictLevel.AllPropertiesManytoOnePK;
+            else if (cloneType == CloneObjectType.ForTemp) copyRectLevel = CopyRestrictLevel.AllPropertiesNewLists;
+            else if (cloneType == CloneObjectType.ForExport) copyRectLevel = CopyRestrictLevel.AllPropertiesAllRelPK;
+
+            if (o == null) return null;
+            Type t = o.GetType();
+            object destObject = Activator.CreateInstance(t);
+            CopyObjectProperties(o, destObject, copyRectLevel);
+            return destObject;
+        }
+
+        private object ReplaceObjectByPkOnlyObject(object realObject)
+        {
+            if (realObject != null)
+            {
+                Type foreinEntityType = realObject.GetType();
+                object blankObject = Activator.CreateInstance(foreinEntityType);
+                PropertyInfo fePkProp = AttrHelper.GetProperty<JPrimaryKey>(foreinEntityType);
+                if (fePkProp == null) throw new Exception("No pk property in entity type: " + foreinEntityType.FullName);
+                object pkValue = fePkProp.GetValue(realObject);
+                if (pkValue == null) throw new Exception("Empty pk value found in entity type: " + foreinEntityType.FullName);
+                fePkProp.SetValue(blankObject, pkValue);
+                return blankObject;
+            }
+            else return null;
+        }
+        private object FindObjectByPkOnlyObject(object blankObject)
+        {
+            if (blankObject != null)
+            {
+                Type foreinEntityType = blankObject.GetType();
+                PropertyInfo fePkProp = AttrHelper.GetProperty<JPrimaryKey>(foreinEntityType);
+                if (fePkProp == null) throw new Exception("No pk property in entity type: " + foreinEntityType.FullName);
+                object pkValue = fePkProp.GetValue(blankObject);
+                if (pkValue == null) throw new Exception("Empty pk value found in entity type: " + foreinEntityType.FullName);
+                return Find(foreinEntityType, pkValue);
+            }
+            else return null;
+        }
+
+        public void CopyObjectProperties(object o, object destObject, CopyRestrictLevel cloneLevel)
+        {
+            Type t = o.GetType();
+            foreach (PropertyInfo p in t.GetProperties())
+            {
+                if (p.GetSetMethod() != null)
+                {
+                    JManyToOne manyToOneAttr = AttrHelper.GetAttribute<JManyToOne>(p);
+                    JOneToMany oneToManyAttr = AttrHelper.GetAttribute<JOneToMany>(p);
+                    JManyToMany manyToManyAttr = AttrHelper.GetAttribute<JManyToMany>(p);
+
+                    if (cloneLevel > CopyRestrictLevel.AllPropertiesFullCopy
+                        && (manyToOneAttr != null || oneToManyAttr != null || manyToManyAttr != null))
+                    {
+                        if (cloneLevel >= CopyRestrictLevel.OnlySimleProperties)
+                        {
+                            //do not copy rels
+                        }
+                        else {
+                            if (cloneLevel >= CopyRestrictLevel.AllPropertiesManytoOnePK)
+                            {
+                                if (manyToOneAttr != null)
+                                {
+                                    //replace by entity with pk only
+                                    Type foreinEntityType = p.PropertyType;
+                                    object realObject = p.GetValue(o);
+                                    if (realObject != null)
+                                    {
+                                        p.SetValue(destObject, ReplaceObjectByPkOnlyObject(realObject));
+                                    }
+                                }
+                                //other rels do not copy
+                            }
+                            else if (cloneLevel >= CopyRestrictLevel.AllPropertiesAllRelPK)
+                            {
+                                //replace by entity with pk only
+
+                                Type foreinEntityType = null;
+                                if (manyToManyAttr != null || oneToManyAttr != null) foreinEntityType = AttrHelper.GetGenericListArgType(p.PropertyType);
+                                else foreinEntityType = p.PropertyType;
+
+                                if (manyToOneAttr != null)
+                                {
+                                    object realObject = p.GetValue(o);
+                                    if (realObject != null)
+                                    {
+                                        p.SetValue(destObject, ReplaceObjectByPkOnlyObject(realObject));
+                                    }
+                                }
+                                else if (oneToManyAttr != null || manyToManyAttr != null)
+                                {
+                                    IList value = (IList)AttrHelper.GetPropertyValue(o, p);
+                                    if (value != null)
+                                    {
+                                        IList values = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(foreinEntityType));
+                                        foreach (var realObject in value)
+                                        {
+                                            values.Add(ReplaceObjectByPkOnlyObject(realObject));
+                                        }
+                                        p.SetValue(destObject, values);
+                                    }
+                                }
+
+                            }
+                            else if (cloneLevel >= CopyRestrictLevel.AllPropertiesNewLists)
+                            {
+                                if (manyToOneAttr != null)
+                                {
+                                    //simple copy
+                                    p.SetValue(destObject, p.GetValue(o));
+                                }
+                                else
+                                {
+                                    //copy to new list
+                                    IList value = (IList)AttrHelper.GetPropertyValue(o, p);
+                                    if (value != null)
+                                    {
+                                        Type foreinEntityType = null;
+                                        if (manyToManyAttr != null || oneToManyAttr != null) foreinEntityType = AttrHelper.GetGenericListArgType(p.PropertyType);
+                                        else foreinEntityType = p.PropertyType;
+                                        IList values = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(foreinEntityType));
+                                        foreach (var v in value)
+                                        {
+                                            values.Add(v);
+                                        }
+                                        p.SetValue(destObject, values);
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                    else
+                    {
+                        //simple property or no restriction
+                        p.SetValue(destObject, p.GetValue(o));
+                    }
+                }//no set method
+            }
+        }
+
         private void SaveEntityData(SData s)
         {
             string filename = GetDataFilePathForType(s.DataType);// Path.Combine(dirPath, s.DataType.Name + ".json");
@@ -1692,18 +1966,11 @@ namespace FrwSoftware
             IList alist = (IList)Activator.CreateInstance(listType);
             foreach (object v in (IList)list)
             {
-                object av = Activator.CreateInstance(s.DataType);
+                object av = CloneObject(v, CloneObjectType.ForSave);
                 alist.Add(av);
-                foreach(PropertyInfo p in s.DataType.GetProperties())
-                {
-                    if (p.GetSetMethod() != null)
-                    {
-                        p.SetValue(av, p.GetValue(v));
-                    }
-                }
             }
-            list = alist;
-
+ 
+            /*
             //clear relations 
             foreach (var v in (IList)list)
             {
@@ -1735,9 +2002,11 @@ namespace FrwSoftware
 
                 }
             }
+            */
             //
-            JsonSerializeHelper.SaveToFile(list, filename);
+            JsonSerializeHelper.SaveToFile(alist, filename);
 
+            //save join data
             foreach (var p in s.DataType.GetProperties())
             {
                 JManyToMany manyToManyAttr = AttrHelper.GetAttribute<JManyToMany>(p);

@@ -50,7 +50,9 @@ namespace FrwSimpleWinCRUDUnitTestProject
             Assert.IsFalse(Dm.Instance.IsJoinEntityModified(typeof(Track), typeof(Playlist) , null));
 
             Album album0 = (Album)Dm.Instance.EmptyObject(typeof(Album), null);
+            album0.Title = "Album 0";
             Album album2 = (Album)Dm.Instance.EmptyObject(typeof(Album), null);
+            album2.Title = "Album 2";
 
             Assert.IsFalse(Dm.Instance.IsEntityModified(typeof(Album)));
 
@@ -71,6 +73,7 @@ namespace FrwSimpleWinCRUDUnitTestProject
             Dm.Instance.SaveObject(track2);
             Dm.Instance.SaveObject(track3);
 
+
             //simple find
             Assert.AreSame(album0, (Album)Dm.Instance.Find(typeof(Album), album0.AlbumId));
 
@@ -85,10 +88,78 @@ namespace FrwSimpleWinCRUDUnitTestProject
             Dm.Instance.SaveObject(track0);
             Assert.IsNull(album0.Tracks.FirstOrDefault<Track>());
             Assert.AreSame(album2.Tracks.FirstOrDefault<Track>(), track0);
+
+
+            //clone test
+            //clone for save
+            Assert.IsNotNull(track0.Album);
+            Assert.IsNotNull(album0.Title);
+            Track track0CloneFoSave = (Track)Dm.Instance.CloneObject(track0, CloneObjectType.ForSave);
+            Assert.IsNotNull(track0CloneFoSave.Album);
+            Assert.AreNotSame(track0.Album, track0CloneFoSave.Album);
+            Assert.AreEqual(track0.Album.AlbumId, track0CloneFoSave.Album.AlbumId);
+            Assert.IsNotNull(track0CloneFoSave.Name);
+            Assert.IsNull(track0CloneFoSave.Album.Title);
+
+            Assert.IsNotNull(album2.Tracks);
+            Album album2CloneFoSave = (Album)Dm.Instance.CloneObject(album2, CloneObjectType.ForSave);
+            Assert.IsNull(album2CloneFoSave.Tracks);
+            
+            //for temp
+            Assert.IsNotNull(track0.Album);
+            Assert.IsNotNull(album0.Title);
+            Track track0CloneForTemp = (Track)Dm.Instance.CloneObject(track0, CloneObjectType.ForTemp);
+            Assert.IsNotNull(track0CloneForTemp.Album);
+            Assert.AreSame(track0.Album, track0CloneForTemp.Album);
+            Assert.IsNotNull(track0CloneForTemp.Name);
+
+            Assert.IsNotNull(album2.Tracks);
+            Album album2CloneForTemp = (Album)Dm.Instance.CloneObject(album2, CloneObjectType.ForTemp);
+            Assert.IsNotNull(album2CloneForTemp.Tracks);
+            Assert.AreNotSame(album2.Tracks, album2CloneForTemp.Tracks);
+            Assert.AreSame(album2.Tracks[0], album2CloneForTemp.Tracks[0]);
+
+            //clone for export
+            Assert.IsNotNull(track0.Album);
+            Assert.IsNotNull(album0.Title);
+            Track track0CloneForExport = (Track)Dm.Instance.CloneObject(track0, CloneObjectType.ForExport);
+            Assert.IsNotNull(track0CloneForExport.Album);
+            Assert.AreNotSame(track0.Album, track0CloneForExport.Album);
+            Assert.AreEqual(track0.Album.AlbumId, track0CloneForExport.Album.AlbumId);
+            Assert.IsNotNull(track0CloneForExport.Name);
+            Assert.IsNull(track0CloneForExport.Album.Title);
+
+            Assert.IsNotNull(album2.Tracks);
+            Album album2CloneForExport = (Album)Dm.Instance.CloneObject(album2, CloneObjectType.ForExport);
+            Assert.IsNotNull(album2CloneForExport.Tracks);
+            Assert.AreNotSame(album2.Tracks, album2CloneForExport.Tracks);
+            Assert.AreNotSame(album2.Tracks[0], album2CloneForExport.Tracks[0]);
+            Assert.AreEqual(album2.Tracks[0].TrackId, album2CloneForExport.Tracks[0].TrackId);
+            Assert.IsNotNull(album2.Tracks[0].Name);
+            Assert.IsNull(album2CloneForExport.Tracks[0].Name);
+
+            //test import
+            album2CloneForExport = (Album)Dm.Instance.GetObjectForExport(album2);
+            Assert.IsNull(album2CloneForExport.Tracks[0].Name);
+            string newTitle = "newTitle";
+            album2CloneForExport.Title = newTitle;
+            Dm.Instance.SaveImportedRemoteObject(album2CloneForExport);
+            Assert.AreNotSame(album2, album2CloneForExport);
+            Assert.AreEqual(album2.Title, newTitle);
+            Assert.AreEqual(album2.Tracks[0].TrackId, album2CloneForExport.Tracks[0].TrackId);
+            //Assert.IsNull(album2CloneForExport.Tracks[0].Name);  //! filled
+            Assert.IsNotNull(album2.Tracks[0].Name);
+
+            //end clone test 
+
             //unset
             track0.Album = null;
             Dm.Instance.SaveObject(track0);
             Assert.IsFalse(album2.Tracks.Contains(track0));
+
+
+
+
 
             //reverse set
             track0.Album = album2;
@@ -97,6 +168,8 @@ namespace FrwSimpleWinCRUDUnitTestProject
             Dm.Instance.SaveObject(album2);
             Assert.AreEqual(album2.Tracks.Count, 0);
             Assert.IsNull(track0.Album);
+
+
 
             //set unsaved
             Album albumNotSaved = (Album)Dm.Instance.EmptyObject(typeof(Album), null);
@@ -120,10 +193,12 @@ namespace FrwSimpleWinCRUDUnitTestProject
             Assert.AreSame(t1, track0);
             Assert.AreSame(track0.Album, album0);
             //check is modified
+            
             Dm.Instance.SaveEntityData(typeof(Album));
             Assert.IsFalse(Dm.Instance.IsEntityModified(typeof(Album)));
             Dm.Instance.SaveEntityData(typeof(Track));
             Assert.IsFalse(Dm.Instance.IsEntityModified(typeof(Track)));
+            
             //set
             album2.Tracks.Add(track0);
             Dm.Instance.SaveObject(album2);
