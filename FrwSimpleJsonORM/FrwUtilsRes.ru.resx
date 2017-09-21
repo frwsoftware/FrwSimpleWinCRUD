@@ -138,4 +138,10 @@
   <data name="Log_Error_In_Work" xml:space="preserve">
     <value>В процессе работы программы произошла ошибка</value>
   </data>
+  <data name="Dm_UsedInEntity" xml:space="preserve">
+    <value>Использован в сущности</value>
+  </data>
+  <data name="Dm_Total" xml:space="preserve">
+    <value>Всего записей</value>
+  </data>
 </root>

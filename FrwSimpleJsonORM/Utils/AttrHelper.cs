@@ -118,6 +118,11 @@ namespace FrwSoftware
                  prop => Attribute.IsDefined(prop, attrTYpe));
             return props;
         }
+        public static MethodInfo GetMethod(Type attrTYpe, Type t)
+        {
+            return t.GetMethods().Where(
+                 m => Attribute.IsDefined(m, attrTYpe)).FirstOrDefault(); ;
+        }
         public static object GetPropertyValue(object o, string aspectName)
         {
             if (o == null) return null;

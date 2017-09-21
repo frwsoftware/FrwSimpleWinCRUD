@@ -1104,6 +1104,168 @@ namespace FrwSoftware
             SetEntityModified(t);
         }
 
+        public string GetDependencyReport(object o, string br = "\r\n")
+        {
+            if (o == null) return null;
+            Type sourceEntityType = o.GetType();
+            PropertyInfo pkProp = AttrHelper.GetProperty<JPrimaryKey>(sourceEntityType);
+            object sourcePKValue = pkProp.GetValue(o);
+            Dictionary<Type, HashSet<object>> rels = new Dictionary<Type, HashSet<object>>();
+            foreach (var entity in entities)
+            {
+                foreach (PropertyInfo p in entity.GetProperties())
+                {
+                    JManyToOne manyToOneAttr = AttrHelper.GetAttribute<JManyToOne>(p);
+                    if (manyToOneAttr != null)
+                    {
+                        Type foreinEntityType = p.PropertyType;
+                        if (foreinEntityType == sourceEntityType)
+                        {
+                            HashSet<object> referenced = null;
+                            rels.TryGetValue(entity, out referenced);
+                            if (referenced == null)
+                            {
+                                referenced = new HashSet<object>();
+                                rels.Add(entity, referenced);
+                            }
+
+                            IList allMayBeReferenced = FindAll(entity);
+                            foreach (object l in allMayBeReferenced)
+                            {
+                                object foreinEntityValue = p.GetValue(l);
+                                if (foreinEntityValue != null && foreinEntityValue == o)
+                                {
+                                    if (referenced.Contains(l) == false) referenced.Add(l);
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+            /*
+            JManyToMany manyToManyAttr = AttrHelper.GetAttribute<JManyToMany>(p);
+            if (manyToManyAttr != null)
+            {
+                Type foreinEntityType = AttrHelper.GetGenericListArgType(p.PropertyType);
+                if (foreinEntityType == sourceEntityType)
+                {
+                    HashSet<object> referenced = null;
+                    rels.TryGetValue(entity, out referenced);
+                    if (referenced == null)
+                    {
+                        referenced = new HashSet<object>();
+                        rels.Add(entity, referenced);
+                    }
+
+                    TypeComparer typeComparer = new TypeComparer();
+                    Type[] ts = new Type[] { sourceEntityType, foreinEntityType };
+                    Array.Sort(ts, typeComparer);
+                    JoinEntityData cross = FindAllJoinData(ts[0], ts[1], manyToManyAttr.JoinName);
+                    bool reverse = false;
+                    if (ts[0].Equals(sourceEntityType) == false) reverse = true;
+                    //from crosstable
+                    foreach (var l in cross.DataList)
+                    {
+                        if (reverse)
+                        {
+                            if (sourcePKValue.Equals(l.Pk2))
+                            {
+                                object refO = Find(foreinEntityType, l.Pk1);
+                                if (refO != null) referenced.Add(refO);
+                            }
+                        }
+                        else
+                        {
+                            if (sourcePKValue.Equals(l.Pk1))
+                            {
+                                object refO = Find(foreinEntityType, l.Pk2);
+                                if (refO != null) referenced.Add(refO);
+                            }
+                        }
+                    }
+
+                }
+
+            }
+            */
+            foreach (JoinEntityData s in joinDatas)
+            {
+                if (s.DataType1.Equals(sourceEntityType) || s.DataType2.Equals(sourceEntityType))
+                {
+                    bool reverse = false;
+                    Type foreinEntityType = null;
+                    if (s.DataType2.Equals(sourceEntityType))
+                    {
+                        reverse = true;
+                        foreinEntityType = s.DataType1;
+                    }
+                    else foreinEntityType = s.DataType2;
+
+                    HashSet<object> referenced = null;
+                    rels.TryGetValue(foreinEntityType, out referenced);
+                    if (referenced == null)
+                    {
+                        referenced = new HashSet<object>();
+                        rels.Add(foreinEntityType, referenced);
+                    }
+
+                    //from crosstable
+                    foreach (var l in s.DataList)
+                    {
+                        if (reverse)
+                        {
+                            if (sourcePKValue.Equals(l.Pk2))
+                            {
+                                object refO = Find(foreinEntityType, l.Pk1);
+                                if (refO != null) referenced.Add(refO);
+                            }
+                        }
+                        else
+                        {
+                            if (sourcePKValue.Equals(l.Pk1))
+                            {
+                                object refO = Find(foreinEntityType, l.Pk2);
+                                if (refO != null) referenced.Add(refO);
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            string hr = "=============================================" + br;
+            string usingInStr = FrwUtilsRes.Dm_UsedInEntity + " ";
+            string totalStr = " " + FrwUtilsRes.Dm_Total + ": ";
+
+            StringBuilder str = new StringBuilder();
+
+            str.Append(ModelHelper.GetEntityJDescriptionOrFullName(o.GetType()) + ": " + ModelHelper.GetNameForObjectAdv(o));
+            str.Append(br);
+            str.Append(br);
+
+            foreach (var rt in rels)
+            {
+                HashSet<object> refs = rt.Value;
+                if (refs.Count > 0)
+                {
+                    str.Append(usingInStr + ModelHelper.GetEntityJDescriptionOrFullName(rt.Key) + totalStr + refs.Count);
+                    str.Append(br);
+                    str.Append(hr);
+                    foreach (var m in refs)
+                    {
+                        str.Append(ModelHelper.GetNameForObjectAdv(m));
+                        str.Append(br);
+                    }
+                    str.Append(hr);
+                    str.Append(br);
+                }
+            }
+            return str.ToString();
+
+        }
+
+
         private void InsertObject(object o)
         {
             if (o == null) return;
@@ -1156,6 +1318,8 @@ namespace FrwSoftware
             else SaveObject(o);
         }
         
+   
+
         public void SetEntityModified<T>()
         {
             SetEntityModified(typeof(T));

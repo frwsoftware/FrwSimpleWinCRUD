@@ -68,8 +68,9 @@ namespace FrwSoftware
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textEditorControl.Location = new System.Drawing.Point(14, 14);
             this.textEditorControl.Margin = new System.Windows.Forms.Padding(1);
+            this.textEditorControl.Multiline = true;
             this.textEditorControl.Name = "textEditorControl";
-            this.textEditorControl.Size = new System.Drawing.Size(878, 22);
+            this.textEditorControl.Size = new System.Drawing.Size(878, 401);
             this.textEditorControl.TabIndex = 11;
             // 
             // SimpleTextEditDialog

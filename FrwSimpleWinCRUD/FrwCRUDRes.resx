@@ -516,4 +516,7 @@
   <data name="BaseMainAppForm_CloseContainerWindow" xml:space="preserve">
     <value>Close window</value>
   </data>
+  <data name="BaseListWindow_DependenciesReport" xml:space="preserve">
+    <value>Dependencies report</value>
+  </data>
 </root>

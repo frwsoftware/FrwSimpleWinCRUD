@@ -138,4 +138,10 @@
   <data name="Log_Error_In_Work" xml:space="preserve">
     <value>An error occurred while the program was running</value>
   </data>
+  <data name="Dm_UsedInEntity" xml:space="preserve">
+    <value>Used in entity</value>
+  </data>
+  <data name="Dm_Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
 </root>

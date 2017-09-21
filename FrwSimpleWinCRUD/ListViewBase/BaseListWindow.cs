@@ -909,7 +909,15 @@ namespace FrwSoftware
                 };
                 menuItemList.Add(menuItem);
 
-
+                menuItem = new ToolStripMenuItem();
+                menuItem.Text = FrwCRUDRes.BaseListWindow_DependenciesReport;
+                menuItem.Click += (s, em) =>
+                {
+                    SimpleTextEditDialog dlg = new SimpleTextEditDialog();
+                    dlg.EditedText = Dm.Instance.GetDependencyReport(selectedObject);//  JMailAccount.DependencyAnalysis(item);
+                    dlg.ShowDialog();
+                };
+                menuItemList.Add(menuItem);
             }
         }
 

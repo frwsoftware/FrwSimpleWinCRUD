@@ -97,6 +97,24 @@ namespace FrwSoftware {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Total.
+        /// </summary>
+        internal static string Dm_Total {
+            get {
+                return ResourceManager.GetString("Dm_Total", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Used in entity.
+        /// </summary>
+        internal static string Dm_UsedInEntity {
+            get {
+                return ResourceManager.GetString("Dm_UsedInEntity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An error occurred while the program was running.
         /// </summary>
         internal static string Log_Error_In_Work {

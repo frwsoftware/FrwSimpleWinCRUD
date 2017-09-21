@@ -133,6 +133,15 @@ namespace FrwSoftware {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dependencies report.
+        /// </summary>
+        internal static string BaseListWindow_DependenciesReport {
+            get {
+                return ResourceManager.GetString("BaseListWindow_DependenciesReport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Close window.
         /// </summary>
         internal static string BaseMainAppForm_CloseContainerWindow {

@@ -96,7 +96,12 @@ namespace FrwSoftware
         }
         public string HeaderImageName { get; set; }
     }
-
+    #region method attributes
+    [AttributeUsage(AttributeTargets.Method)]
+    public class JValidate : Attribute
+    {
+    }
+    #endregion
 
     public class AttrUtils
     {

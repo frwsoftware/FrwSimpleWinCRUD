@@ -126,6 +126,18 @@ namespace FrwSoftware
                 return o.ToString();
             }
         }
+        static public string GetNameForObjectAdv(object o)
+        {
+            if (o == null) return null;
+            string s = GetNameForObject(o);
+            Type t = o.GetType();
+            PropertyInfo IsArchiveProp = t.GetProperty("IsArchive");
+            if (IsArchiveProp != null && IsArchiveProp.PropertyType == typeof(bool) && (bool)IsArchiveProp.GetValue(o) == true)
+            {
+                s = s + " (archived)";
+            }
+            return s;
+        }
     }
 
 }
