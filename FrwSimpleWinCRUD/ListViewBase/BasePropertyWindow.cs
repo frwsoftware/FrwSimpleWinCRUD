@@ -23,21 +23,117 @@ using System.Windows.Forms;
 
 namespace FrwSoftware
 {
-    public partial class BasePropertyWindow : FrwBaseViewControl, IPropertyProcessor, IChildView
+    public partial class BasePropertyWindow : FrwBaseViewControl, IPropertyProcessor, IChildView 
     {
-        public object SourceObject { get; set; }
+        protected object sourceObject = null;
+
+        public object SourceObject {
+            get
+            {
+                return sourceObject;
+            }
+            set
+            {
+                if (modified)
+                {
+                    DialogResult res = MessageBox.Show("Save changes?", FrwConstants.WARNING, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                    if (res == DialogResult.Yes)
+                    {
+                        SaveChanges();
+                    }
+                    else if (res == DialogResult.No)
+                    {
+                        //do nothings
+                    }
+                    else if (res == DialogResult.Cancel)
+                    {
+                        return;
+                    }
+                }
+                
+                sourceObject = value;
+                tempSourceObject = Dm.Instance.CloneObject(sourceObject, CloneObjectType.ForTemp);
+                SetModified(false);
+            }
+        }
+        public bool SaveChanges()
+        {
+            JValidationResult result = Dm.Instance.ValidateObject(tempSourceObject);
+            if (! result.isError)
+            { 
+                Dm.Instance.CopyObjectProperties(tempSourceObject, sourceObject, CopyRestrictLevel.AllPropertiesNewLists);
+                Dm.Instance.SaveObject(sourceObject);
+                SetModified(false);
+                ChildObjectUpdateEventArgs ev = new ChildObjectUpdateEventArgs();
+                ev.UpdatedObject = sourceObject;
+                OnPropertyObjectUpdate(ev);
+                return true;
+            }
+            else {
+                AppManager.ShowValidationErrorMessage(result);
+                return false;
+            }
+
+        }
+        public bool CancelChanges()
+        {
+            if (modified)
+            {
+                DialogResult res = MessageBox.Show("Cancel without save changes?", FrwConstants.WARNING, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                if (res == DialogResult.Yes)
+                {
+                    SetModified(false);
+                    return true;
+                }
+                else 
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return true;
+            }
+
+        }
+
+        protected void RevertChanges()
+        {
+            tempSourceObject = Dm.Instance.CloneObject(sourceObject, CloneObjectType.ForTemp);
+            SetModified(false);
+            ProcessView();
+        }
+        protected object tempSourceObject = null;
+    
         public Type SourceObjectType { get; set; }
-        public ViewMode ViewMode { get; set; }
+
+        protected ViewMode viewMode = ViewMode.View;
+        virtual public ViewMode ViewMode {
+            get
+            {
+                return viewMode;
+            }
+            set
+            {
+                viewMode = value;
+            }
+        }
 
         public BasePropertyWindow()
         {
             InitializeComponent();
+           
         }
-
+        protected bool modified = false;
+        virtual protected void SetModified(bool modified)
+        {
+            this.modified = modified;
+        }
         public string RelPaneUID { get; set; }
         public event ChildObjectUpdateEventHandler ChildObjectUpdateEvent;
         protected virtual void OnPropertyObjectUpdate(ChildObjectUpdateEventArgs e)
         {
+            e.ViewMode = ViewMode;
             if (ChildObjectUpdateEvent != null)
                 ChildObjectUpdateEvent(this, e);
         }
@@ -82,6 +178,7 @@ namespace FrwSoftware
 
         virtual public void CreateView()
         {
+           
         }
         virtual public void ProcessView()
         {

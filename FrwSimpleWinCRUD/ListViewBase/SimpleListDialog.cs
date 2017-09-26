@@ -30,6 +30,14 @@ namespace FrwSoftware
         private IListProcessor listWindow = null;
         public IListProcessor ListWindow { get { return listWindow; } set { listWindow = value; } }
 
+        public bool EnableSetNull
+        {
+            set
+            {
+                setNullButton.Visible = value;
+            }
+        }
+
         List<object> selectedObjects = new List<object>();
         private void fillSelectedObjects()
         {
@@ -97,6 +105,12 @@ namespace FrwSoftware
         private void SimpleListDialog_FormClosed(object sender, FormClosedEventArgs e)
         {
             ListWindow.SaveConfig();
+        }
+
+        private void setNullButton_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Abort;
+            Close();
         }
     }
 }

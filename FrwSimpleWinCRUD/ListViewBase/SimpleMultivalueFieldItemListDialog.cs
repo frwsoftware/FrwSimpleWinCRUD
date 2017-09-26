@@ -248,7 +248,7 @@ namespace FrwSoftware
                             propertyDialog = new SimplePropertyDialog(propertyControl);
                         }
                         else propertyControl = propertyDialog.PropertyWindow;
-                        propertyControl.ViewMode = ViewMode.View;
+                        propertyDialog.ViewMode = ViewMode.View;
                         propertyControl.SourceObject = selectedObject;
                         propertyControl.ProcessView();
                         DialogResult res = propertyDialog.ShowDialog();

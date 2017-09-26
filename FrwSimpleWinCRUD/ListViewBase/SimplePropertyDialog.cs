@@ -28,6 +28,27 @@ namespace FrwSoftware
         private IPropertyProcessor propertyWindow = null;
         public IPropertyProcessor PropertyWindow { get { return propertyWindow; } set { propertyWindow = value; } }
 
+        public ViewMode ViewMode {
+            get
+            {
+                return propertyWindow.ViewMode;
+            }
+            set
+            {
+                propertyWindow.ViewMode = value;
+                if (propertyWindow.ViewMode == ViewMode.View || propertyWindow.ViewMode == ViewMode.ViewContent)
+                {
+                    okButton.Enabled = false;
+                    
+                }
+                else
+                {
+                    okButton.Enabled = true;
+                }
+            }
+        }
+
+
         public SimplePropertyDialog(IPropertyProcessor propertyWindow)
         {
             InitializeComponent();
@@ -38,6 +59,24 @@ namespace FrwSoftware
             this.panel1.Controls.Add((Control)propertyWindow);
             ((Control)propertyWindow).Dock = DockStyle.Fill;
             this.ResumeLayout();
+        }
+
+        private void okButton_Click(object sender, EventArgs e)
+        {
+            if (propertyWindow.SaveChanges())
+            {
+                DialogResult = DialogResult.OK;
+                Close();
+            }
+        }
+
+        private void cancelButtion_Click(object sender, EventArgs e)
+        {
+            if (propertyWindow.CancelChanges())
+            {
+                DialogResult = DialogResult.Cancel;
+                Close();
+            }
         }
     }
 }

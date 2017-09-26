@@ -507,7 +507,7 @@ namespace FrwSoftware
         protected void CreateViewMenuItems(ToolStripMenuItem menuItemView, ToolStrip toolBar, StatusStrip statusBar)
         {
             ToolStripMenuItem menuItem = null;
-            ToolStripMenuItem groupItem = null;
+           
 
             if (toolBar != null)
             {
@@ -660,7 +660,7 @@ namespace FrwSoftware
             }
             catch (Exception ex)
             {
-                Log.LogError("Can not set font");
+                Log.LogError("Can not set font ", ex);
             }
 
         }

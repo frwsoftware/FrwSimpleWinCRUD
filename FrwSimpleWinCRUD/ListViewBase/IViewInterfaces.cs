@@ -83,5 +83,8 @@ namespace FrwSoftware
     {
         ViewMode ViewMode { get; set; }
         object SourceObject { get; set; }
+        bool SaveChanges();
+        bool CancelChanges();
+
     }
 }

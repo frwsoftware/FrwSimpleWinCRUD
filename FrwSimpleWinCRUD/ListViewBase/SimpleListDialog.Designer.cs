@@ -31,6 +31,7 @@
             this.cancelButtion = new System.Windows.Forms.Button();
             this.okButton = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.setNullButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // cancelButtion
@@ -66,11 +67,25 @@
             this.panel1.Size = new System.Drawing.Size(839, 383);
             this.panel1.TabIndex = 3;
             // 
+            // setNullButton
+            // 
+            this.setNullButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.setNullButton.Location = new System.Drawing.Point(437, 409);
+            this.setNullButton.Margin = new System.Windows.Forms.Padding(2);
+            this.setNullButton.Name = "setNullButton";
+            this.setNullButton.Size = new System.Drawing.Size(119, 29);
+            this.setNullButton.TabIndex = 6;
+            this.setNullButton.Text = "Set NULL";
+            this.setNullButton.UseVisualStyleBackColor = true;
+            this.setNullButton.Visible = false;
+            this.setNullButton.Click += new System.EventHandler(this.setNullButton_Click);
+            // 
             // SimpleListDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(839, 444);
+            this.Controls.Add(this.setNullButton);
             this.Controls.Add(this.cancelButtion);
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.panel1);
@@ -89,5 +104,6 @@
         private System.Windows.Forms.Button cancelButtion;
         private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Button setNullButton;
     }
 }

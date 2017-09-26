@@ -40,28 +40,56 @@ namespace FrwSoftware
             propertyGrid1.PropertySort = PropertySort.NoSort;
 
         }
+        override public ViewMode ViewMode
+        {
+            get
+            {
+                return viewMode;
+            }
+            set
+            {
+                viewMode = value;
+                if (viewMode == ViewMode.View || viewMode == ViewMode.ViewContent)
+                {
+                    saveButton.Visible = false;
+                    revertButton.Visible = false;
+
+                }
+                else
+                {
+                    saveButton.Visible = true;
+                    revertButton.Visible = true;
+                }
+            }
+        }
+
+           
+
         override public void CreateView()
         {
         }
         override public void ProcessView()
         {
+     
+
             if (SourceObjectType != null)
             {
                 string descr = ModelHelper.GetEntityJDescriptionOrName(SourceObjectType);
                 SetNewCaption(descr + " " + FrwCRUDRes.SimplePropertyWindow_Props);
             }
-            if (SourceObject != null)
+            if (tempSourceObject != null)
             {
-                if (SourceObject.GetType().Equals(SourceObjectType) == false) throw new ArgumentException("SourceObject not of SourceObjectType");
+                if (tempSourceObject.GetType().Equals(SourceObjectType) == false) throw new ArgumentException("SourceObject not of SourceObjectType");
 
                 bag1 = new PropertyBag();
                 bag1.GetValue += new PropertySpecEventHandler(this.bag1_GetValue);
                 bag1.SetValue += new PropertySpecEventHandler(this.bag1_SetValue);
-                bag1.SourceObject = SourceObject;
+                bag1.ValueModified += Bag1_ValueModified;
+                bag1.SourceObject = tempSourceObject;
                 bag1.SourceObjectType = SourceObjectType;
             
-                PropertyInfo[] propsList = AttrHelper.GetBasePropertiesFirst(SourceObject.GetType());
-                PropertyInfo pName = AttrHelper.GetProperty<JNameProperty>(SourceObject.GetType());
+                PropertyInfo[] propsList = AttrHelper.GetBasePropertiesFirst(tempSourceObject.GetType());
+                PropertyInfo pName = AttrHelper.GetProperty<JNameProperty>(tempSourceObject.GetType());
                 if (pName != null)
                 {
                     propsList = propsList.OrderBy(x => x != pName).ToArray();
@@ -72,21 +100,25 @@ namespace FrwSoftware
                 {
                     if (AttrHelper.IsGenericListTypeOf(p.PropertyType, typeof(IField)))
                     {
-                        IList itemDatas = (IList)p.GetValue(SourceObject);
+                        IList itemDatas = (IList)p.GetValue(tempSourceObject);
                         if (itemDatas != null)
                         {
                             foreach (var it in itemDatas)
                             {
                                 IField itemdata = (IField)it;
                                 string group = null;
-                            
+
                                 props = new PropertySpec(ITEM_ATTRIBUTE_PREFIX + itemdata.FieldSysname, typeof(string), group,
                                     itemdata.Name);
                                 props.PropTag = itemdata;
+                                if (viewMode == ViewMode.View || viewMode == ViewMode.ViewContent)
+                                {
+                                    props.Attributes = new Attribute[] { new ReadOnlyAttribute(true) };
+                                }
                                 bag1.Properties.Add(props);
 
                             }
-                     
+
                         }
                     }
                     else
@@ -102,14 +134,14 @@ namespace FrwSoftware
                         bool isCustomEdit = false;
                         if (AppManager.Instance.IsCustomEditProperty(SourceObjectType, p.Name))
                         {
-                            isCustomEdit = true; 
+                            isCustomEdit = true;
                         }
                         Type pType = null;
-                        if (isCustomEdit) pType = typeof(string);//блокирует выпадающеее меню при списках 
+                        if (isCustomEdit) pType = typeof(string);//disabled comboboxes for list type fields 
                         else pType = p.PropertyType;
                         props = new PropertySpec(desc, pType, null, desc);
                         //props.OriginalName = p.Name;
-                        if (readOnlyAttr != null)
+                        if (readOnlyAttr != null || viewMode == ViewMode.View || viewMode == ViewMode.ViewContent)
                         {
                             props.Attributes = new Attribute[] { new ReadOnlyAttribute(true) };
                         }
@@ -130,11 +162,16 @@ namespace FrwSoftware
             }
         }
 
+        private void Bag1_ValueModified(object sender, PropertySpecEventArgs e)
+        {
+            SetModified(true);
+        }
+
         private void bag1_GetValue(object sender, PropertySpecEventArgs e)
         {
             try
             {
-                if (SourceObject != null)
+                if (tempSourceObject != null)
                 {
                     if(e.Property.PropTag != null && e.Property.PropTag is IField)
                     {
@@ -145,7 +182,7 @@ namespace FrwSoftware
                         string aspectName = ModelHelper.GetPropertyNameForDescription(SourceObjectType, e.Property.Name);
                         if (aspectName == null) aspectName = e.Property.Name;
                         Type pType = AttrHelper.GetPropertyType(SourceObjectType, aspectName);
-                        e.Value = Dm.Instance.GetCustomPropertyValue(SourceObject, aspectName, true, AppManager.Instance.PropertyWindowTruncatedMaxItemCount, AppManager.Instance.PropertyWindowTruncatedMaxLength);
+                        e.Value = Dm.Instance.GetCustomPropertyValue(tempSourceObject, aspectName, true, AppManager.Instance.PropertyWindowTruncatedMaxItemCount, AppManager.Instance.PropertyWindowTruncatedMaxLength);
                     }
                 }
                 else
@@ -157,18 +194,27 @@ namespace FrwSoftware
             }
         }
 
+        override protected void SetModified(bool modified)
+        {
+            base.SetModified(modified);
+            saveButton.Enabled = modified;
+            revertButton.Enabled = modified;
+        }
+
         private void bag1_SetValue(object sender, PropertySpecEventArgs e)
         {
             try {
-                if (SourceObject != null)
+                SetModified(true);
+                if (tempSourceObject != null)
                 {
                     if (e.Property.PropTag != null && e.Property.PropTag is IField)
                     {
                         (e.Property.PropTag as IField).Value = (string)e.Value;
-                        ChildObjectUpdateEventArgs ev = new ChildObjectUpdateEventArgs();
-                        ev.UpdatedObject = SourceObject;
-                        ev.UpdatedPropertyName = (e.Property.PropTag as IField).FieldSysname;
-                        OnPropertyObjectUpdate(ev);
+
+                        //ChildObjectUpdateEventArgs ev = new ChildObjectUpdateEventArgs();
+                        //ev.UpdatedObject = tempSourceObject;
+                        //ev.UpdatedPropertyName = (e.Property.PropTag as IField).FieldSysname;
+                        //OnPropertyObjectUpdate(ev);
                     }
                     else
                     {
@@ -179,10 +225,23 @@ namespace FrwSoftware
                         }
                         else
                         {
-                            AttrHelper.SetPropertyValue(SourceObject, name, e.Value);
-                            ChildObjectUpdateEventArgs ev = new ChildObjectUpdateEventArgs();
-                            ev.UpdatedObject = SourceObject;
-                            OnPropertyObjectUpdate(ev);
+                            object oldValue = null;
+                            //try
+                            //{
+                                oldValue = AttrHelper.GetPropertyValue(tempSourceObject, name);
+                                AttrHelper.SetPropertyValue(tempSourceObject, name, e.Value);
+
+                                //Dm.Instance.SaveObject(tempSourceObject, name);
+
+                                //ChildObjectUpdateEventArgs ev = new ChildObjectUpdateEventArgs();
+                                //ev.UpdatedObject = tempSourceObject;
+                                //OnPropertyObjectUpdate(ev);
+                            //}
+                            //catch(JValidationException ex)
+                            //{
+                             //   AppManager.ShowValidationErrorMessage(ex);
+                            //    AttrHelper.SetPropertyValue(tempSourceObject, name, oldValue);
+                            //}
                         }
                     }
                 }
@@ -224,5 +283,20 @@ namespace FrwSoftware
             return true;
         }
         #endregion
+
+        private void toolStripContainer1_ContentPanel_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void saveButton_Click(object sender, EventArgs e)
+        {
+            SaveChanges();
+        }
+
+        private void revertButton_Click(object sender, EventArgs e)
+        {
+            RevertChanges();
+        }
     }
 }

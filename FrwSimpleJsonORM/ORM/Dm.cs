@@ -20,6 +20,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.Windows.Forms;
 
 namespace FrwSoftware
 {
@@ -104,6 +106,77 @@ namespace FrwSoftware
         ForExport//AllPropertiesAllRelPK
     }
 
+    /// <summary>
+    ///     System.ComponentModel.DataAnnotations.CompareAttribute
+    ///     System.ComponentModel.DataAnnotations.CustomValidationAttribute
+    ///     System.ComponentModel.DataAnnotations.DataTypeAttribute
+    /// 
+    ///     CreditCard, Currency, Custom, Date,  DateTime,  Duration,  EmailAddress, Html, ImageUrl, MultilineText, Password, PhoneNumber, PostalCode, Text, Time, Upload, Url
+    /// 
+    ///     System.ComponentModel.DataAnnotations.MaxLengthAttribute
+    ///     System.ComponentModel.DataAnnotations.MinLengthAttribute
+    ///     System.ComponentModel.DataAnnotations.RangeAttribute
+    ///     System.ComponentModel.DataAnnotations.RegularExpressionAttribute
+    ///     System.ComponentModel.DataAnnotations.RequiredAttribute
+    ///     System.ComponentModel.DataAnnotations.StringLengthAttribute
+    ///     System.Web.Security.MembershipPasswordAttribute
+    /// </summary>
+
+
+    public class JValidationError
+    {
+        public string PropertyName { get; set; }
+        public string Message { get; set; }
+    }
+    public class JValidationErrorAdv : JValidationError
+    {
+        public PropertyInfo Property { get; set; }
+    }
+    public class JValidationResult
+    {
+        public List<JValidationError> JValidationErrors { get; }
+        public List<ValidationResult> ValidationResults { get; set; }
+        public bool isError
+        {
+            get
+            {
+                return (JValidationErrors.Count > 0 || ValidationResults.Count > 0);
+            }
+        }
+        public JValidationResult()
+        {
+            JValidationErrors = new List<JValidationError>();
+            ValidationResults  = new List<ValidationResult>();
+        }
+        public string GetFullErrorString(string br = "\r\n")
+        {
+
+            StringBuilder str = new StringBuilder();
+            str.Append(br);
+
+            foreach (var v in ValidationResults)
+            {
+                str.Append(v.ErrorMessage);
+                str.Append(br);
+            }
+
+            return str.ToString();
+        }
+    }
+
+    public class JValidationException : Exception
+    {
+        public JValidationException()
+        {
+
+        }
+        public JValidationException(JValidationResult validationResult)
+        {
+            ValidationResult = validationResult;
+            //Message = 
+        }
+        public JValidationResult ValidationResult { get; set; }
+    }
 
     public partial class Dm
     {
@@ -994,7 +1067,7 @@ namespace FrwSoftware
                     }
                 }
             }
-            ResolveToManyRelations(o);
+            //ResolveToManyRelations(o);
             return o;
         }
         virtual public void DeleteAllObjects(Type t)
@@ -1337,10 +1410,13 @@ namespace FrwSoftware
         }
         virtual public void SaveObject(object o)
         {
+            Console.WriteLine("!!!!!!!!!!!!!!!! SaveObject " + o.GetType().Name + " " + ModelHelper.GetNameForObject(o));
+
             if (o == null) return;
             Type t = o.GetType();
             IList list = FindAll(t);
-            ValidateObject(o);
+            JValidationResult result = ValidateObject(o);
+            if (result.isError) throw new JValidationException(result);
             if (list.Contains(o) == false) InsertObject(o);
             else UpdateObject(o);
             UpdateRelations(o);
@@ -1351,22 +1427,39 @@ namespace FrwSoftware
             else if (updatedPropertyName != null) SaveObject(o);//todo
             else SaveObject(o);
         }
-        
-        private void ValidateObject(object o)
+
+        public JValidationResult ValidateObject(object o)
         {
+            JValidationResult result = new JValidationResult();
             MethodInfo method = AttrHelper.GetMethod(typeof(JValidate), o.GetType());
             if (method != null)
             {
                 try
                 {
-                    object result = method.Invoke(o, null);
+                    method.Invoke(o, new object[] { result });
+                    return result;
                 }
                 catch (TargetInvocationException ex)
                 {
                     Console.WriteLine("ERROR VALIDATING " + ex);
                 }
             }
-            //return true;
+
+            
+            var results = new List<ValidationResult>();
+            var context = new ValidationContext(o);
+            if (!Validator.TryValidateObject(o, context, results, true))
+            {
+                result.ValidationResults = results;
+                foreach (var error in results)
+                {
+                    Console.WriteLine(error.ErrorMessage);
+                    result.JValidationErrors.Add(new JValidationError() { Message = error.ErrorMessage });
+                }
+            }
+
+
+            return result; 
         }
 
         public void SetEntityModified<T>()

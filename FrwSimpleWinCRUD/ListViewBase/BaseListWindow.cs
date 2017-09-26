@@ -134,19 +134,8 @@ namespace FrwSoftware
             return Dm.Instance.EmptyObject(sourceObjectType, pars);
 
         }
-        virtual protected void InsertOrUpdateObjectInStorage(object o, string updatedPropertyName)
-        {
-            // since we are editing the storage object directly
-            // this call can be purely nominal (if not overridden in the vault)
-            // and used to set the modification flag in the repository
-            Dm.Instance.SaveObject(o, updatedPropertyName);
-            //Dm.Instance.UpdateRelations(o);//todo move to InsertOrUpdateObjectOrProperty ? 
-        }
-        virtual protected void AddObjectInStorage(object o)
-        {
-            //add it to storage
-            Dm.Instance.SaveObject(o);
-        }
+   
+   
         virtual protected bool RemoveObjectFromInStorage(object[] o)
         {
             return false;
@@ -155,8 +144,15 @@ namespace FrwSoftware
 
         private void View_OnObjectUpdateEvent(object sender, ChildObjectUpdateEventArgs e)
         {
-            InsertOrUpdateObjectInStorage(e.UpdatedObject, e.UpdatedPropertyName);
-            this.RefreshObject(e.UpdatedObject);
+            //InsertOrUpdateObjectInStorage(e.UpdatedObject, e.UpdatedPropertyName);
+            if (e.ViewMode == ViewMode.New)
+            {
+                EnsureAddedObjectVisible(e.UpdatedObject);
+            }
+            else
+            {
+                this.RefreshObject(e.UpdatedObject);
+            }
         }
 
 
@@ -219,7 +215,7 @@ namespace FrwSoftware
                             propertyDialog = new SimplePropertyDialog(propertyControl);
                         }
                         else propertyControl = propertyDialog.PropertyWindow;
-                        propertyControl.ViewMode = ViewMode.View;
+                        propertyDialog.ViewMode = ViewMode.View;
                         propertyControl.SourceObject = selectedObject;
                         propertyControl.ProcessView();
                         DialogResult res = propertyDialog.ShowDialog();
@@ -285,13 +281,13 @@ namespace FrwSoftware
                             propertyDialog = new SimplePropertyDialog(propertyControl);
                         }
                         else propertyControl = propertyDialog.PropertyWindow;
-                        propertyControl.ViewMode = ViewMode.Edit;
+                        propertyDialog.ViewMode = ViewMode.Edit;
                         propertyControl.SourceObject = selectedObject;
                         propertyControl.ProcessView();
                         DialogResult res = propertyDialog.ShowDialog();
                         if (res == DialogResult.OK)
                         {
-                            InsertOrUpdateObjectInStorage(propertyControl.SourceObject, null);
+                            RefreshObject(selectedObject);
                         }
                     }
                     else
@@ -363,42 +359,42 @@ namespace FrwSoftware
                         propertyDialog = new SimplePropertyDialog(propertyControl);
                     }
                     else propertyControl = propertyDialog.PropertyWindow;
-                    propertyControl.ViewMode = ViewMode.New;
+                    propertyDialog.ViewMode = ViewMode.New;
                     o = EmptyObjectInStorage(sourceObjectType, extraParams);
                     propertyControl.SourceObject = o;
                     propertyControl.ProcessView();
                     DialogResult res = propertyDialog.ShowDialog();
                     if (res == DialogResult.OK)
                     {
-                        InsertOrUpdateObjectInStorage(propertyControl.SourceObject, null);
+                        EnsureAddedObjectVisible(o);
+                        return o;
                     }
+                    else return null;
                 }
                 else
                 {
                     IPropertyProcessor propertyControl = AppManager.Instance.CreatePropertyContentForModelType(this.ContentContainer, this, sourceObjectType, null);
                     propertyControl.ViewMode = ViewMode.New;
                     o = EmptyObjectInStorage(sourceObjectType, extraParams);
-                    InsertOrUpdateObjectInStorage(o, null);
                     propertyControl.SourceObject = o;
                     propertyControl.ProcessView();
-                    selectedObject = o;
+                    //selectedObject = o;
                     // in this case the update in the repository asynchronously initiates the propertyControl
+                    return null;
                 }
-                /*
-                ObjectSelectEventArgs ev = new ObjectSelectEventArgs() { SelectedObject = selectedObject, EditMode = ViewMode.New, ExtraParams = extraParams };
-                if (OnObjectSelectEvent != null)
-                {
-                    OnObjectSelectEvent(this, ev);
-                    object o1 = ev.SelectedObject;//todo
-                }
-                */
             }
             catch (Exception ex)
             {
                 Log.ShowError(ex);
+                return null;
             }
-            return o;
         }
+
+        virtual protected void EnsureAddedObjectVisible(object newObject)
+        {
+            RefreshList();
+        }
+
 
         virtual protected void  DeleteObject(object selectedListItem, object[] selectedObjects)
         {
@@ -672,16 +668,43 @@ namespace FrwSoftware
                             if (pt.Equals(pasteType))
                             {
                                 //todo test for single
+                                object oldValue = p.GetValue(destListItem);
                                 p.SetValue(destListItem, (sourceObjects as IList)[0]);
-                                Dm.Instance.SaveObject(destListItem);
+                                try
+                                {
+                                    Dm.Instance.SaveObject(destListItem);
+                                }
+                                catch (JValidationException ex)
+                                {
+                                    AppManager.ShowValidationErrorMessage(ex.ValidationResult);
+                                    p.SetValue(destListItem, oldValue);
+                                }
                             }
                             else if (AttrHelper.IsGenericListTypeOf(pt, pasteType))
                             {
                                 IList l = (IList)p.GetValue(destListItem);
+                                List<object> oldValue = new List<object>();
+                                foreach(var o in l)
+                                {
+                                    oldValue.Add(o);
+                                }
                                 foreach (var ll in (sourceObjects as IList)) { 
                                     l.Add(ll);//todo exists
                                 }
-                                Dm.Instance.SaveObject(destListItem);
+                                try
+                                {
+                                    Dm.Instance.SaveObject(destListItem);
+                                }
+                                catch (JValidationException ex)
+                                {
+                                    AppManager.ShowValidationErrorMessage(ex.ValidationResult);
+                                    l.Clear();
+                                    foreach (var ll in oldValue)
+                                    {
+                                        l.Add(ll);
+                                    }
+                                }
+
                             }
                             RefreshObject(destListItem);
                         }
@@ -717,10 +740,12 @@ namespace FrwSoftware
                         try
                         {
                             //todo button xak ?
-                            bool cancel = false;
-                            object newValue = AppManager.Instance.EditCustomPropertyValue(rowObject, aspectName, out cancel, this);
-                            Dm.Instance.SaveObject(rowObject);
-                            RefreshObject(rowObject);
+                            bool complated = false;
+                            object newValue = AppManager.Instance.ProcessEditCustomPropertyValueAndSave(rowObject, aspectName, out complated, this);
+                            if (complated)
+                            {
+                                RefreshObject(rowObject);
+                            }
                         }
                         catch (Exception ex)
                         {

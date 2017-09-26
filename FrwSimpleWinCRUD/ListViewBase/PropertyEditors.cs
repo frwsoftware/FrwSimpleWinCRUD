@@ -44,8 +44,10 @@ namespace FrwSoftware
             object rowObject = bag.SourceObject;
             string name = ModelHelper.GetPropertyNameForDescription(bag.SourceObjectType, pName);
             if (name == null) name = pName;
-            bool cancelEdit = false;
-            return AppManager.Instance.EditCustomPropertyValue(rowObject, name, out cancelEdit, null);
+            bool complated = false;
+            object res = AppManager.Instance.ProcessEditCustomPropertyValue(rowObject, name, out complated, null);
+            bag.OnValueModified(null);
+            return res;
         }
     }
     

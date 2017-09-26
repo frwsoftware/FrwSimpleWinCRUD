@@ -125,7 +125,25 @@ namespace FrwSoftware
         // unlike ReloadList does not access the repository
         override public void RefreshList()
         {
-            listView.BuildList();
+            listView.BuildList(true);
+        }
+        override protected void EnsureAddedObjectVisible(object newObject)
+        {
+            // the standard listView method, when the filter is enabled, adds a record to the sources and rebuilds the list
+            // and at us record in the source is already added, therefore the duplication
+            // If we are filtering the list, there is no way to efficiently
+            // insert the objects, so just put them into our collection and rebuild.
+            if (listView.IsFiltering)
+            {
+                //index = Math.Max(0, Math.Min(index, ourObjects.Count));
+                //ourObjects.InsertRange(index, modelObjects);
+                listView.BuildList(true);
+            }
+            else
+            {
+                this.listView.AddObject(newObject);
+            }
+            this.listView.EnsureModelVisible(newObject); //? 
         }
         override public IList SelectedObjects
         {
@@ -268,10 +286,12 @@ namespace FrwSoftware
             }
         }
 
+        private bool dropLocker = false;
         private void ListView_ModelCanDrop(object sender, ModelDropEventArgs e)
         {
             try
             {
+
                 if (CanCopyOrCutSelectedObjects(e.SourceModels, false) == true)
                 {
                     // transfer style / copy standard, note that it's the opposite style in zotero
@@ -322,10 +342,16 @@ namespace FrwSoftware
             }
         }
 
+
         private void ListView_CanDrop(object sender, OlvDropEventArgs e)
         {
             try
             {
+                if (dropLocker)
+                {
+                    e.Effect = DragDropEffects.None;
+                    dropLocker = false;
+                }
             }
             catch (Exception ex)
             {
@@ -524,24 +550,25 @@ namespace FrwSoftware
             {
                 OLVColumn column = e.Column;
                 object rowObject = e.RowObject;
-                object value = e.Value;
+                //object value = e.Value;
                 if (AppManager.Instance.IsCustomEditProperty(SourceObjectType, column.AspectName))
                 {
                     if (AttrHelper.GetAttribute<JText>(SourceObjectType, column.AspectName) != null)
                     {
                         // it is necessary to use a complex scheme, otherwise it cycles through the MouseUp event
                         Button b = new Button();
-                        b.Image = global::FrwSoftware.Properties.Resources.book_open;
+                        b.Image = Properties.Resources.book_open;
                         b.Bounds = e.CellBounds;
                         b.Font = ((ObjectListView)sender).Font;
                         b.Click += (s1, e1) =>
                         {
-                            bool bo = false;
-                            object newValue = AppManager.Instance.EditCustomPropertyValue(rowObject, column.AspectName, out bo, this);
-                            b.Text = newValue as string;
-                            Dm.Instance.SaveObject(rowObject);
-                            RefreshObject(rowObject);
-                            //((ObjectListView)sender).RefreshItem(e.ListViewItem);
+                            bool complated = false;
+                            object newValue = AppManager.Instance.ProcessEditCustomPropertyValueAndSave(rowObject, column.AspectName, out complated, this);
+                            if (complated)
+                            {
+                                RefreshObject(rowObject);
+                                b.Text = newValue as string;
+                            }
                             b.Dispose();
                         };
                         e.Control = b;
@@ -549,10 +576,13 @@ namespace FrwSoftware
                     }
                     else
                     {
-                        e.NewValue = AppManager.Instance.EditCustomPropertyValue(rowObject, column.AspectName, out e.Cancel, this);
-                        Dm.Instance.SaveObject(rowObject);
-                        RefreshObject(rowObject);
-                        //((ObjectListView)sender).RefreshItem(e.ListViewItem);
+                        bool complated = false;
+                        e.NewValue = AppManager.Instance.ProcessEditCustomPropertyValueAndSave(rowObject, column.AspectName, out complated, this);
+                        if (complated)
+                        {
+                            RefreshObject(rowObject);
+                        }
+                        e.Cancel = true;
                     }
                 }
                 else e.Cancel = false;
@@ -576,7 +606,15 @@ namespace FrwSoftware
             }
             try
             {
-                InsertOrUpdateObjectInStorage(e.RowObject, null);
+                Dm.Instance.SaveObject(e.RowObject);
+            }
+            catch (JValidationException ex)
+            {
+                dropLocker = true;//xak
+                AppManager.ShowValidationErrorMessage(ex.ValidationResult, this);
+                AttrHelper.SetPropertyValue(rowObject, column.AspectName, e.Value);
+                RefreshObject(rowObject);
+                e.Cancel = true;
             }
             catch (Exception ex)
             {
@@ -622,7 +660,16 @@ namespace FrwSoftware
         {
             try
             {
-                InsertOrUpdateObjectInStorage(e.RowObject, null);
+                try
+                {
+                    Dm.Instance.SaveObject(e.RowObject);
+                }
+                catch (JValidationException ex)
+                {
+                    AppManager.ShowValidationErrorMessage(ex.ValidationResult);
+                    //todo
+                    //AttrHelper.SetPropertyValue(rowObject, column.AspectName, e.Value);
+                }
             }
             catch (Exception ex)
             {
@@ -815,6 +862,7 @@ namespace FrwSoftware
         override protected void AddObject(object selectedListItem, object selectedObject, Type sourceObjectType, IDictionary<string, object> extraParams = null)
         {
             object newObject = AddObjectLocal(selectedObject, SourceObjectType);
+            /*
             if (newObject != null)
             {
                 // the standard listView method, when the filter is enabled, adds a record to the sources and rebuilds the list
@@ -833,6 +881,7 @@ namespace FrwSoftware
                 }
                 this.listView.EnsureModelVisible(newObject); //? 
             }
+            */
         }
         override protected void DeleteObject(object selectedListItem, object[] selectedObjects)
         {

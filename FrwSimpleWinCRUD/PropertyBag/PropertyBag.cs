@@ -866,11 +866,14 @@ namespace Flobbster.Windows.Forms
 		/// </summary>
 		public event PropertySpecEventHandler SetValue;
 
-		/// <summary>
-		/// Raises the GetValue event.
-		/// </summary>
-		/// <param name="e">A PropertySpecEventArgs that contains the event data.</param>
-		protected virtual void OnGetValue(PropertySpecEventArgs e)
+   
+        public event PropertySpecEventHandler ValueModified;
+
+        /// <summary>
+        /// Raises the GetValue event.
+        /// </summary>
+        /// <param name="e">A PropertySpecEventArgs that contains the event data.</param>
+        protected virtual void OnGetValue(PropertySpecEventArgs e)
 		{
 			if(GetValue != null)
 				GetValue(this, e);
@@ -886,12 +889,18 @@ namespace Flobbster.Windows.Forms
 				SetValue(this, e);
 		}
 
-		#region ICustomTypeDescriptor explicit interface definitions
-		// Most of the functions required by the ICustomTypeDescriptor are
-		// merely pssed on to the default TypeDescriptor for this type,
-		// which will do something appropriate.  The exceptions are noted
-		// below.
-		AttributeCollection ICustomTypeDescriptor.GetAttributes()
+        public void OnValueModified(PropertySpecEventArgs e)
+        {
+            if (ValueModified != null)
+                ValueModified(this, e);
+        }
+
+        #region ICustomTypeDescriptor explicit interface definitions
+        // Most of the functions required by the ICustomTypeDescriptor are
+        // merely pssed on to the default TypeDescriptor for this type,
+        // which will do something appropriate.  The exceptions are noted
+        // below.
+        AttributeCollection ICustomTypeDescriptor.GetAttributes()
 		{
 			return TypeDescriptor.GetAttributes(this, true);
 		}

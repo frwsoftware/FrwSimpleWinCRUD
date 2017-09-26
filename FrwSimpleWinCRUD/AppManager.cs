@@ -63,14 +63,15 @@ namespace FrwSoftware
         {
             get
             {
-                return clipboard; 
+                return clipboard;
             }
         }
 
         public WebEntryInfo CurrentWebEntryInfo { get; set; }//for Hot Key operations
 
-        private  Type defaultViewWindowType = typeof(BaseViewWindow);
-        public Type DefaultViewWindowType {
+        private Type defaultViewWindowType = typeof(BaseViewWindow);
+        public Type DefaultViewWindowType
+        {
             get { return defaultViewWindowType; }
             set { defaultViewWindowType = value; }
         }
@@ -95,7 +96,7 @@ namespace FrwSoftware
         XmlHelper xml = new XmlHelper();//config 
 
         public JDocPanelLayout CurrentLayout { get; set; }
-        
+
         public void LoadLayout(JDocPanelLayout layout)
         {
             CurrentLayout = layout;
@@ -159,7 +160,7 @@ namespace FrwSoftware
         virtual protected void PostCreateContent(IContentContainer docPanelContainer, IContent c)
         {
         }
-     
+
         virtual protected BaseMainAppForm GetMainForm()
         {
             return new BaseMainAppForm();
@@ -190,10 +191,10 @@ namespace FrwSoftware
         }
         public IPropertyProcessor CreatePropertyContentForModelType(IContentContainer docPanelContainer, IParentView parentProcessor, Type modelType, IDictionary<string, object> pars)
         {
-            return (IPropertyProcessor)CreateContent(docPanelContainer, 
+            return (IPropertyProcessor)CreateContent(docPanelContainer,
                 typeof(IPropertyProcessor), modelType, pars, true, null, parentProcessor != null ? parentProcessor.PaneUID : null);
         }
-        public IContent CreateStoredContent(IContentContainer docPanelContainer,  IDictionary<string, object> pars)
+        public IContent CreateStoredContent(IContentContainer docPanelContainer, IDictionary<string, object> pars)
         {
             string typeName = DictHelper.GetString(pars, FrwBaseViewControl.PersistStringTypeParameter);
             if (typeName == null) throw new InvalidOperationException(FrwBaseViewControl.PersistStringTypeParameter + " not found in persistent parameters.");
@@ -202,7 +203,7 @@ namespace FrwSoftware
             string relPaneUID = DictHelper.GetString(pars, FrwBaseViewControl.PersistStringRelPaneUIDParameter);
             return CreateContent(docPanelContainer, contType, null, pars, false, paneUID, relPaneUID);
         }
-        private IContent CreateContent(IContentContainer docPanelContainer, Type contType, 
+        private IContent CreateContent(IContentContainer docPanelContainer, Type contType,
             Type modelType, IDictionary<string, object> pars, bool forceRegistredEvent, string paneUID, string relPaneUID)
         {
             IContent c = localFindContent(contType, modelType, pars);
@@ -210,7 +211,7 @@ namespace FrwSoftware
             {
 
                 if (docPanelContainer == null) docPanelContainer = GetDefaultDocPanelContainer();
-                 c = CreateNewContentInstance(contType, modelType, pars);
+                c = CreateNewContentInstance(contType, modelType, pars);
                 if (docContents.Contains(c) == false) docContents.Add(c);
                 //common
                 c.ContentContainer = docPanelContainer;
@@ -288,7 +289,7 @@ namespace FrwSoftware
                     c = GetPropertyWindowForType(modelType);
                 else throw new InvalidOperationException();
 
-                if (c is IObjectViewProcessor) ((IObjectViewProcessor)c).SourceObjectType =  modelType;
+                if (c is IObjectViewProcessor) ((IObjectViewProcessor)c).SourceObjectType = modelType;
             }
             else if (contType != null)
             {
@@ -504,7 +505,7 @@ namespace FrwSoftware
             if (fi.Exists == true) LoadDocPanelContainersStateLocal(File.ReadAllText(fi.FullName));
             else LoadDocPanelContainersStateLocal(null);
 
-            object mainForm =  docContentContainers.Count > 0 ? docContentContainers[0] : null;
+            object mainForm = docContentContainers.Count > 0 ? docContentContainers[0] : null;
             if (mainForm == null)
             {
                 mainForm = Activator.CreateInstance(MainAppFormType);
@@ -542,7 +543,8 @@ namespace FrwSoftware
                             }
                             numberInList++;
                         }
-                        if (form == null) { 
+                        if (form == null)
+                        {
                             string typeStr = xml.getAttrValue(dc, "Type");
                             if (typeStr != null)
                             {
@@ -614,7 +616,7 @@ namespace FrwSoftware
 
         public IContentContainer GetMainContainer()
         {
-            return docContentContainers.Count > 0 ?  docContentContainers[0] : null;
+            return docContentContainers.Count > 0 ? docContentContainers[0] : null;
         }
 
         #endregion
@@ -652,9 +654,59 @@ namespace FrwSoftware
             else return false;
         }
 
-        virtual public object EditCustomPropertyValue(object rowObject, string aspectName, out bool cancelEdit, IWin32Window owner)
+
+
+
+        public object ProcessEditCustomPropertyValueAndSave(object rowObject, string aspectName, out bool complated, IWin32Window owner)
         {
-            object newValue = null;
+            Type sourceObjectType = rowObject.GetType();
+            PropertyInfo p = sourceObjectType.GetProperty(aspectName);
+            object oldValue = null;
+            if (p.PropertyType is IList)
+            {
+                IList l = (IList)p.GetValue(rowObject);
+                oldValue = new List<object>();
+                foreach (var o in l)
+                {
+                    ((IList)oldValue).Add(o);
+                }
+            }
+            else
+            {
+                oldValue = p.GetValue(rowObject);
+            }
+            try
+            {
+                object newValue = EditCustomPropertyValue(rowObject, aspectName, out complated, owner);
+                Dm.Instance.SaveObject(rowObject);
+                return newValue;
+            }
+            catch (JValidationException ex)
+            {
+                AppManager.ShowValidationErrorMessage(ex.ValidationResult);
+                if (p.PropertyType is IList)
+                {
+                    IList l = (IList)p.GetValue(rowObject);
+                    l.Clear();
+                    foreach (var o in (IList)oldValue)
+                    {
+                        l.Add(o);
+                    }
+                }
+                else
+                {
+                    p.SetValue(rowObject, oldValue);
+                }
+                complated = true;
+                return oldValue;
+            }
+        }
+        public object ProcessEditCustomPropertyValue(object rowObject, string aspectName, out bool complated, IWin32Window owner)
+        {
+            return EditCustomPropertyValue(rowObject, aspectName, out complated, owner);
+        }
+        virtual public object EditCustomPropertyValue(object rowObject, string aspectName, out bool complated, IWin32Window owner)
+        {
             Type sourceObjectType = rowObject.GetType();
             Type pType = AttrHelper.GetPropertyType(sourceObjectType, aspectName);
             PropertyInfo p = sourceObjectType.GetProperty(aspectName);
@@ -663,10 +715,12 @@ namespace FrwSoftware
             JManyToMany manyToManyAttr = AttrHelper.GetAttribute<JManyToMany>(sourceObjectType, aspectName);
             JDictProp dictAttr = AttrHelper.GetAttribute<JDictProp>(sourceObjectType, aspectName);
 
+
+            complated = false;
             if (manyToOneAttr != null)
             {
-                object oldValue = AttrHelper.GetPropertyValue(rowObject, aspectName);
                 SimpleListDialog listDialog = new SimpleListDialog(p.PropertyType);
+                listDialog.EnableSetNull = true;
                 //todo select value in dialog
                 DialogResult res = listDialog.ShowDialog(owner);
                 if (res == DialogResult.OK && listDialog.SelectedObjects != null && listDialog.SelectedObjects.Count > 0)
@@ -674,17 +728,19 @@ namespace FrwSoftware
                     IList newObjects = listDialog.SelectedObjects;
                     object value = newObjects[0];
                     AttrHelper.SetPropertyValue(rowObject, aspectName, value);
-                    Dm.Instance.SaveObject(rowObject);
-                    newValue = Dm.Instance.GetCustomPropertyValue(rowObject, aspectName);
-
-                }//todo set null
-                cancelEdit = true;
+                    complated = true;
+                }
+                else if (res == DialogResult.Abort)
+                {
+                    AttrHelper.SetPropertyValue(rowObject, aspectName, null);
+                    complated = true;
+                }
             }
             else if (dictAttr != null)
             {
                 if (dictAttr.AllowMultiValues)
                 {
-                    SimpleMultivalueDictFieldItemListDialog listDialog = new SimpleMultivalueDictFieldItemListDialog( dictAttr.Id);
+                    SimpleMultivalueDictFieldItemListDialog listDialog = new SimpleMultivalueDictFieldItemListDialog(dictAttr.Id);
                     IList list = AttrHelper.GetPropertyValue(rowObject, aspectName) as IList;
                     List<JDictItem> listd = new List<JDictItem>();
                     if (list != null)
@@ -705,7 +761,7 @@ namespace FrwSoftware
                             List<int> listkeys = new List<int>();
                             foreach (var newObject in newObjects)
                             {
-                                listkeys.Add(int.Parse( ((JDictItem)newObject).Key));
+                                listkeys.Add(int.Parse(((JDictItem)newObject).Key));
                             }
                             AttrHelper.SetPropertyValue(rowObject, aspectName, listkeys);
                         }
@@ -727,41 +783,35 @@ namespace FrwSoftware
                             }
                             AttrHelper.SetPropertyValue(rowObject, aspectName, listkeys);
                         }
-                        newValue = Dm.Instance.GetCustomPropertyValue(rowObject, aspectName);
+                        complated = true;
                     }
                 }
                 else
                 {
-                    SimpleDictListDialog listDialog = new SimpleDictListDialog( dictAttr.Id, false);
+                    SimpleDictListDialog listDialog = new SimpleDictListDialog(dictAttr.Id, false);
                     DialogResult res = listDialog.ShowDialog(owner);
                     if (res == DialogResult.OK && listDialog.SelectedObjects != null)
                     {
-                        IList newObjects = listDialog.SelectedObjects;//SelectedObjects
+                        IList newObjects = listDialog.SelectedObjects;
                         if (newObjects.Count > 0)
                         {
                             JDictItem d = (JDictItem)newObjects[0];
                             if (p.PropertyType == typeof(int))
-                               AttrHelper.SetPropertyValue(rowObject, aspectName, int.Parse(d.Key));
+                                AttrHelper.SetPropertyValue(rowObject, aspectName, int.Parse(d.Key));
                             else if (p.PropertyType == typeof(long))
                                 AttrHelper.SetPropertyValue(rowObject, aspectName, long.Parse(d.Key));
                             else
                                 AttrHelper.SetPropertyValue(rowObject, aspectName, d.Key);
-                            newValue = Dm.Instance.GetCustomPropertyValue(rowObject, aspectName);
                         }
-                        else newValue = null;
+                        else AttrHelper.SetPropertyValue(rowObject, aspectName, null);
+                        complated = true;
                     }
                 }
-                cancelEdit = true;
             }
             else if (oneToManyAttr != null)
             {
                 SimpleMultivalueFieldItemListDialog listDialog = new SimpleMultivalueFieldItemListDialog(AttrHelper.GetGenericListArgType(p.PropertyType));
                 IList list = (IList)AttrHelper.GetPropertyValue(rowObject, aspectName);
-                if (list == null)
-                {
-                    Dm.Instance.ResolveRelation(rowObject, aspectName);
-                    list = (IList)AttrHelper.GetPropertyValue(rowObject, aspectName);
-                }
                 IList tempLIst = new List<object>();
                 foreach (var item in list)
                 {
@@ -772,27 +822,19 @@ namespace FrwSoftware
                 if (res == DialogResult.OK && listDialog.SourceObjects != null)
                 {
                     IList newList = listDialog.SourceObjects;
-                    IList oldList = (IList)AttrHelper.GetPropertyValue(rowObject, aspectName);
-                    oldList.Clear();
-                    foreach (var newListItem in newList)
+                    IList newListToSave = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(pType));
+                    foreach (var l in newList)
                     {
-                        oldList.Add(newListItem);
+                        newListToSave.Add(l);
                     }
-                    Dm.Instance.SaveObject(rowObject);
-                    newValue = Dm.Instance.GetCustomPropertyValue(rowObject, aspectName);
+                    AttrHelper.SetPropertyValue(rowObject, aspectName, newListToSave);
+                    complated = true;
                 }
-                cancelEdit = true;
             }
             else if (manyToManyAttr != null)
             {
                 SimpleMultivalueFieldItemListDialog listDialog = new SimpleMultivalueFieldItemListDialog(AttrHelper.GetGenericListArgType(p.PropertyType));
                 IList list = (IList)AttrHelper.GetPropertyValue(rowObject, aspectName);
-             
-                if (list == null)
-                {
-                    Dm.Instance.ResolveRelation(rowObject, aspectName);
-                    list = (IList)AttrHelper.GetPropertyValue(rowObject, aspectName);
-                }
                 IList tempLIst = new List<object>();
                 foreach (var item in list)
                 {
@@ -803,19 +845,18 @@ namespace FrwSoftware
                 if (res == DialogResult.OK && listDialog.SourceObjects != null)
                 {
                     IList newList = listDialog.SourceObjects;
-                    IList oldList = (IList)AttrHelper.GetPropertyValue(rowObject, aspectName);
-                    oldList.Clear();
-                    foreach (var newListItem in newList)
+                    IList newListToSave = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(pType));
+                    foreach (var l in newList)
                     {
-                        oldList.Add(newListItem);
+                        newListToSave.Add(l);
                     }
-                    Dm.Instance.SaveObject(rowObject);
-                    newValue = Dm.Instance.GetCustomPropertyValue(rowObject, aspectName);
+                    AttrHelper.SetPropertyValue(rowObject, aspectName, newListToSave);
+                    complated = true;
                 }
-                cancelEdit = true;
             }
             else if (pType == typeof(JAttachment) || AttrHelper.IsGenericListTypeOf(pType, typeof(JAttachment)))
             {
+                //todo make clone 
                 List<JAttachment> attachments = null;
                 if (pType == typeof(JAttachment))
                 {
@@ -832,18 +873,13 @@ namespace FrwSoftware
                 dialog.CommonStoragePath = Dm.Instance.GetCommonStoragePathForObject(rowObject);
                 dialog.StoragePrefixPath = Dm.Instance.GetStoragePrefixForObject(rowObject);
                 dialog.SourceObjects = attachments;//!!! after CommonStoragePath and StoragePrefixPath
-                //dialog.EditedText = s;
+                                                   //dialog.EditedText = s;
                 DialogResult res = dialog.ShowDialog(owner);
                 if (res == DialogResult.OK)
                 {
                     AttrHelper.SetPropertyValue(rowObject, aspectName, dialog.SourceObjects);
-                    //s = dialog.EditedText;
-                    //AttrHelper.SetPropertyValue(rowObject, aspectName, s);
-                    //newValue = s;
+                    complated = true;
                 }
-                //else newValue = s;//в этом случае возвращаем старое значение 
-                cancelEdit = true;
-
             }
             else if (AttrHelper.GetAttribute<JText>(sourceObjectType, aspectName) != null)
             {
@@ -855,10 +891,8 @@ namespace FrwSoftware
                 {
                     s = dialog.EditedText;
                     AttrHelper.SetPropertyValue(rowObject, aspectName, s);
-                    newValue = s;
+                    complated = true;
                 }
-                else newValue = s; 
-                cancelEdit = true;
             }
             else if (pType == typeof(DateTime) || pType == typeof(DateTimeOffset) || pType == typeof(DateTime?) || pType == typeof(DateTimeOffset?))
             {
@@ -875,42 +909,40 @@ namespace FrwSoftware
                         {
                             if (pType == typeof(DateTime)) AttrHelper.SetPropertyValue(rowObject, aspectName, DateTime.MinValue);
                             else if (pType == typeof(DateTime?)) AttrHelper.SetPropertyValue(rowObject, aspectName, null);
-                            newValue = null;
                         }
                         else
                         {
                             AttrHelper.SetPropertyValue(rowObject, aspectName, dialog.Date);
-                            newValue = dialog.Date;
                         }
                     }
                     else if (pType == typeof(DateTimeOffset) || pType == typeof(DateTimeOffset?))
                     {
-
-                        //if (d.HasValue) 
                         if (dialog.IsDateTimeNull)
                         {
                             if (pType == typeof(DateTimeOffset)) AttrHelper.SetPropertyValue(rowObject, aspectName, DateTimeOffset.MinValue);
                             else if (pType == typeof(DateTimeOffset?)) AttrHelper.SetPropertyValue(rowObject, aspectName, null);
-                            newValue = null;
                         }
                         else
                         {
                             DateTimeOffset d = (DateTimeOffset)dialog.Date;
                             AttrHelper.SetPropertyValue(rowObject, aspectName, d);
-                            newValue = d;
                         }
                     }
-                }
-                cancelEdit = true;
+                    complated = true;
+                }//cancel
             }
-            else
+
+            object newStrValue = null;
+            if (complated)
             {
-                cancelEdit = false;
+                newStrValue = Dm.Instance.GetCustomPropertyValue(rowObject, aspectName);
             }
-            return newValue;
+            return newStrValue;
         }
-
-
+        public static void ShowValidationErrorMessage(JValidationResult res, IWin32Window owner = null)
+        {
+            MessageBox.Show(owner, res.GetFullErrorString(), FrwConstants.WARNING, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
         #endregion
 
     }

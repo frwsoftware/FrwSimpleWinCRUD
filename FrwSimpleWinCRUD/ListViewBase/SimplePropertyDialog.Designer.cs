@@ -44,7 +44,6 @@
             // 
             // okButton
             // 
-            this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.okButton.Location = new System.Drawing.Point(404, 387);
             this.okButton.Margin = new System.Windows.Forms.Padding(2);
             this.okButton.Name = "okButton";
@@ -52,10 +51,10 @@
             this.okButton.TabIndex = 1;
             this.okButton.Text = global::FrwSoftware.FrwCRUDRes.OK;
             this.okButton.UseVisualStyleBackColor = true;
+            this.okButton.Click += new System.EventHandler(this.okButton_Click);
             // 
             // cancelButtion
             // 
-            this.cancelButtion.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cancelButtion.Location = new System.Drawing.Point(547, 387);
             this.cancelButtion.Margin = new System.Windows.Forms.Padding(2);
             this.cancelButtion.Name = "cancelButtion";
@@ -63,6 +62,7 @@
             this.cancelButtion.TabIndex = 2;
             this.cancelButtion.Text = global::FrwSoftware.FrwCRUDRes.Cancel;
             this.cancelButtion.UseVisualStyleBackColor = true;
+            this.cancelButtion.Click += new System.EventHandler(this.cancelButtion_Click);
             // 
             // SimplePropertyDialog
             // 
