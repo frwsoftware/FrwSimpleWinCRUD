@@ -836,6 +836,7 @@ namespace FrwSoftware
             ResolveRelation(rowObject, sourceEntityType, p);
         }
 
+
         private void ResolveRelation(object rowObject, Type sourceEntityType, PropertyInfo p)
         {
             
@@ -851,65 +852,91 @@ namespace FrwSoftware
             else if (oneToManyAttr != null)
             {
                 Type foreinEntityType = AttrHelper.GetGenericListArgType(p.PropertyType);
-                PropertyInfo sourceEntityPK = AttrHelper.GetProperty<JPrimaryKey>(sourceEntityType);
-                PropertyInfo foreinEntityPK = AttrHelper.GetProperty<JPrimaryKey>(foreinEntityType);
-                PropertyInfo pName = AttrHelper.GetProperty<JNameProperty>(foreinEntityType);
-                PropertyInfo foreinEntityManyToOne = FindRefFieldInForeinEntity(sourceEntityType, foreinEntityType, typeof(JManyToOne), oneToManyAttr.RefFieldNameInForeinEntity);
-                IList list = FindAll(foreinEntityType);
-                IList values = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(foreinEntityType));
-                //Selection of all values corresponding to our value 
-                foreach (var l in list)
-                {
-                    var foreinEntityValue = foreinEntityManyToOne.GetValue(l);
-                    if (rowObject.Equals(foreinEntityValue))
-                    {
-                        values.Add(l);
-                    }
-                }
+                IList values = ResolveOneToManyRelation(rowObject, foreinEntityType, oneToManyAttr.RefFieldNameInForeinEntity);
                 p.SetValue(rowObject, values);
             }
             else if (manyToManyAttr != null)
             {
                 Type foreinEntityType = AttrHelper.GetGenericListArgType(p.PropertyType);
-                TypeComparer typeComparer = new TypeComparer();
-                Type[] ts = new Type[] { sourceEntityType, foreinEntityType };
-                Array.Sort(ts, typeComparer);
-                JoinEntityData cross = FindAllJoinData(ts[0], ts[1], manyToManyAttr.JoinName);
-                bool reverse = false;
-                if (ts[0].Equals(sourceEntityType) == false) reverse = true;
-                List<object> cValues = new List<object>();
-                object sourcePKValue = pkProp.GetValue(rowObject);
-                //from crosstable
-                foreach (var l in cross.DataList)
-                {
-                    if (reverse)
-                    {
-                        if (sourcePKValue.Equals(l.Pk2))
-                        {
-                            cValues.Add(l.Pk1);
-                        }
-                    }
-                    else
-                    {
-                        if (sourcePKValue.Equals(l.Pk1))
-                        {
-                            cValues.Add(l.Pk2);
-                        }
-                    }
-                }
-
-                IList values = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(foreinEntityType));
-                foreach (var foreinKeyValue in cValues)
-                {
-                    object sourceEntityValue = Find(foreinEntityType, foreinKeyValue);
-                    values.Add(sourceEntityValue);
-                }
+                IList values = ResolveManyToManyRelation(rowObject, foreinEntityType, manyToManyAttr.JoinName);
                 p.SetValue(rowObject, values);
-
-
             }
             else return;
         }
+        public IList<T> ResolveManyToManyRelation<T>(object rowObject, string joinName = null)
+        {
+            Type t = typeof(T);
+            return (IList<T>)ResolveManyToManyRelation(rowObject, t, joinName);
+        }
+
+        public IList ResolveManyToManyRelation(object rowObject, Type foreinEntityType, string joinName = null)
+        {
+            Type sourceEntityType = rowObject.GetType();
+            PropertyInfo pkProp = AttrHelper.GetProperty<JPrimaryKey>(sourceEntityType);
+            IList values = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(foreinEntityType));
+            if (rowObject == null) return values;
+
+            TypeComparer typeComparer = new TypeComparer();
+            Type[] ts = new Type[] { sourceEntityType, foreinEntityType };
+            Array.Sort(ts, typeComparer);
+            JoinEntityData cross = FindAllJoinData(ts[0], ts[1], joinName);
+            bool reverse = false;
+            if (ts[0].Equals(sourceEntityType) == false) reverse = true;
+            List<object> cValues = new List<object>();
+            object sourcePKValue = pkProp.GetValue(rowObject);
+            //from crosstable
+            foreach (var l in cross.DataList)
+            {
+                if (reverse)
+                {
+                    if (sourcePKValue.Equals(l.Pk2))
+                    {
+                        cValues.Add(l.Pk1);
+                    }
+                }
+                else
+                {
+                    if (sourcePKValue.Equals(l.Pk1))
+                    {
+                        cValues.Add(l.Pk2);
+                    }
+                }
+            }
+
+            foreach (var foreinKeyValue in cValues)
+            {
+                object sourceEntityValue = Find(foreinEntityType, foreinKeyValue);
+                values.Add(sourceEntityValue);
+            }
+            return values;
+        }
+        public IList<T> ResolveOneToManyRelation<T>(object rowObject, string refFieldNameInForeinEntity = null)
+        {
+            Type t = typeof(T);
+            return (IList<T>)ResolveOneToManyRelation(rowObject, t, refFieldNameInForeinEntity);
+        }
+        public IList ResolveOneToManyRelation(object rowObject, Type foreinEntityType, string refFieldNameInForeinEntity = null)
+        {
+            IList values = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(foreinEntityType));
+            if (rowObject == null) return values;
+            Type sourceEntityType = rowObject.GetType();
+            PropertyInfo foreinEntityPK = AttrHelper.GetProperty<JPrimaryKey>(foreinEntityType);
+            PropertyInfo pName = AttrHelper.GetProperty<JNameProperty>(foreinEntityType);
+            PropertyInfo foreinEntityManyToOne = FindRefFieldInForeinEntity(sourceEntityType, foreinEntityType, typeof(JManyToOne), refFieldNameInForeinEntity);
+            IList list = FindAll(foreinEntityType);
+            //Selection of all values corresponding to our value 
+            foreach (var l in list)
+            {
+                var foreinEntityValue = foreinEntityManyToOne.GetValue(l);
+                if (rowObject.Equals(foreinEntityValue))
+                {
+                    values.Add(l);
+                }
+            }
+            return values;
+        }
+
+
         private void CompareLists(IList oldList, IList newList, out IList addList, out IList removeList)
         {
             addList = new List<object>();
@@ -1067,7 +1094,7 @@ namespace FrwSoftware
                     }
                 }
             }
-            //ResolveToManyRelations(o);
+            ResolveToManyRelations(o);
             return o;
         }
         virtual public void DeleteAllObjects(Type t)

@@ -32,9 +32,10 @@ namespace FrwSoftware
     public delegate void TreeNodeSelectEventHandler(object sender, TreeNodeSelectEventArgs e);
    
     public delegate bool CanExpandGetterDelegate(Object model);
-    public delegate IEnumerable<TreeNode> ChildrenGetterDelegate(TreeNode parentNode);
+    public delegate IEnumerable ChildrenGetterDelegate(TreeNode parentNode);
     public delegate void AfterEditTreeNodeLabelDelegate(object model, string labelText);
     public delegate void InitialCreateTreeNodeRootDelegate();
+    public delegate void ComplateNodeFromObjectDelegate(TreeNode node, object o);
 
     public class TreeContextMenuSelectEventArgs : EventArgs
     {
@@ -108,8 +109,18 @@ namespace FrwSoftware
             }
             if (ChildrenGetter != null)
             {
-                IEnumerable<TreeNode> list = ChildrenGetter(parentNode);
-                foreach (var node in list)
+                IEnumerable oList = ChildrenGetter(parentNode);
+                List<TreeNode> nodes = new List<TreeNode>();
+                foreach(var o in oList)
+                {
+                    TreeNode node = new TreeNode();
+                    if (ComplateNodeFromObject != null)
+                    {
+                        ComplateNodeFromObject(node, o);
+                    }
+                    nodes.Add(node);
+                }
+                foreach (var node in nodes)
                 {
                     if (node.ImageKey == null) node.ImageKey = TREE_FOLDER_CLOSED;
                     if (node.SelectedImageKey == null) node.SelectedImageKey = TREE_FOLDER_CLOSED_SELECTED;
@@ -174,6 +185,16 @@ namespace FrwSoftware
             set { childrenGetter = value; }
         }
         private ChildrenGetterDelegate childrenGetter;
+
+        public ComplateNodeFromObjectDelegate ComplateNodeFromObject
+        {
+            get { return complateNodeFromObject; }
+            set { complateNodeFromObject = value; }
+        }
+        private ComplateNodeFromObjectDelegate complateNodeFromObject;
+
+        
+
         //remove node presentation and all childs 
         protected void RecourseRemove(TreeNodeCollection parent)
         {

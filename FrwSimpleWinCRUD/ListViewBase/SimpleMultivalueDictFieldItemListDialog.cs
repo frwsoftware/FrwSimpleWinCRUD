@@ -100,13 +100,14 @@ namespace FrwSoftware
             if ((DictId != null))
             {
                 //todo
-                this.listView.ItemsAdding += ListView_ItemsAdding;
-                this.listView.ItemsRemoving += ListView_ItemsRemoving;
+                //this.listView.ItemsAdding += ListView_ItemsAdding;
+                //this.listView.ItemsRemoving += ListView_ItemsRemoving;
             }
 
             ((System.ComponentModel.ISupportInitialize)(listView)).EndInit();
 
         }
+        /*
         private void ListView_ItemsRemoving(object sender, ItemsRemovingEventArgs e)
         {
             foreach (var o in e.ObjectsToRemove)
@@ -122,6 +123,7 @@ namespace FrwSoftware
                 SourceObjects.Add(o);
             }
         }
+        */
 
         protected void AddColumnToList(OLVColumn column)
         {

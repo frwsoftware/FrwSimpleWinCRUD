@@ -103,27 +103,12 @@ namespace FrwSoftware
             AddColumnToList(column);
 
             SourceObjects = Dm.Instance.GetDictionaryItems(DictId);
-            this.listView.ItemsAdding += ListView_ItemsAdding;
-            this.listView.ItemsRemoving += ListView_ItemsRemoving;
+       
 
             ((System.ComponentModel.ISupportInitialize)(listView)).EndInit();
 
         }
-        private void ListView_ItemsRemoving(object sender, ItemsRemovingEventArgs e)
-        {
-            foreach (var o in e.ObjectsToRemove)
-            {
-                SourceObjects.Remove(o);
-            }
-        }
-
-        private void ListView_ItemsAdding(object sender, ItemsAddingEventArgs e)
-        {
-            foreach (var o in e.ObjectsToAdd)
-            {
-                SourceObjects.Add(o);
-            }
-        }
+  
 
         protected void AddColumnToList(OLVColumn column)
         {

@@ -43,7 +43,6 @@ namespace FrwSoftware
             this.treeControl.ChildrenGetter = null;
             this.treeControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeControl.InitialCreateTreeNodeRoot = null;
-            
             this.treeControl.Location = new System.Drawing.Point(0, 0);
             this.treeControl.Name = "treeControl";
             this.treeControl.ParentViewProcessor = null;
@@ -68,6 +67,10 @@ namespace FrwSoftware
             treeControl.DragEnter += TreeControl_DragEnter;
             treeControl.ItemDrag += TreeControl_ItemDrag;
 
+            treeControl.ComplateNodeFromObject += delegate (TreeNode node, object x)
+            {
+                ComplateNodeFromObject(node, x);
+            };
 
         }
         override public void CreateView()
@@ -107,8 +110,12 @@ namespace FrwSoftware
 
         virtual protected void ComplateNodeFromObject(TreeNode node, object o)
         {
-            //todo 
-            //Complate with name 
+            node.Tag = o;
+            string name = ModelHelper.GetNameForObjectAdv(o);
+            string shortName = (name.Length > 70) ? (name.Substring(0, 70) + "...") : name;
+            node.Name = shortName;
+            node.Text = shortName;
+            node.ToolTipText = name;
         }
 
         override protected void AddObject(object selectedListItem, object selectedObject, Type sourceObjectType, IDictionary<string, object> extraParams = null)

@@ -822,7 +822,7 @@ namespace FrwSoftware
                 if (res == DialogResult.OK && listDialog.SourceObjects != null)
                 {
                     IList newList = listDialog.SourceObjects;
-                    IList newListToSave = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(pType));
+                    IList newListToSave = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(AttrHelper.GetGenericListArgType(pType)));
                     foreach (var l in newList)
                     {
                         newListToSave.Add(l);
@@ -845,7 +845,7 @@ namespace FrwSoftware
                 if (res == DialogResult.OK && listDialog.SourceObjects != null)
                 {
                     IList newList = listDialog.SourceObjects;
-                    IList newListToSave = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(pType));
+                    IList newListToSave = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(AttrHelper.GetGenericListArgType(pType)));
                     foreach (var l in newList)
                     {
                         newListToSave.Add(l);

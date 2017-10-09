@@ -23,7 +23,18 @@ namespace FrwSoftware
     public class JDictItem
     {
         public string Key { get; set; }
-        public string Text { get; set; }
+        private string text = null;
+        public string Text {
+            get
+            {
+                if (text != null) return text;
+                else return Key;
+            }
+            set
+            {
+                text = value;
+            }
+        }
         public Image Image { get; set; }
         public string ImageName { get; set; }
     }

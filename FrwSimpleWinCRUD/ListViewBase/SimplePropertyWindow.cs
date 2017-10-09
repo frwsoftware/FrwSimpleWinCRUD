@@ -29,7 +29,7 @@ namespace FrwSoftware
 {
     public partial class SimplePropertyWindow : BasePropertyWindow
     {
-        static protected string  ITEM_ATTRIBUTE_PREFIX = FrwCRUDRes.SimplePropertyWindow_Attribute;
+        static protected string ITEM_ATTRIBUTE_PREFIX = FrwCRUDRes.SimplePropertyWindow_Attribute;
         private PropertyBag bag1 = null;
 
         public SimplePropertyWindow()
@@ -63,15 +63,13 @@ namespace FrwSoftware
             }
         }
 
-           
+
 
         override public void CreateView()
         {
         }
         override public void ProcessView()
         {
-     
-
             if (SourceObjectType != null)
             {
                 string descr = ModelHelper.GetEntityJDescriptionOrName(SourceObjectType);
@@ -87,7 +85,7 @@ namespace FrwSoftware
                 bag1.ValueModified += Bag1_ValueModified;
                 bag1.SourceObject = tempSourceObject;
                 bag1.SourceObjectType = SourceObjectType;
-            
+
                 PropertyInfo[] propsList = AttrHelper.GetBasePropertiesFirst(tempSourceObject.GetType());
                 PropertyInfo pName = AttrHelper.GetProperty<JNameProperty>(tempSourceObject.GetType());
                 if (pName != null)
@@ -173,7 +171,7 @@ namespace FrwSoftware
             {
                 if (tempSourceObject != null)
                 {
-                    if(e.Property.PropTag != null && e.Property.PropTag is IField)
+                    if (e.Property.PropTag != null && e.Property.PropTag is IField)
                     {
                         e.Value = (e.Property.PropTag as IField).Value;
                     }
@@ -203,7 +201,8 @@ namespace FrwSoftware
 
         private void bag1_SetValue(object sender, PropertySpecEventArgs e)
         {
-            try {
+            try
+            {
                 SetModified(true);
                 if (tempSourceObject != null)
                 {
@@ -228,18 +227,18 @@ namespace FrwSoftware
                             object oldValue = null;
                             //try
                             //{
-                                oldValue = AttrHelper.GetPropertyValue(tempSourceObject, name);
-                                AttrHelper.SetPropertyValue(tempSourceObject, name, e.Value);
+                            oldValue = AttrHelper.GetPropertyValue(tempSourceObject, name);
+                            AttrHelper.SetPropertyValue(tempSourceObject, name, e.Value);
 
-                                //Dm.Instance.SaveObject(tempSourceObject, name);
+                            //Dm.Instance.SaveObject(tempSourceObject, name);
 
-                                //ChildObjectUpdateEventArgs ev = new ChildObjectUpdateEventArgs();
-                                //ev.UpdatedObject = tempSourceObject;
-                                //OnPropertyObjectUpdate(ev);
+                            //ChildObjectUpdateEventArgs ev = new ChildObjectUpdateEventArgs();
+                            //ev.UpdatedObject = tempSourceObject;
+                            //OnPropertyObjectUpdate(ev);
                             //}
                             //catch(JValidationException ex)
                             //{
-                             //   AppManager.ShowValidationErrorMessage(ex);
+                            //   AppManager.ShowValidationErrorMessage(ex);
                             //    AttrHelper.SetPropertyValue(tempSourceObject, name, oldValue);
                             //}
                         }
@@ -269,11 +268,11 @@ namespace FrwSoftware
 
             object t = DictHelper.Get(pars, "SourceObjectType");
             if (t != null && t is Type) SourceObjectType = t as Type;
-            else if (t != null &&t is string)
+            else if (t != null && t is string)
             {
                 string typeName = t as string;
                 SourceObjectType = TypeHelper.FindType(typeName);
-               
+
             }
             else if (t != null) throw new ArgumentException();
         }
@@ -291,12 +290,27 @@ namespace FrwSoftware
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            SaveChanges();
+            try
+            {
+                SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Log.ShowError(ex);
+            }
         }
 
         private void revertButton_Click(object sender, EventArgs e)
         {
-            RevertChanges();
+            try
+            {
+                RevertChanges();
+            }
+            catch (Exception ex)
+            {
+                Log.ShowError(ex);
+            }
+
         }
     }
 }
