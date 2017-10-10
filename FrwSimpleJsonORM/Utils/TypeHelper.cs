@@ -128,7 +128,6 @@ namespace FrwSoftware
                             image = (Image)rm.GetObject(imageTitle);
                             if (image != null)
                             {
-
                                 break;
                             }
                         }

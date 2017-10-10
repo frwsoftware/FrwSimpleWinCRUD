@@ -519,4 +519,16 @@
   <data name="BaseListWindow_DependenciesReport" xml:space="preserve">
     <value>Отчет о зависимостях</value>
   </data>
+  <data name="BaseApplicationContext_Show_Main_Window_OnStartup" xml:space="preserve">
+    <value>Показывать главное окно при старте программы</value>
+  </data>
+  <data name="BaseApplicationContext_Notification" xml:space="preserve">
+    <value>Уведомление!</value>
+  </data>
+  <data name="BaseApplicationContext_ShowMainWindow" xml:space="preserve">
+    <value>Показать окно</value>
+  </data>
+  <data name="BaseApplicationContext_Exit" xml:space="preserve">
+    <value>Выход</value>
+  </data>
 </root>

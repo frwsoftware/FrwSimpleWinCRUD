@@ -94,6 +94,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppManager.cs" />
+    <Compile Include="BaseApplicationContext.cs" />
     <Compile Include="ListViewBase\BaseViewWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>

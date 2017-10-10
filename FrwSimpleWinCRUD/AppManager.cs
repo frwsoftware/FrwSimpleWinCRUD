@@ -24,6 +24,12 @@ using FrwSoftware;
 
 namespace FrwSoftware
 {
+    public class NotificationEventArgs : EventArgs
+    {
+        public string Message { get; set; }
+    }
+    public delegate void NotificationEventHandler(object sender, NotificationEventArgs e);
+
     public class DocContentRegistredEventArgs : EventArgs
     {
         public IContent Content { get; set; }
@@ -37,6 +43,8 @@ namespace FrwSoftware
 
     public class AppManager
     {
+        public event NotificationEventHandler NotificationEvent;
+
         public AppManager()
         {
 
@@ -944,6 +952,21 @@ namespace FrwSoftware
             MessageBox.Show(owner, res.GetFullErrorString(), FrwConstants.WARNING, MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
         #endregion
+        public void ProcessNotification(string message)
+        {
+            if (NotificationEvent != null)
+            {
+                NotificationEvent(null, new NotificationEventArgs() { Message = message });
+            }
+        }
+        public void ProcessNotification(NotificationEventArgs e)
+        {
+            if (NotificationEvent != null)
+            {
+                NotificationEvent(null, e);
+            }
+        }
+
 
     }
 

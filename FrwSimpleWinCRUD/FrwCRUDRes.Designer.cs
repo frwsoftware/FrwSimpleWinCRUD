@@ -133,6 +133,42 @@ namespace FrwSoftware {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Exit application.
+        /// </summary>
+        internal static string BaseApplicationContext_Exit {
+            get {
+                return ResourceManager.GetString("BaseApplicationContext_Exit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notification!.
+        /// </summary>
+        internal static string BaseApplicationContext_Notification {
+            get {
+                return ResourceManager.GetString("BaseApplicationContext_Notification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show main window on application startup.
+        /// </summary>
+        internal static string BaseApplicationContext_Show_Main_Window_OnStartup {
+            get {
+                return ResourceManager.GetString("BaseApplicationContext_Show_Main_Window_OnStartup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show main application window.
+        /// </summary>
+        internal static string BaseApplicationContext_ShowMainWindow {
+            get {
+                return ResourceManager.GetString("BaseApplicationContext_ShowMainWindow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dependencies report.
         /// </summary>
         internal static string BaseListWindow_DependenciesReport {
