@@ -42,7 +42,6 @@ namespace FrwSoftware
             this.treeControl.ChangeNodeImageOnExpand = false;
             this.treeControl.ChildrenGetter = null;
             this.treeControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeControl.InitialCreateTreeNodeRoot = null;
             this.treeControl.Location = new System.Drawing.Point(0, 0);
             this.treeControl.Name = "treeControl";
             this.treeControl.ParentViewProcessor = null;
@@ -67,18 +66,19 @@ namespace FrwSoftware
             treeControl.DragEnter += TreeControl_DragEnter;
             treeControl.ItemDrag += TreeControl_ItemDrag;
 
-            treeControl.ComplateNodeFromObject += delegate (TreeNode node, object x)
+            treeControl.ComplateNode += delegate (TreeNode node, object x)
             {
                 ComplateNodeFromObject(node, x);
             };
 
         }
+
         override public void CreateView()
         {
             base.CreateView();
             LoadConfig();
             treeControl.BeginUpdate();
-            this.treeControl.InitialCreateTreeNodeRoot();
+            this.treeControl.InitCreateRootNodes();
             if (savedTreeState != null)
             {
                 //We can not use the same algorithm as in the Reload method. 
@@ -111,7 +111,9 @@ namespace FrwSoftware
         virtual protected void ComplateNodeFromObject(TreeNode node, object o)
         {
             node.Tag = o;
-            string name = ModelHelper.GetNameForObjectAdv(o);
+            string name = null;
+            if (o is string) name = o as string;
+            else name = ModelHelper.GetNameForObjectAdv(o);
             string shortName = (name.Length > 70) ? (name.Substring(0, 70) + "...") : name;
             node.Name = shortName;
             node.Text = shortName;
@@ -124,12 +126,26 @@ namespace FrwSoftware
             if (newObject != null)
             {
                 TreeNode selectedNode = selectedListItem as TreeNode;
-                TreeNode node = new TreeNode();
-                ComplateNodeFromObject(node, newObject);
-                selectedNode.Nodes.Add(node);
+                TreeNode node = AddNodeTo(selectedNode, newObject);
                 if (selectedNode.IsExpanded == false) selectedNode.Expand();
             }
         }
+
+        protected TreeNode AddNodeTo(TreeNode parent, object tagObject)
+        {
+            if (parent.Nodes.Count > 0 &&
+            parent.Nodes[0].Text == BaseTreeControl.PSEVDO_NODE_TEXT)
+            {
+                parent.Nodes[0].Remove();
+            }
+
+            TreeNode node = new TreeNode();
+            ComplateNodeFromObject(node, tagObject);
+            treeControl.PostCreateNode(node);
+            parent.Nodes.Add(node);
+            return node;
+        }
+
         override protected void DeleteObject(object selectedListItem, object[] selectedObjects)
         {
             DialogResult res = MessageBox.Show(null, FrwCRUDRes.List_Delete_Record_Confirmation,
@@ -339,6 +355,7 @@ namespace FrwSoftware
             {
                 bool expanded = n.IsExpanded;
                 ComplateNodeFromObject(n, o);
+                treeControl.PostCreateNode(n);
                 if (expanded)
                 {
                     //n.Expand();

@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using FrwSoftware;
+
 
 namespace FrwSoftware
 {
@@ -35,7 +35,7 @@ namespace FrwSoftware
     public delegate IEnumerable ChildrenGetterDelegate(TreeNode parentNode);
     public delegate void AfterEditTreeNodeLabelDelegate(object model, string labelText);
     public delegate void InitialCreateTreeNodeRootDelegate();
-    public delegate void ComplateNodeFromObjectDelegate(TreeNode node, object o);
+    public delegate void ComplateNodeDelegate(TreeNode node, object o);
 
     public class TreeContextMenuSelectEventArgs : EventArgs
     {
@@ -88,8 +88,39 @@ namespace FrwSoftware
         {
             this.BeginUpdate();
             RecourseRemove(this.Nodes);
-            InitialCreateTreeNodeRoot();
+            InitCreateRootNodes();
             this.EndUpdate();
+        }
+
+        public void InitCreateRootNodes()
+        {
+            if (ChildrenGetter != null)
+            {
+                IEnumerable oList = ChildrenGetter(null);
+                foreach(var o in oList)
+                {
+                    TreeNode node = new TreeNode();
+                    ComplateNode(node, o);
+                    PostCreateNode(node);
+                    Nodes.Add(node);
+                }
+            }
+        }
+
+        public void PostCreateNode(TreeNode node)
+        {
+            if (node.ImageKey == null) node.ImageKey = TREE_FOLDER_CLOSED;
+            if (node.SelectedImageKey == null) node.SelectedImageKey = TREE_FOLDER_CLOSED_SELECTED;
+            // add a pseudo-node (it is necessary to display a plus sign), which is then deleted when the branch is actually loaded
+            if (CanExpandGetter(node.Tag) == true)
+            {
+                if (!(node.Nodes.Count > 0 &&
+                    node.Nodes[0].Text == BaseTreeControl.PSEVDO_NODE_TEXT))
+                {
+                    node.Nodes.Add(PSEVDO_NODE_TEXT);
+                }
+            }
+
         }
 
         /// <summary>
@@ -114,21 +145,15 @@ namespace FrwSoftware
                 foreach(var o in oList)
                 {
                     TreeNode node = new TreeNode();
-                    if (ComplateNodeFromObject != null)
+                    if (ComplateNode != null)
                     {
-                        ComplateNodeFromObject(node, o);
+                        ComplateNode(node, o);
                     }
+                    PostCreateNode(node);
                     nodes.Add(node);
                 }
                 foreach (var node in nodes)
                 {
-                    if (node.ImageKey == null) node.ImageKey = TREE_FOLDER_CLOSED;
-                    if (node.SelectedImageKey == null) node.SelectedImageKey = TREE_FOLDER_CLOSED_SELECTED;
-                    // add a pseudo-node (it is necessary to display a plus sign), which is then deleted when the branch is actually loaded
-                    if (CanExpandGetter(node.Tag) == true)
-                    {
-                        node.Nodes.Add(PSEVDO_NODE_TEXT);
-                    }
                     parentNode.Nodes.Add(node);
                     if (savedExpansionState != null)
                     {
@@ -186,12 +211,12 @@ namespace FrwSoftware
         }
         private ChildrenGetterDelegate childrenGetter;
 
-        public ComplateNodeFromObjectDelegate ComplateNodeFromObject
+        public ComplateNodeDelegate ComplateNode
         {
-            get { return complateNodeFromObject; }
-            set { complateNodeFromObject = value; }
+            get { return complateNodeObject; }
+            set { complateNodeObject = value; }
         }
-        private ComplateNodeFromObjectDelegate complateNodeFromObject;
+        private ComplateNodeDelegate complateNodeObject;
 
         
 
@@ -424,7 +449,6 @@ namespace FrwSoftware
                 Log.ShowError(ex);
             }
         }
-
 
     }
 }
