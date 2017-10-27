@@ -135,6 +135,9 @@
       <DependentUpon>InvoiceListWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="DemoAppManager.cs" />
+    <Compile Include="Model\Test\TestDto10.cs" />
+    <Compile Include="Model\Test\TestDto11.cs" />
+    <Compile Include="Model\Test\TestDto9.cs" />
     <Compile Include="UnitTests\DmUnitTest.cs" />
     <Compile Include="FrwMainAppForm.cs">
       <SubType>Form</SubType>

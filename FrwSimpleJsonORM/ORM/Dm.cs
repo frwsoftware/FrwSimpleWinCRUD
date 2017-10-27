@@ -212,7 +212,7 @@ namespace FrwSoftware
         {
             return Path.Combine(FrwConfig.Instance.ProfileDir, DATA_STORAGE);
         }
- 
+
         virtual public void Init()
         {
             //create caches in Init method - this is good check that no CRUD methods can be called before initialization 
@@ -220,7 +220,7 @@ namespace FrwSoftware
             joinDatas = new List<JoinEntityData>();//Cache for crosstables
             dictionaries = new List<JDictionary>();//cache for dicrionaries
 
-            ComplateAndVerifyEntityRegistration(true);            
+            ComplateAndVerifyEntityRegistration(true);
             InitDictionaries();
         }
         virtual protected void InitDictionaries()
@@ -261,13 +261,29 @@ namespace FrwSoftware
                 {
                     JPrimaryKey pkAttr = AttrHelper.GetAttribute<JPrimaryKey>(p);
                     if (pkAttr != null) pkFound = true;
+                    JOneToOne oneToOneAttr = AttrHelper.GetAttribute<JOneToOne>(p);
                     JManyToOne manyToOneAttr = AttrHelper.GetAttribute<JManyToOne>(p);
                     JOneToMany oneToManyAttr = AttrHelper.GetAttribute<JOneToMany>(p);
                     JManyToMany manyToManyAttr = AttrHelper.GetAttribute<JManyToMany>(p);
-                    if (manyToOneAttr != null)
+                    if (oneToOneAttr != null)
                     {
-                        if (oneToManyAttr != null || manyToManyAttr != null)
-                            throw new Exception("Property can not be marked more than one ralation attribute. Property " +
+                        if (manyToOneAttr != null || oneToManyAttr != null || manyToManyAttr != null)
+                            throw new Exception("Property can not be marked more than one relation attribute. Property " +
+                               p.Name + " in enitty " + sourceEntityType);
+                        Type foreinEntityType = p.PropertyType;
+                        if (AttrHelper.IsAttributeDefinedForType<JEntity>(foreinEntityType, true) == false)
+                        {
+                            throw new Exception("Not registred (marked JEntity by attribute) referenced entity "
+                               + foreinEntityType + " which referenced by  relation property " +
+                               p.Name + " in enitty " + sourceEntityType);
+                        }
+                        PropertyInfo refFieldInForeinEntity = FindRefFieldInForeinEntity(sourceEntityType, foreinEntityType, typeof(JOneToOne), null);
+
+                    }
+                    else if (manyToOneAttr != null)
+                    {
+                        if (oneToOneAttr != null && oneToManyAttr != null || manyToManyAttr != null)
+                            throw new Exception("Property can not be marked more than one relation attribute. Property " +
                                p.Name + " in enitty " + sourceEntityType);
                         Type foreinEntityType = p.PropertyType;
                         if (AttrHelper.IsAttributeDefinedForType<JEntity>(foreinEntityType, true) == false)
@@ -291,12 +307,12 @@ namespace FrwSoftware
                                 }
                             }
                         }
-                        
+
                     }
                     else if (oneToManyAttr != null)
                     {
-                        if (manyToManyAttr != null || manyToManyAttr != null)
-                            throw new Exception("Property can not be marked more than one ralation attribute. Property " +
+                        if (oneToOneAttr != null && manyToManyAttr != null || manyToManyAttr != null)
+                            throw new Exception("Property can not be marked more than one relation attribute. Property " +
                                p.Name + " in enitty " + sourceEntityType);
                         Type foreinEntityType = AttrHelper.GetGenericListArgType(p.PropertyType);//difference from manytoone!
                         if (AttrHelper.IsAttributeDefinedForType<JEntity>(foreinEntityType, true) == false)
@@ -331,7 +347,7 @@ namespace FrwSoftware
                     }
                     else if (manyToManyAttr != null)
                     {
-                        if (oneToManyAttr != null || manyToOneAttr != null)
+                        if (oneToOneAttr != null && oneToManyAttr != null || manyToOneAttr != null)
                             throw new Exception("Property can not be marked more than one ralation attribute. Property " +
                                p.Name + " in enitty " + sourceEntityType);
 
@@ -367,7 +383,7 @@ namespace FrwSoftware
             {
                 LoadAllEntitiesData(entities);
             }
-            else{
+            else {
                 //todo: if not load we must register all Entities and jointables
                 throw new NotImplementedException("if not load we must register all Entities and jointables");
             }
@@ -425,7 +441,8 @@ namespace FrwSoftware
                 }
                 return Dm.MakeStringFromObjectList(value, maxCount, maxLength, truncatedValueSufix, delimeter);
             }
-            else if (AttrHelper.GetAttribute<JManyToOne>(propInfo) != null)
+            else if (AttrHelper.GetAttribute<JManyToOne>(propInfo) != null
+                || AttrHelper.GetAttribute<JOneToOne>(propInfo) != null)
             {
                 Dm.Instance.ResolveRelation(rowObject, sourceObjectType, propInfo);//do nothing
                 object value = AttrHelper.GetPropertyValue(rowObject, propInfo);
@@ -571,10 +588,56 @@ namespace FrwSoftware
             if (rowObject == null) return;
             Type sourceEntityType = rowObject.GetType();
             PropertyInfo pkProp = AttrHelper.GetProperty<JPrimaryKey>(sourceEntityType);
+            JOneToOne oneToOneAttr = AttrHelper.GetAttribute<JOneToOne>(p);
             JManyToOne manyToOneAttr = AttrHelper.GetAttribute<JManyToOne>(p);
             JOneToMany oneToManyAttr = AttrHelper.GetAttribute<JOneToMany>(p);
             JManyToMany manyToManyAttr = AttrHelper.GetAttribute<JManyToMany>(p);
-            if (manyToOneAttr != null)
+            if (oneToOneAttr != null)
+            {
+                Type foreinEntityType = p.PropertyType;
+                JEntity foreinEntityAttr = AttrHelper.GetClassAttribute<JEntity>(foreinEntityType);
+                if (foreinEntityAttr.CustomLoad == true) return;//temp todo
+
+                IList allMayBeReferenced = FindAll(foreinEntityType);
+                if (newObject != null)
+                {
+                    //PropertyInfo foreinPkProp = AttrHelper.GetProperty<JPrimaryKey>(foreinEntityType);
+                    //object foreinPKValue = AttrHelper.GetPropertyValue(newObject, foreinPkProp.Name);
+                    //if (Find(foreinEntityType, foreinPKValue) == null) throw new Exception("Object from field " + p.Name + " not present in referenced entity " + foreinEntityType);
+
+                    if (!allMayBeReferenced.Contains(newObject)) throw new Exception("Object from field " + p.Name + " not present in referenced entity " + foreinEntityType);
+                }
+
+                AttrHelper.SetPropertyValue(rowObject, p, newObject);
+                // reverse 
+                PropertyInfo refFieldInForeinEntity = FindRefFieldInForeinEntity(sourceEntityType, foreinEntityType, typeof(JOneToOne), null);
+                if (refFieldInForeinEntity != null)//if reverse relation field present
+                {
+                    foreach (var l in allMayBeReferenced)
+                    {
+                        object foreinEntityValue = refFieldInForeinEntity.GetValue(l);
+                        if (newObject == null && rowObject.Equals(foreinEntityValue) == true)
+                        {
+                            //unset on not this relation
+                            refFieldInForeinEntity.SetValue(l, null);
+                        }
+                        else if (newObject != null)
+                        {
+                            if (newObject.Equals(l) && rowObject.Equals(foreinEntityValue) == false)
+                            {
+                                //set
+                                refFieldInForeinEntity.SetValue(l, rowObject);
+                            }
+                            else if (newObject.Equals(l) == false && rowObject.Equals(foreinEntityValue) == true)
+                            {
+                                //unset
+                                refFieldInForeinEntity.SetValue(l, null);
+                            }
+                        }
+                    }
+                }
+            }
+            else if (manyToOneAttr != null)
             {
                 Type foreinEntityType = p.PropertyType;
                 JEntity foreinEntityAttr = AttrHelper.GetClassAttribute<JEntity>(foreinEntityType);
@@ -856,11 +919,12 @@ namespace FrwSoftware
         {
             
             PropertyInfo pkProp = AttrHelper.GetProperty<JPrimaryKey>(sourceEntityType);
+            JOneToOne oneToOneAttr = AttrHelper.GetAttribute<JOneToOne>(p);
             JManyToOne manyToOneAttr = AttrHelper.GetAttribute<JManyToOne>(p);
             JOneToMany oneToManyAttr = AttrHelper.GetAttribute<JOneToMany>(p);
             JManyToMany manyToManyAttr = AttrHelper.GetAttribute<JManyToMany>(p);
 
-            if (manyToOneAttr != null)
+            if (oneToOneAttr != null || manyToOneAttr != null)
             {
                 //JManyToOne - autoresolved
             }
@@ -982,7 +1046,7 @@ namespace FrwSoftware
                 //nameToFind Can be null, then it is assumed that the foreinEntityRefField is the only one and matches the type (previously: by name with pk)
                 foreach (var p in foreinEntityRefFields)
                 {
-                    Type refType = (typeof(JManyToOne).Equals(attrTypeToFind)) ? p.PropertyType : AttrHelper.GetGenericListArgType(p.PropertyType);
+                    Type refType = (typeof(JManyToOne).Equals(attrTypeToFind) || typeof(JOneToOne).Equals(attrTypeToFind)) ? p.PropertyType : AttrHelper.GetGenericListArgType(p.PropertyType);
                     if (refType.Equals(sourceEntityType))
                     {
                         if (foreinEntityRefField != null) throw new Exception("Found more than one field referenced to this entity type");
@@ -992,6 +1056,8 @@ namespace FrwSoftware
             }
             else
             {
+                if (typeof(JOneToOne).Equals(attrTypeToFind)) throw new ArgumentException();
+                
                 //nameToFind Set explicitly, which is relevant if the table has several fields of the same type that refer to the same table
                 foreach (var p in foreinEntityRefFields)
                 {
@@ -1143,10 +1209,29 @@ namespace FrwSoftware
             PropertyInfo[] ps = t.GetProperties();
             foreach (var p in ps)
             {
+                JOneToOne oneToOneAttr = AttrHelper.GetAttribute<JOneToOne>(p);
                 JManyToOne manyToOneAttr = AttrHelper.GetAttribute<JManyToOne>(p);
-                //many to one is necessary, so we can start from this entity 
-                if (manyToOneAttr != null)
+                //one to one and many to one is necessary, so we can start from this entity 
+                if (oneToOneAttr != null)
                 {
+                    Type foreinEntityType = p.PropertyType;
+                    PropertyInfo refFieldInForeinEntity = FindRefFieldInForeinEntity(t, foreinEntityType, typeof(JOneToOne), null);
+                    if (refFieldInForeinEntity != null)//if reverse relation field present
+                    {
+                        object refValue = AttrHelper.GetPropertyValue(o, p);
+                        if (refValue != null)
+                        {
+                            object foreinEntityValue = refFieldInForeinEntity.GetValue(refValue);
+                            if (foreinEntityValue != null)
+                            {
+                                refFieldInForeinEntity.SetValue(refValue, null);
+                            }
+                        }
+                    }
+                }
+                else if (manyToOneAttr != null)
+                {
+
                     Type foreinEntityType = p.PropertyType;
                     PropertyInfo refFieldInForeinEntity = FindRefFieldInForeinEntity(t, foreinEntityType, typeof(JOneToMany), manyToOneAttr.RefFieldNameInForeinEntity);
                     if (refFieldInForeinEntity != null)//if reverse relation field present
@@ -1229,8 +1314,9 @@ namespace FrwSoftware
                 bool modified = false;
                 foreach (PropertyInfo p in potentialRefEntityType.GetProperties())
                 {
+                    JOneToOne oneToOneAttr = AttrHelper.GetAttribute<JOneToOne>(p);
                     JManyToOne manyToOneAttr = AttrHelper.GetAttribute<JManyToOne>(p);
-                    if (manyToOneAttr != null)
+                    if (oneToOneAttr != null || manyToOneAttr != null)
                     {
                         Type foreinEntityType = p.PropertyType;
                         if (foreinEntityType == t)
@@ -1249,7 +1335,6 @@ namespace FrwSoftware
                                 }
                             }
                         }
-
                     }
                 }
                 if (modified) SetEntityModified(potentialRefEntityType);
@@ -1269,8 +1354,9 @@ namespace FrwSoftware
             {
                 foreach (PropertyInfo p in entity.GetProperties())
                 {
+                    JOneToOne oneToOneAttr = AttrHelper.GetAttribute<JOneToOne>(p);
                     JManyToOne manyToOneAttr = AttrHelper.GetAttribute<JManyToOne>(p);
-                    if (manyToOneAttr != null)
+                    if (oneToOneAttr != null || manyToOneAttr != null)
                     {
                         Type foreinEntityType = p.PropertyType;
                         if (foreinEntityType == sourceEntityType)
@@ -1620,7 +1706,7 @@ namespace FrwSoftware
             if (sdata == null)
             {
                 sdata = LoadEntityFromDisk(t);
-                ResolveManyToRelationsForEntity(sdata);
+                ResolveOneToOneAndManyToOneRelationsForEntity(sdata);
                 ResolveToManyRelationsForEntity(sdata);
             }
             return (IList)sdata.DataList;
@@ -1661,7 +1747,7 @@ namespace FrwSoftware
                 if (entityAttr.CustomLoad == false)
                 {
                     long tstart = DateTime.Now.Ticks;
-                    ResolveManyToRelationsForEntity(sdata);
+                    ResolveOneToOneAndManyToOneRelationsForEntity(sdata);
                     long tend = DateTime.Now.Ticks;
                     //Log.ProcessDebug("Resolve ManyTo: " + sdata.DataType.FullName + " Count: " + ((IList)sdata.DataList).Count +
                         //" Time: " + (tend - tstart) / 10000 + " mils");
@@ -1744,7 +1830,7 @@ namespace FrwSoftware
         {
         }
 
-        private void ResolveManyToRelationsForEntity(SData sdata)
+        private void ResolveOneToOneAndManyToOneRelationsForEntity(SData sdata)
         {
             Type t = sdata.DataType;
             IList list = (IList)sdata.DataList;
@@ -1754,8 +1840,9 @@ namespace FrwSoftware
                 var props = t.GetProperties();
                 foreach (var p in props)
                 {
+                    JOneToOne oneToOneAttr = AttrHelper.GetAttribute<JOneToOne>(t, p.Name);
                     JManyToOne manyToOneAttr = AttrHelper.GetAttribute<JManyToOne>(t, p.Name);
-                    if (manyToOneAttr != null)
+                    if (oneToOneAttr != null && manyToOneAttr != null)
                     {
                         Type pt = p.PropertyType;
                         object pvSaved = p.GetValue(l);
@@ -1914,7 +2001,8 @@ namespace FrwSoftware
             {
                 if (p.GetSetMethod() != null)
                 {
-                    JManyToOne manyToOneAttr = AttrHelper.GetAttribute<JManyToOne>(p);
+                    //JOneToOne oneToOneAttr = AttrHelper.GetAttribute<JOneToOne>(p);
+                    //JManyToOne manyToOneAttr = AttrHelper.GetAttribute<JManyToOne>(p);
                     JOneToMany oneToManyAttr = AttrHelper.GetAttribute<JOneToMany>(p);
                     JManyToMany manyToManyAttr = AttrHelper.GetAttribute<JManyToMany>(p);
                     Type foreinEntityType = null;
@@ -2024,12 +2112,13 @@ namespace FrwSoftware
             {
                 if (p.GetSetMethod() != null)
                 {
+                    JOneToOne oneToOneAttr = AttrHelper.GetAttribute<JOneToOne>(p);
                     JManyToOne manyToOneAttr = AttrHelper.GetAttribute<JManyToOne>(p);
                     JOneToMany oneToManyAttr = AttrHelper.GetAttribute<JOneToMany>(p);
                     JManyToMany manyToManyAttr = AttrHelper.GetAttribute<JManyToMany>(p);
 
                     if (cloneLevel > CopyRestrictLevel.AllPropertiesFullCopy
-                        && (manyToOneAttr != null || oneToManyAttr != null || manyToManyAttr != null))
+                        && (oneToOneAttr != null || manyToOneAttr != null || oneToManyAttr != null || manyToManyAttr != null))
                     {
                         if (cloneLevel >= CopyRestrictLevel.OnlySimleProperties)
                         {
@@ -2038,7 +2127,7 @@ namespace FrwSoftware
                         else {
                             if (cloneLevel >= CopyRestrictLevel.AllPropertiesManytoOnePK)
                             {
-                                if (manyToOneAttr != null)
+                                if (oneToOneAttr != null || manyToOneAttr != null)
                                 {
                                     //replace by entity with pk only
                                     Type foreinEntityType = p.PropertyType;
@@ -2058,7 +2147,7 @@ namespace FrwSoftware
                                 if (manyToManyAttr != null || oneToManyAttr != null) foreinEntityType = AttrHelper.GetGenericListArgType(p.PropertyType);
                                 else foreinEntityType = p.PropertyType;
 
-                                if (manyToOneAttr != null)
+                                if (oneToOneAttr != null || manyToOneAttr != null)
                                 {
                                     object realObject = p.GetValue(o);
                                     if (realObject != null)
@@ -2083,7 +2172,7 @@ namespace FrwSoftware
                             }
                             else if (cloneLevel >= CopyRestrictLevel.AllPropertiesNewLists)
                             {
-                                if (manyToOneAttr != null)
+                                if (oneToOneAttr != null || manyToOneAttr != null)
                                 {
                                     //simple copy
                                     p.SetValue(destObject, p.GetValue(o));

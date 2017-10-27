@@ -648,6 +648,7 @@ namespace FrwSoftware
             PropertyInfo propInfo = sourceObjectType.GetProperty(aspectName);
             if (AttrHelper.GetAttribute<JOneToMany>(propInfo) != null) return true;
             else if (AttrHelper.GetAttribute<JManyToMany>(propInfo) != null) return true;
+            else if (AttrHelper.GetAttribute<JOneToOne>(propInfo) != null) return true;
             else if (AttrHelper.GetAttribute<JManyToOne>(propInfo) != null) return true;
             else if (AttrHelper.GetAttribute<JDictProp>(propInfo) != null) return true;
             else if (AttrHelper.GetAttribute<JImageName>(propInfo) != null) return true;
@@ -729,6 +730,7 @@ namespace FrwSoftware
             Type sourceObjectType = rowObject.GetType();
             Type pType = AttrHelper.GetPropertyType(sourceObjectType, aspectName);
             PropertyInfo p = sourceObjectType.GetProperty(aspectName);
+            JOneToOne oneToOneAttr = AttrHelper.GetAttribute<JOneToOne>(sourceObjectType, aspectName);
             JManyToOne manyToOneAttr = AttrHelper.GetAttribute<JManyToOne>(sourceObjectType, aspectName);
             JOneToMany oneToManyAttr = AttrHelper.GetAttribute<JOneToMany>(sourceObjectType, aspectName);
             JManyToMany manyToManyAttr = AttrHelper.GetAttribute<JManyToMany>(sourceObjectType, aspectName);
@@ -736,7 +738,7 @@ namespace FrwSoftware
 
 
             complated = false;
-            if (manyToOneAttr != null)
+            if (oneToOneAttr != null || manyToOneAttr != null)
             {
                 SimpleListDialog listDialog = new SimpleListDialog(p.PropertyType);
                 listDialog.EnableSetNull = true;

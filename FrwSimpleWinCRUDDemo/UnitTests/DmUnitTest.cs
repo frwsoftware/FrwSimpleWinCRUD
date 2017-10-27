@@ -19,6 +19,7 @@ using FrwSoftware;
 using FrwSoftware.Model.Chinook;
 using System.Collections.Generic;
 using System.Reflection;
+using FrwSoftware.Model.Test;
 
 namespace FrwSimpleWinCRUDUnitTestProject
 {
@@ -81,6 +82,43 @@ namespace FrwSimpleWinCRUDUnitTestProject
             Assert.IsFalse(found.Contains(track0));
             Assert.IsTrue(found.Contains(track2));
             Assert.IsFalse(found.Contains(track3));
+
+            //one to one 
+            TestDto9 testDto9_1 = Dm.Instance.EmptyObject<TestDto9>();
+            Dm.Instance.SaveObject(testDto9_1);
+            TestDto9 testDto9_2 = Dm.Instance.EmptyObject<TestDto9>();
+            Dm.Instance.SaveObject(testDto9_2);
+
+            TestDto10 testDto10_1 = Dm.Instance.EmptyObject<TestDto10>();
+            Dm.Instance.SaveObject(testDto10_1);
+            TestDto10 testDto10_2 = Dm.Instance.EmptyObject<TestDto10>();
+            Dm.Instance.SaveObject(testDto10_2);
+
+            TestDto11 testDto11_1 = Dm.Instance.EmptyObject<TestDto11>();
+            Dm.Instance.SaveObject(testDto11_1);
+            TestDto11 testDto11_2 = Dm.Instance.EmptyObject<TestDto11>();
+            Dm.Instance.SaveObject(testDto11_2);
+
+            testDto9_1.TestDto10 = testDto10_1;
+            testDto9_1.TestDto11 = testDto11_1;
+            Dm.Instance.SaveObject(testDto9_1);
+
+            Assert.AreSame(testDto11_1.TestDto9, testDto9_1);
+            Assert.IsNull(testDto11_2.TestDto9);
+
+            testDto9_1.TestDto11 = testDto11_2;
+            Dm.Instance.SaveObject(testDto9_1);
+            Assert.AreSame(testDto11_2.TestDto9, testDto9_1);
+            Assert.IsNull(testDto11_1.TestDto9);
+
+
+            Dm.Instance.DeleteObject(testDto10_1);
+            Assert.IsNull(testDto9_1.TestDto10);
+            Dm.Instance.DeleteObject(testDto9_1);
+            //Assert.IsNull(testDto11_1.TestDto9);
+            Assert.IsNull(testDto11_2.TestDto9);
+
+
 
             //many to one
             //set
@@ -158,9 +196,6 @@ namespace FrwSimpleWinCRUDUnitTestProject
             Assert.IsFalse(album2.Tracks.Contains(track0));
 
 
-
-
-
             //reverse set
             track0.Album = album2;
             Dm.Instance.SaveObject(track0);
@@ -168,7 +203,6 @@ namespace FrwSimpleWinCRUDUnitTestProject
             Dm.Instance.SaveObject(album2);
             Assert.AreEqual(album2.Tracks.Count, 0);
             Assert.IsNull(track0.Album);
-
 
 
             //set unsaved

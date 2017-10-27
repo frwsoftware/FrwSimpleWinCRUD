@@ -202,6 +202,12 @@ namespace FrwSoftware
     #region relation
 
     [AttributeUsage(AttributeTargets.Property)]
+    public class JOneToOne : Attribute
+    {
+    }
+
+
+    [AttributeUsage(AttributeTargets.Property)]
     public class JManyToOne : Attribute
     {
         public JManyToOne()

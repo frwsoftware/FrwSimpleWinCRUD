@@ -121,7 +121,7 @@ namespace FrwSoftware
                     }
                     else
                     {
-                        JManyToOne manyToOneAttr = AttrHelper.GetAttribute<JManyToOne>(SourceObjectType, p.Name);
+                        //JManyToOne manyToOneAttr = AttrHelper.GetAttribute<JManyToOne>(SourceObjectType, p.Name);
                         JReadOnly readOnlyAttr = AttrHelper.GetAttribute<JReadOnly>(SourceObjectType, p.Name);
                         JIgnore ignoreAttr = AttrHelper.GetAttribute<JIgnore>(SourceObjectType, p.Name);
 

@@ -90,7 +90,7 @@ namespace FrwSoftware
             {
                 if (excludes != null && Array.Exists(excludes, element => element == p.Name)) continue;
                 if (includes != null && !Array.Exists(includes, element => element == p.Name)) continue;
-                JManyToOne manyToOneAttr = AttrHelper.GetAttribute<JManyToOne>(t, p.Name);
+                //JManyToOne manyToOneAttr = AttrHelper.GetAttribute<JManyToOne>(t, p.Name);
                 JIgnore ignoreAttr = AttrHelper.GetAttribute<JIgnore>(t, p.Name);
                 if (ignoreAttr != null) continue;
                 string desc = GetPropertyJDescriptionOrName(p);
