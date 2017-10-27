@@ -701,7 +701,7 @@ namespace FrwSoftware
             if (listView.SelectedIndex > -1) return listView.GetItem(listView.SelectedIndex);
             else return null;
         }
-        override protected IList GetSelectedObjects()
+        override public IList GetSelectedObjects()
         {
             return listView.SelectedObjects;
         }

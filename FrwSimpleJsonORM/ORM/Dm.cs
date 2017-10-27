@@ -1,16 +1,17 @@
-﻿/**********************************************************************************
- *   FrwSimpleWinCRUD   https://github.com/frwsoftware/FrwSimpleWinCRUD
- *   The Open-Source Library for most quick  WinForm CRUD application creation
- *   MIT License Copyright (c) 2016 FrwSoftware
- *
- *   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *   SOFTWARE.
- **********************************************************************************/
+﻿using FrwSoftware.Properties;
+/**********************************************************************************
+*   FrwSimpleWinCRUD   https://github.com/frwsoftware/FrwSimpleWinCRUD
+*   The Open-Source Library for most quick  WinForm CRUD application creation
+*   MIT License Copyright (c) 2016 FrwSoftware
+*
+*   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+*   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+*   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+*   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+*   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+*   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+*   SOFTWARE.
+**********************************************************************************/
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -195,6 +196,7 @@ namespace FrwSoftware
         static public string TemplatesDirPrefix = "templatesDir";
         public const string STORAGE_PREFIX = "storage:";//Prefix for internal storage
         protected const string DATA_STORAGE = "dataStorage";//Data warehouse prefix in the profile
+        protected const string DATA_CACHE = "dataCache";//Cache prefix in the profile
         public const int TRUNCATED_VALUE_MAX_ITEM_COUNT = 10;
         public const int TRUNCATED_VALUE_MAX_STRING_LENGTH = 300;
 
@@ -575,8 +577,15 @@ namespace FrwSoftware
             if (manyToOneAttr != null)
             {
                 Type foreinEntityType = p.PropertyType;
+                JEntity foreinEntityAttr = AttrHelper.GetClassAttribute<JEntity>(foreinEntityType);
+                if (foreinEntityAttr.CustomLoad == true) return;//temp todo
+
                 IList allMayBeReferenced = FindAll(foreinEntityType);
                 if (newObject != null) {
+                    //PropertyInfo foreinPkProp = AttrHelper.GetProperty<JPrimaryKey>(foreinEntityType);
+                    //object foreinPKValue = AttrHelper.GetPropertyValue(newObject, foreinPkProp.Name);
+                    //if (Find(foreinEntityType, foreinPKValue) == null) throw new Exception("Object from field " + p.Name + " not present in referenced entity " + foreinEntityType);
+
                     if (!allMayBeReferenced.Contains(newObject)) throw new Exception("Object from field " + p.Name + " not present in referenced entity " + foreinEntityType);
                 }
 
@@ -613,6 +622,9 @@ namespace FrwSoftware
                 IList newRelObjects = (IList)newObject;
                 if (FindDublicatesInList(newRelObjects) != null) throw new Exception("Found dublicates in values list of property " + p.Name + "  entity " + sourceEntityType); 
                 Type foreinEntityType = AttrHelper.GetGenericListArgType(p.PropertyType);//difference from manytoone!
+                JEntity foreinEntityAttr = AttrHelper.GetClassAttribute<JEntity>(foreinEntityType);
+                if (foreinEntityAttr.CustomLoad == true) return;//temp todo
+
                 IList allMayBeReferenced = FindAll(foreinEntityType);
                 foreach (var o in newRelObjects)
                 {
@@ -674,6 +686,9 @@ namespace FrwSoftware
                 IList newRelObjects = (IList)newObject;
                 if (FindDublicatesInList(newRelObjects) != null) throw new Exception("Found dublicates in values list of property " + p.Name + "  entity " + sourceEntityType);
                 Type foreinEntityType = AttrHelper.GetGenericListArgType(p.PropertyType);//difference from manytoone!
+                JEntity foreinEntityAttr = AttrHelper.GetClassAttribute<JEntity>(foreinEntityType);
+                if (foreinEntityAttr.CustomLoad == true) return;//temp todo
+
                 IList allMayBeReferenced = FindAll(foreinEntityType);
                 foreach (var o in newRelObjects)
                 {
@@ -906,7 +921,13 @@ namespace FrwSoftware
             foreach (var foreinKeyValue in cValues)
             {
                 object sourceEntityValue = Find(foreinEntityType, foreinKeyValue);
-                values.Add(sourceEntityValue);
+                if (sourceEntityValue != null)
+                {
+                    values.Add(sourceEntityValue);
+                }
+                else { 
+                    //todo
+                }
             }
             return values;
         }
@@ -1711,10 +1732,17 @@ namespace FrwSoftware
             }
             sdata.DataList = list;
             sdatas.Add(sdata);
+            PostLoadEntity(t);
             return sdata;
         }
 
-
+        /// <summary>
+        /// Executes after entity data load from disk, but before resolving relations 
+        /// </summary>
+        /// <param name="t"></param>
+        virtual protected void PostLoadEntity(Type t)
+        {
+        }
 
         private void ResolveManyToRelationsForEntity(SData sdata)
         {
@@ -1739,13 +1767,26 @@ namespace FrwSoftware
                             object pkValue = pkProp.GetValue(pvSaved);
                             if (pkValue != null)
                             {
-                                pvReal = Find(pt, pkValue);
+                                try
+                                {
+                                    pvReal = Find(pt, pkValue);
+                                }
+                                catch (Exception ex)
+                                {
+                                    PropertyInfo nameProp = AttrHelper.GetProperty<JNameProperty>(pt);
+                                    if (nameProp != null) nameProp.SetValue(pvSaved, Resources.Dm_ErrorFinding + ex);
+                                }
+                                if (pvReal != null)
+                                {
+                                    p.SetValue(l, pvReal);
+                                }
+                                else
+                                {
+                                    //may be removed 
+                                    PropertyInfo nameProp = AttrHelper.GetProperty<JNameProperty>(pt);
+                                    if (nameProp != null) nameProp.SetValue(pvSaved, Resources.Dm_NotFound);
+                                }
                             }
-                            else
-                            {
-                                //may be removed 
-                            }
-                            p.SetValue(l, pvReal);
                         }
                     }
                 }
@@ -2210,9 +2251,17 @@ namespace FrwSoftware
             s.Modified = false;
         }
 
-        public string GetCommonStoragePathForObject(object o)
+        public string GetCommonStoragePath()
         {
             return Path.Combine(FrwConfig.Instance.ProfileDir, DATA_STORAGE);
+        }
+        public string GetCommonCachePath()
+        {
+            return Path.Combine(FrwConfig.Instance.ProfileDir, DATA_CACHE);
+        }
+        public string GetCommonTempPath()
+        {
+            return Path.Combine(FrwConfig.Instance.ProfileDir, TempDirPrefix);
         }
         public string GetStoragePrefixForObject(object o)
         {
@@ -2223,7 +2272,15 @@ namespace FrwSoftware
         }
         public string GetStorageFullPathForObject(object o)
         {
-            return Path.Combine(GetCommonStoragePathForObject(o), GetStoragePrefixForObject(o));
+            return Path.Combine(GetCommonStoragePath(), GetStoragePrefixForObject(o));
+        }
+        public string GetCacheFullPathForObject(object o)
+        {
+            return Path.Combine(GetCommonCachePath(), GetStoragePrefixForObject(o));
+        }
+        public string GetTempFullPathForObject(object o)
+        {
+            return Path.Combine(GetCommonTempPath(), GetStoragePrefixForObject(o));
         }
 
         #endregion
@@ -2307,8 +2364,27 @@ namespace FrwSoftware
 
         #endregion
 
+        #region JPreferences
 
-       
+        static protected string DEFAULT_PREFERENCES_ID = "1";
+        public Type PreferencesType { get; set; }
+
+        public JPreferences Preferences {
+            get
+            {
+                if (PreferencesType == null) throw new InvalidOperationException("PreferencesType must be set");// PreferencesType = typeof(JPreferences);
+                JPreferences preferences = Find(PreferencesType, DEFAULT_PREFERENCES_ID) as JPreferences;
+                if (preferences == null)
+                {
+                    preferences = EmptyObject(PreferencesType, null) as JPreferences;
+                    SaveObject(preferences);
+                }
+                return preferences;
+            }
+        }
+
+        #endregion
+
 
     }
 }

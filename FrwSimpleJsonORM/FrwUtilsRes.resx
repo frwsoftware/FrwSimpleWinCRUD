@@ -144,4 +144,28 @@
   <data name="Dm_Total" xml:space="preserve">
     <value>Total</value>
   </data>
+  <data name="JUserAgent" xml:space="preserve">
+    <value>User Agent</value>
+  </data>
+  <data name="JUserAgent_JUserAgentId" xml:space="preserve">
+    <value>Identifier</value>
+  </data>
+  <data name="JUserAgent_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="JUserAgent_Alias" xml:space="preserve">
+    <value>Alias</value>
+  </data>
+  <data name="JUserAgent_Data" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="JPreferences" xml:space="preserve">
+    <value>Preferences</value>
+  </data>
+  <data name="JPreferences_Identifier" xml:space="preserve">
+    <value>Identifier</value>
+  </data>
+  <data name="JPreferences_Name" xml:space="preserve">
+    <value>Preferences Name</value>
+  </data>
 </root>

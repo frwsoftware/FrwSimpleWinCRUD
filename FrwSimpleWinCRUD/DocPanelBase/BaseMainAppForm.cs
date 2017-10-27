@@ -25,7 +25,10 @@ namespace FrwSoftware
 {
     public partial class BaseMainAppForm : Form, IContentContainer
     {
-        
+        protected Queue<string> localNotificationQueue = new Queue<string>();
+        protected JobLog localNotificationLog = new JobLog();
+        protected System.Windows.Forms.Timer notificationTimer;
+
 
         protected DeserializeDockContent m_deserializeDockContent;
 
@@ -45,6 +48,9 @@ namespace FrwSoftware
         public BaseMainAppForm()
         {
             InitializeComponent();
+            this.notificationTimer = new System.Windows.Forms.Timer(this.components);
+            this.notificationTimer.Interval = 3000;
+            this.notificationTimer.Tick += new System.EventHandler(this.notificationTimer_Tick);
 
             AppManager.Instance.RegisterDocPanelContainer(this);
 
@@ -73,7 +79,40 @@ namespace FrwSoftware
             AppManager.Instance.ProcessViewForAllCreatedDocContents(this);
             AppManager.Instance.OnDocContentRegistredEvent += AppManager_OnDocContentRegistredEvent;
             AppManager.Instance.OnDocContentShowEvent += AppManager_OnDocContentShowEvent;
+            AppManager.Instance.NotificationEvent += Instance_NotificationEvent;
+            Log.EventLogEvent += Log_EventLogEvent;
+
+            notificationTimer.Enabled = true;
+
         }
+
+        private void notificationTimer_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                ProcessNotificationTimer();
+            }
+            catch (Exception ex)
+            {
+                Log.LogError(ex);
+            }
+
+        }
+        virtual protected void ProcessNotificationTimer()
+        {
+
+        }
+
+        private void Log_EventLogEvent(object sender, EventLogEventArgs e)
+        {
+            localNotificationQueue.Enqueue(e.Message);
+        }
+
+        private void Instance_NotificationEvent(object sender, NotificationEventArgs e)
+        {
+            localNotificationQueue.Enqueue(e.Message);
+        }
+
 
         private void FontSetting_ValueChanged(object sender, JSettingChangedEventArgs e)
         {

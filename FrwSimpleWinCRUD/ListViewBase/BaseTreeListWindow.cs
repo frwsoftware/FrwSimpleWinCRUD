@@ -377,7 +377,7 @@ namespace FrwSoftware
         {
             return new List<object>() { GetSelectedListItem() };
         }
-        override protected IList GetSelectedObjects()
+        override public IList GetSelectedObjects()
         {
             if (treeControl.SelectedNode != null && treeControl.SelectedNode.Tag != null)
                 return new List<object>() { treeControl.SelectedNode.Tag };

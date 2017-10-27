@@ -48,6 +48,10 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HtmlAgilityPack, Version=1.6.1.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.6.1\lib\Net45\HtmlAgilityPack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
@@ -71,6 +75,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\JPreferences.cs" />
+    <Compile Include="Model\JUserAgent.cs" />
     <Compile Include="Model\Support\WebEntryInfo.cs" />
     <Compile Include="Utils\AttrHelper.cs" />
     <Compile Include="ORM\Attributes.cs" />
@@ -92,6 +98,7 @@
     <Compile Include="Utils\HtmlUtils.cs" />
     <Compile Include="ORM\JDictionary.cs" />
     <Compile Include="ORM\JDictItem.cs" />
+    <Compile Include="Utils\JobLog.cs" />
     <Compile Include="Utils\JsonSerializeHelper.cs" />
     <Compile Include="ORM\FrwConfig.cs" />
     <Compile Include="Utils\JsonUtils.cs" />

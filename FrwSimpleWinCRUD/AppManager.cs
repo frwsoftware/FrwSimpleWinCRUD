@@ -267,6 +267,17 @@ namespace FrwSoftware
             return c;
         }
 
+        public T FindContent<T>(Type modelType = null, IDictionary<string, object> pars = null)
+        {
+            IContent c = localFindContent(typeof(T), modelType, pars);
+            return (T)c;
+        }
+
+        public IContent FindContent(Type contType, Type modelType, IDictionary<string, object> pars = null)
+        {
+            IContent c = localFindContent(contType, modelType, pars);
+            return c;
+        }
 
 
         // search for a window, does not create a window
@@ -878,7 +889,7 @@ namespace FrwSoftware
                 }
                 SimpleAttachmentsDialog dialog = new SimpleAttachmentsDialog();
 
-                dialog.CommonStoragePath = Dm.Instance.GetCommonStoragePathForObject(rowObject);
+                dialog.CommonStoragePath = Dm.Instance.GetCommonStoragePath();
                 dialog.StoragePrefixPath = Dm.Instance.GetStoragePrefixForObject(rowObject);
                 dialog.SourceObjects = attachments;//!!! after CommonStoragePath and StoragePrefixPath
                                                    //dialog.EditedText = s;

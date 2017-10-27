@@ -19,13 +19,13 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
-
+using HtmlAgilityPack;
 
 namespace FrwSoftware
 {
     public class HtmlUtils
     {
-        static public string HTML_TEMPLATE = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\"><html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><title>{0}</title><link rel=\"stylesheet\" type=\"text/css\" href=\"{1}\">{2}</head><body>{3}</body>";
+        static public string HTML_TEMPLATE = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\"><html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><title>{0}</title><link rel=\"stylesheet\" type=\"text/css\" href=\"{1}\">{2}</head><body>{3}</body></html>";
         static public string MakeHtmlFromTemplate(string title, string css, string additional, string body)
         {
             return string.Format(HTML_TEMPLATE, title, css, additional, body);
@@ -74,7 +74,7 @@ namespace FrwSoftware
                 CheckIsHtmlTagsFromList(text,
                     "a|abbr|acronym|address|area|b|base|bdo|big|blockquote|body|br|button|caption|cite|code|col|colgroup|dd|del|dfn|div|dl|DOCTYPE|dt|em|fieldset|form|h1|h2|h3|h4|h5|h6|head|html|hr|i|img|input|ins|kbd|label|legend|li|link|map|meta|noscript|object|ol|optgroup|option|p|param|pre|q|samp|script|select|small|span|strong|style|sub|sup|table|tbody|td|textarea|tfoot|th|thead|title|tr|tt|ul|var");
         }
-    
+
         public static string ConvertHtmlToPlainTextRegexp(string html)
         {
             const string tagWhiteSpace = @"(>|$)(\W|\n|\r)+<";//matches one or more (white space or line breaks) between '>' and '<'
@@ -97,7 +97,7 @@ namespace FrwSoftware
             return text;
         }
 
-  
+
         public static void AppendBr(StringBuilder str)
         {
             str.Append("<br/>");
@@ -114,5 +114,34 @@ namespace FrwSoftware
             return result;
         }
 
+        static public IList<string> SpliteTextIntoParagraph(string text)
+        {
+            return text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        }
+        static public IList<HtmlNode> CreateHtmlParagraphsFromText(string text, HtmlDocument doc)
+        {
+            List<HtmlNode> nodes = new List<HtmlNode>();
+            IList<string> strings = SpliteTextIntoParagraph(text);
+            foreach (var str in strings)
+            {
+                HtmlNode p = doc.CreateElement("p");
+                p.InnerHtml = str;
+                nodes.Add(p);
+            }
+            return nodes;
+        }
+        static public string CreateHtmlParagraphsFromText(string text)
+        {
+            StringBuilder sb = new StringBuilder();
+            IList<string> strings = SpliteTextIntoParagraph(text);
+            foreach (var str in strings)
+            {
+                sb.Append("<p>");
+                sb.Append(str);
+                sb.Append("</p>");
+                sb.Append(Environment.NewLine);
+            }
+            return sb.ToString();
+        }
     }
 }

@@ -59,5 +59,23 @@ namespace FrwSoftware.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error finding! .
+        /// </summary>
+        internal static string Dm_ErrorFinding {
+            get {
+                return ResourceManager.GetString("Dm_ErrorFinding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not Found!.
+        /// </summary>
+        internal static string Dm_NotFound {
+            get {
+                return ResourceManager.GetString("Dm_NotFound", resourceCulture);
+            }
+        }
     }
 }

@@ -253,11 +253,7 @@ namespace FrwSoftware
         }
         protected void UpdateObject(object selectedObject, dynamic extraParams = null)
         {
-            if (UpdateObjectLocal(selectedObject))
-            {
-                //refresh
-                RefreshObject(selectedObject);
-            }
+            UpdateObjectLocal(selectedObject);
         }
 
         protected bool UpdateObjectLocal(object selectedObject, dynamic extraParams = null)
@@ -967,7 +963,7 @@ namespace FrwSoftware
 
         // returns the first (or only) selected object
         // used in toolbar buttons for editing, browsing, new
-        protected object GetSelectedObject()
+        public object GetSelectedObject()
         {
             IList o = GetSelectedObjects();
             return (o != null && o.Count > 0) ? o[0] : null;
@@ -980,7 +976,7 @@ namespace FrwSoftware
 
         // returns all selected objects
         // used for the delete button
-        virtual protected IList GetSelectedObjects()
+        virtual public IList GetSelectedObjects()
         {
             return null;
         }

@@ -27,6 +27,8 @@ namespace FrwSoftware
         protected UserControl viewControl = null;
         public ViewType ViewType { get { return viewType; } set { viewType = value; } }
         public string FileFullPath { get; set; }
+        public string WebEntityInfoPropertyName { get; set; }
+        public BrowserPrivateType BrowserPrivateType { get; set; }
         public object LinkedObject { get; set; }
         protected bool viewProcessed = false;
 
@@ -75,6 +77,9 @@ namespace FrwSoftware
             }
             pars.Add("ViewType", ViewType);
             if (FileFullPath != null) pars.Add("FileFullPath", FileFullPath);
+            if (WebEntityInfoPropertyName != null) pars.Add("WebEntityInfoPropertyName", WebEntityInfoPropertyName);
+            pars.Add("BrowserPrivateType", BrowserPrivateType);
+            
             return pars;
         }
         public override void SetKeyParams(IDictionary<string, object> pars)
@@ -102,12 +107,25 @@ namespace FrwSoftware
 
             t = DictHelper.Get(pars, "FileFullPath");
             if (t != null) FileFullPath = t as string;
+
+            t = DictHelper.Get(pars, "WebEntityInfoPropertyName");
+            if (t != null) WebEntityInfoPropertyName = t as string;
+
+            t = DictHelper.Get(pars, "BrowserPrivateType");
+            if (t != null && t is BrowserPrivateType) BrowserPrivateType = (BrowserPrivateType)t;
+            else if (t != null && t is string) BrowserPrivateType = (t as string).ToEnum(BrowserPrivateType.COMMON_CACHE);
+            else if (t != null) throw new ArgumentException();
+
+
         }
         public override bool CompareKeyParams(IDictionary<string, object> pars)
         {
             if (!compareItemKey(DictHelper.Get(pars, "Item"), LinkedObject)) return false;
             if (!compareObjectKey(DictHelper.Get(pars, "ViewType"), ViewType)) return false;
             if (!compareStringKey(DictHelper.Get(pars, "FileFullPath"), FileFullPath)) return false;
+            if (!compareStringKey(DictHelper.Get(pars, "WebEntityInfoPropertyName"), WebEntityInfoPropertyName)) return false;
+            if (!compareObjectKey(DictHelper.Get(pars, "BrowserPrivateType"), BrowserPrivateType)) return false;
+            
             return true;
         }
         private bool compareItemKey(object key, object linkedObject)

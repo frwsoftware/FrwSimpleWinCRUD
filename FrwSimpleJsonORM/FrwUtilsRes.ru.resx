@@ -144,4 +144,28 @@
   <data name="Dm_Total" xml:space="preserve">
     <value>Всего записей</value>
   </data>
+  <data name="JUserAgent" xml:space="preserve">
+    <value>User Agent</value>
+  </data>
+  <data name="JUserAgent_JUserAgentId" xml:space="preserve">
+    <value>Идентификатор</value>
+  </data>
+  <data name="JUserAgent_Name" xml:space="preserve">
+    <value>Наименование</value>
+  </data>
+  <data name="JUserAgent_Alias" xml:space="preserve">
+    <value>Псевдоним</value>
+  </data>
+  <data name="JUserAgent_Data" xml:space="preserve">
+    <value>Данные</value>
+  </data>
+  <data name="JPreferences" xml:space="preserve">
+    <value>Настройки модели</value>
+  </data>
+  <data name="JPreferences_Identifier" xml:space="preserve">
+    <value>Идентификатор</value>
+  </data>
+  <data name="JPreferences_Name" xml:space="preserve">
+    <value>Наименовние блока настроек</value>
+  </data>
 </root>

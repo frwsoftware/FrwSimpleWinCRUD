@@ -29,6 +29,22 @@ namespace FrwSoftware
         Awesomium,  
         CefBrowser
     }
+
+    public enum LockIntReqType
+    {
+        BLOCK_NONE,
+        BLOCK_All_OTHER_DOMAIN,
+        BLOCK_All_EXPECT_ENTRY_POINT
+    }
+
+    public enum BrowserPrivateType
+    {
+        COMMON_CACHE,
+        PERSONAL_IN_MEMORY_CACHE,
+        PERSONAL_OLD_DISK_CACHE,
+        PERSONAL_NEW_DISK_CACHE
+    }
+
     public enum ProtocolEnum
     {
         http,
@@ -38,8 +54,21 @@ namespace FrwSoftware
         ssh,
         rdp
     }
+    public class WebEntryInfoWrap
+    {
+        public WebEntryInfo WebEntryInfo { get; set; }
+        public PropertyInfo Property { get; set; }
+    }
     public class WebEntryInfo
     {
+        public WebEntryInfo()
+        {
+            RecоmmendedViewType = ViewType.NONE;
+            LockIntReqType = LockIntReqType.BLOCK_NONE;
+            BrowserPrivateType = BrowserPrivateType.COMMON_CACHE;
+        }
+
+
         private IList<string> protocols = new List<string>();
         public IList<string> Protocols {
             get
@@ -192,6 +221,11 @@ namespace FrwSoftware
         public string Login { get; set; }
         public string Password { get; set; }
 
+        public ViewType RecоmmendedViewType { get; set; }
+        public LockIntReqType LockIntReqType { get; set; }
+        public string CachePath { get; set; }
+        public BrowserPrivateType BrowserPrivateType { get; set; }
+        public JUserAgent JUserAgent { get; set; }
 
         static public WebEntryInfo GetWebEntryInfoFromObject(object o)
         {
@@ -200,6 +234,20 @@ namespace FrwSoftware
                 prop => prop.PropertyType == typeof(WebEntryInfo)).FirstOrDefault();
             if (p == null) return null;
             return p.GetValue(o) as WebEntryInfo;
+        }
+        static public IList<WebEntryInfoWrap> GetWebEntryInfosFromObject(object o)
+        {
+            IList<WebEntryInfoWrap> list = new List<WebEntryInfoWrap>();
+            IEnumerable<PropertyInfo> ps = o.GetType().GetProperties().Where(
+                prop => prop.PropertyType == typeof(WebEntryInfo));
+            foreach(var p in ps)
+            {
+                WebEntryInfoWrap wrap = new WebEntryInfoWrap();
+                wrap.Property = p;
+                wrap.WebEntryInfo = p.GetValue(o) as WebEntryInfo;
+                list.Add(wrap);
+            }
+            return list;
         }
     }
 }

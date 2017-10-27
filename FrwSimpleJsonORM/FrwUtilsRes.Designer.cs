@@ -115,6 +115,78 @@ namespace FrwSoftware {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Preferences.
+        /// </summary>
+        internal static string JPreferences {
+            get {
+                return ResourceManager.GetString("JPreferences", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Identifier.
+        /// </summary>
+        internal static string JPreferences_Identifier {
+            get {
+                return ResourceManager.GetString("JPreferences_Identifier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preferences Name.
+        /// </summary>
+        internal static string JPreferences_Name {
+            get {
+                return ResourceManager.GetString("JPreferences_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Agent.
+        /// </summary>
+        internal static string JUserAgent {
+            get {
+                return ResourceManager.GetString("JUserAgent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Alias.
+        /// </summary>
+        internal static string JUserAgent_Alias {
+            get {
+                return ResourceManager.GetString("JUserAgent_Alias", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data.
+        /// </summary>
+        internal static string JUserAgent_Data {
+            get {
+                return ResourceManager.GetString("JUserAgent_Data", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Identifier.
+        /// </summary>
+        internal static string JUserAgent_JUserAgentId {
+            get {
+                return ResourceManager.GetString("JUserAgent_JUserAgentId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        internal static string JUserAgent_Name {
+            get {
+                return ResourceManager.GetString("JUserAgent_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An error occurred while the program was running.
         /// </summary>
         internal static string Log_Error_In_Work {

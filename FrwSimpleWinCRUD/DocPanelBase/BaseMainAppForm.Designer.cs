@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-          
+            this.components = new System.ComponentModel.Container();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.SuspendLayout();
          

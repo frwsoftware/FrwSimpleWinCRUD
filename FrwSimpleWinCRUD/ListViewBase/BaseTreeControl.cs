@@ -114,8 +114,7 @@ namespace FrwSoftware
             // add a pseudo-node (it is necessary to display a plus sign), which is then deleted when the branch is actually loaded
             if (CanExpandGetter(node.Tag) == true)
             {
-                if (!(node.Nodes.Count > 0 &&
-                    node.Nodes[0].Text == BaseTreeControl.PSEVDO_NODE_TEXT))
+                if (node.Nodes.Count == 0)
                 {
                     node.Nodes.Add(PSEVDO_NODE_TEXT);
                 }

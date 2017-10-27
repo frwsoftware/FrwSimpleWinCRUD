@@ -37,7 +37,7 @@ namespace FrwSoftware
             {
                 if (itemdata.IsUser)
                 {
-                    props = new PropertySpec(itemdata.Name, itemdata.Value.GetType(), group,
+                    props = new PropertySpec(itemdata.Name, itemdata.Value != null ? itemdata.Value.GetType() : typeof(string), group,
                         itemdata.Description);
                     bag1.Properties.Add(props);
                 }

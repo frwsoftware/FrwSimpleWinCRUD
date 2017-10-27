@@ -54,5 +54,66 @@ namespace FrwSoftware
                 isUrl = false;
             }
         }
+
+        //delete directory content and directory
+        public static void DeleteDirectory(string dirName)
+        {
+            DirectoryInfo dirInfo = new DirectoryInfo(dirName);
+            if (dirInfo.Exists == true)
+            {
+                Directory.Delete(dirName, true);
+            }
+            int count = 0;
+            while (Directory.Exists(dirName) == true && count < 1000)
+            {
+                //Had this problem under Windows 7, .Net 4.0, VS2010. It would appear Directory.Delete() is not synchronous so the issue is timing. I'm guessing Directory.CreateDirectory() does not fail because the existing folder is marked for deletion. The new folder is then dropped as Directory.Delete() finishes.
+                //http://stackoverflow.com/questions/35069311/why-sometimes-directory-createdirectory-fails
+                System.Threading.Thread.Sleep(10);
+                count++;
+            }
+        }
+        public static void CreateDirectory(string dirName)
+        {
+            DirectoryInfo dirInfo = new DirectoryInfo(dirName);
+            if (dirInfo.Exists == false) Directory.CreateDirectory(dirInfo.FullName);
+            int count = 0;
+            while (Directory.Exists(dirName) == false && count < 1000)
+            {
+                //Had this problem under Windows 7, .Net 4.0, VS2010. It would appear Directory.Delete() is not synchronous so the issue is timing. I'm guessing Directory.CreateDirectory() does not fail because the existing folder is marked for deletion. The new folder is then dropped as Directory.Delete() finishes.
+                //http://stackoverflow.com/questions/35069311/why-sometimes-directory-createdirectory-fails
+                System.Threading.Thread.Sleep(10);
+                count++;
+            }
+        }
+
+        //remove directory content only
+        public static void DeleteDirectoryContent(string dirName)
+        {
+            if (Directory.Exists(dirName))
+            {
+                DirectoryInfo di = new DirectoryInfo(dirName);
+
+                foreach (FileInfo file in di.GetFiles())
+                    file.Delete();
+
+                foreach (DirectoryInfo dir in di.GetDirectories())
+                    DeleteDirectory(dir.FullName);
+            }
+
+        }
+        public static void CreateOrClearDirectory(string dirName)
+        {
+            DirectoryInfo dirInfo = new DirectoryInfo(dirName);
+            if (dirInfo.Exists == false)
+            {
+                CreateDirectory(dirName);
+            }
+            else
+            {
+                DeleteDirectoryContent(dirName);
+            }
+
+        }
+
     }
 }
