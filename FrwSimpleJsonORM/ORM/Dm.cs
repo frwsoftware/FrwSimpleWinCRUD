@@ -282,7 +282,7 @@ namespace FrwSoftware
                     }
                     else if (manyToOneAttr != null)
                     {
-                        if (oneToOneAttr != null && oneToManyAttr != null || manyToManyAttr != null)
+                        if (oneToOneAttr != null || oneToManyAttr != null || manyToManyAttr != null)
                             throw new Exception("Property can not be marked more than one relation attribute. Property " +
                                p.Name + " in enitty " + sourceEntityType);
                         Type foreinEntityType = p.PropertyType;
@@ -311,7 +311,7 @@ namespace FrwSoftware
                     }
                     else if (oneToManyAttr != null)
                     {
-                        if (oneToOneAttr != null && manyToManyAttr != null || manyToManyAttr != null)
+                        if (oneToOneAttr != null || manyToManyAttr != null || manyToManyAttr != null)
                             throw new Exception("Property can not be marked more than one relation attribute. Property " +
                                p.Name + " in enitty " + sourceEntityType);
                         Type foreinEntityType = AttrHelper.GetGenericListArgType(p.PropertyType);//difference from manytoone!
@@ -347,7 +347,7 @@ namespace FrwSoftware
                     }
                     else if (manyToManyAttr != null)
                     {
-                        if (oneToOneAttr != null && oneToManyAttr != null || manyToOneAttr != null)
+                        if (oneToOneAttr != null || oneToManyAttr != null || manyToOneAttr != null)
                             throw new Exception("Property can not be marked more than one ralation attribute. Property " +
                                p.Name + " in enitty " + sourceEntityType);
 
@@ -1842,7 +1842,7 @@ namespace FrwSoftware
                 {
                     JOneToOne oneToOneAttr = AttrHelper.GetAttribute<JOneToOne>(t, p.Name);
                     JManyToOne manyToOneAttr = AttrHelper.GetAttribute<JManyToOne>(t, p.Name);
-                    if (oneToOneAttr != null && manyToOneAttr != null)
+                    if (oneToOneAttr != null || manyToOneAttr != null)
                     {
                         Type pt = p.PropertyType;
                         object pvSaved = p.GetValue(l);
