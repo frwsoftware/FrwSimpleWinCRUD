@@ -45,6 +45,13 @@ namespace FrwSoftware
     public class JNameProperty : Attribute
     {
     }
+    /// <summary>
+    /// This field is used as the base for listing (prior to JNameProperty) 
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Property)]
+    public class JShortNameProperty : Attribute
+    {
+    }
     //todo
     [AttributeUsage(AttributeTargets.Property)]
     public class JRequired : Attribute

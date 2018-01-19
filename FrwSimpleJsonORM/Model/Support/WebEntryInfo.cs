@@ -20,6 +20,19 @@ using System.Reflection;
 
 namespace FrwSoftware
 {
+
+    public enum DocType
+    {
+        bin,
+        txt,
+        html,
+        doc,
+        mwiki,
+        md,
+        image,
+        video
+    }
+
     public enum ViewType
     {
         NONE,
@@ -220,6 +233,8 @@ namespace FrwSoftware
 
         public string Login { get; set; }
         public string Password { get; set; }
+        public string BasicAuthLogin { get; set; }
+        public string BasicAuthPassword { get; set; }
 
         public ViewType RecоmmendedViewType { get; set; }
         public LockIntReqType LockIntReqType { get; set; }

@@ -45,7 +45,7 @@ namespace FrwSoftware
             this.treeControl.Location = new System.Drawing.Point(0, 0);
             this.treeControl.Name = "treeControl";
             this.treeControl.ParentViewProcessor = null;
-            this.treeControl.RootNode = null;
+            //this.treeControl.RootNode = null;
             this.treeControl.Size = new System.Drawing.Size(150, 125);
             this.treeControl.TabIndex = 0;
             this.toolStripContainer1.ContentPanel.Controls.Add(this.treeControl);
@@ -113,7 +113,7 @@ namespace FrwSoftware
             node.Tag = o;
             string name = null;
             if (o is string) name = o as string;
-            else name = ModelHelper.GetNameForObjectAdv(o);
+            else name = ModelHelper.GetShortNameForObjectAdv(o);
             string shortName = (name.Length > 70) ? (name.Substring(0, 70) + "...") : name;
             node.Name = shortName;
             node.Text = shortName;
@@ -133,16 +133,24 @@ namespace FrwSoftware
 
         protected TreeNode AddNodeTo(TreeNode parent, object tagObject)
         {
-            if (parent.Nodes.Count > 0 &&
-            parent.Nodes[0].Text == BaseTreeControl.PSEVDO_NODE_TEXT)
-            {
-                parent.Nodes[0].Remove();
-            }
-
             TreeNode node = new TreeNode();
             ComplateNodeFromObject(node, tagObject);
             treeControl.PostCreateNode(node);
-            parent.Nodes.Add(node);
+
+            if (parent != null)
+            {
+                if (parent.Nodes.Count > 0 &&
+                parent.Nodes[0].Text == BaseTreeControl.PSEVDO_NODE_TEXT)
+                {
+                    parent.Nodes[0].Remove();
+                }
+                parent.Nodes.Add(node);
+            }
+            else
+            {
+                treeControl.Nodes.Add(node);
+            }
+
             return node;
         }
 
@@ -175,7 +183,9 @@ namespace FrwSoftware
             {
 
                 if (DeleteAllObjectsLocal())
-                    this.treeControl.RootNode.Remove();//todo test
+                {
+                    this.treeControl.Nodes.Clear(); ;//todo test
+                }
             }
         }
         override protected void ReloadList()

@@ -126,10 +126,51 @@ namespace FrwSoftware
                 return o.ToString();
             }
         }
+        static public string GetShortNameForObject(object o)
+        {
+            if (o == null) return null;
+            Type t = o.GetType();
+            PropertyInfo pName = AttrHelper.GetProperty<JShortNameProperty>(t);
+            if (pName != null)
+            {
+                object on = pName.GetValue(o);
+                return (on != null ? on.ToString() : null);
+            }
+            else
+            {
+                return GetNameForObject(o);
+            }
+        }
+        static public bool IsIsArchiveFieldPresent(Type t)
+        {
+            PropertyInfo IsArchiveProp = t.GetProperty("IsArchive");
+            if (IsArchiveProp != null) return true;
+            else return false;
+        }
+        static public bool GetIsArchiveValue(object o)
+        {
+            if (o == null) return false;
+            Type t = o.GetType();
+            PropertyInfo IsArchiveProp = t.GetProperty("IsArchive");
+            if (IsArchiveProp != null) return (bool)IsArchiveProp.GetValue(o);
+            else return false;
+        }
         static public string GetNameForObjectAdv(object o)
         {
             if (o == null) return null;
             string s = GetNameForObject(o);
+            Type t = o.GetType();
+            PropertyInfo IsArchiveProp = t.GetProperty("IsArchive");
+            if (IsArchiveProp != null && IsArchiveProp.PropertyType == typeof(bool) && (bool)IsArchiveProp.GetValue(o) == true)
+            {
+                s = s + " (archived)";
+            }
+            return s;
+        }
+        static public string GetShortNameForObjectAdv(object o)
+        {
+            if (o == null) return null;
+            string s = GetShortNameForObject(o);
             Type t = o.GetType();
             PropertyInfo IsArchiveProp = t.GetProperty("IsArchive");
             if (IsArchiveProp != null && IsArchiveProp.PropertyType == typeof(bool) && (bool)IsArchiveProp.GetValue(o) == true)

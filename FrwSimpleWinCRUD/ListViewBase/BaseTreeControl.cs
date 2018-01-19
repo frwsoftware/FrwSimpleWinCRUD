@@ -31,7 +31,7 @@ namespace FrwSoftware
     }
     public delegate void TreeNodeSelectEventHandler(object sender, TreeNodeSelectEventArgs e);
    
-    public delegate bool CanExpandGetterDelegate(Object model);
+    public delegate bool CanExpandGetterDelegate(TreeNode parentNode);
     public delegate IEnumerable ChildrenGetterDelegate(TreeNode parentNode);
     public delegate void AfterEditTreeNodeLabelDelegate(object model, string labelText);
     public delegate void InitialCreateTreeNodeRootDelegate();
@@ -52,7 +52,7 @@ namespace FrwSoftware
         static public string TREE_FOLDER_OPENED_SELECTED = "tree_folder_opened_selected";
         static public string TREE_FOLDER_CLOSED_SELECTED = "tree_folder_closed_selected";
 
-        public TreeNode RootNode { get; set; }
+        //public TreeNode RootNode { get; set; }
 
         public bool ChangeNodeImageOnExpand { get; set; }
         static public string PSEVDO_NODE_TEXT = FrwCRUDRes.TreeList_Loading;
@@ -112,7 +112,7 @@ namespace FrwSoftware
             if (node.ImageKey == null) node.ImageKey = TREE_FOLDER_CLOSED;
             if (node.SelectedImageKey == null) node.SelectedImageKey = TREE_FOLDER_CLOSED_SELECTED;
             // add a pseudo-node (it is necessary to display a plus sign), which is then deleted when the branch is actually loaded
-            if (CanExpandGetter(node.Tag) == true)
+            if (CanExpandGetter(node) == true)
             {
                 if (node.Nodes.Count == 0)
                 {

@@ -32,9 +32,14 @@ namespace FrwSoftware
     // then use BaseListWindow
     public partial class SimpleListWindow : BaseOLVListWindow
     {
+        protected CheckBox isActiveCheckBox = new CheckBox();
+
         public SimpleListWindow()
         {
             InitializeComponent();
+
+
+
         }
 
         override protected void MakeListColumns()
@@ -77,6 +82,30 @@ namespace FrwSoftware
                     CreateImageGetterDelegate(column, SourceObjectType);
                 }
             }
+            if (ModelHelper.IsIsArchiveFieldPresent(SourceObjectType))
+            {
+                isActiveCheckBox.Text = "Актив.";
+                isActiveCheckBox.Checked = true;
+                isActiveCheckBox.CheckStateChanged += (s, ex) => { listView.UpdateColumnFiltering(); };
+                AddToolStripItem(new ToolStripControlHost(isActiveCheckBox));
+
+                listView.AdditionalFilter = new ModelFilter(delegate (object x)
+                {
+                    return (isActiveCheckBox.Checked ? !ModelHelper.GetIsArchiveValue(x) : true);
+                });
+            }
+
+        }
+        override protected void LoadUserSettings(IDictionary<string, object> userSettings)
+        {
+            base.LoadUserSettings(userSettings);
+            isActiveCheckBox.Checked = DictHelper.GetValueAsBool(userSettings, "isActiveCheckBox");
+
+        }
+        override protected void SaveUserSettings(IDictionary<string, object> userSettings)
+        {
+            base.SaveUserSettings(userSettings);
+            userSettings.Add("isActiveCheckBox", isActiveCheckBox.Checked);
         }
 
         override protected void ReloadList()
