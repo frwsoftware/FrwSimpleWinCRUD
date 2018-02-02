@@ -531,4 +531,16 @@
   <data name="BaseApplicationContext_Exit" xml:space="preserve">
     <value>Выход</value>
   </data>
+  <data name="Common_settings" xml:space="preserve">
+    <value>Общие настройки</value>
+  </data>
+  <data name="DPI_Awareness_Support_for_Windows_Fonts_____Windows_8___Application_restart_required_" xml:space="preserve">
+    <value>DPI Awareness поддержка Windows шрифтов (&gt;= Windows 8). </value>
+  </data>
+  <data name="DPI_Awareness_Support_for_Windows_Fonts" xml:space="preserve">
+    <value>DPI Awareness поддержка Windows шрифтов</value>
+  </data>
+  <data name="Application_Font" xml:space="preserve">
+    <value>Шрифт приложения</value>
+  </data>
 </root>

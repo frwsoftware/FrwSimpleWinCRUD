@@ -39,11 +39,22 @@ namespace FrwSoftware
             //By default Json.NET writes dates in the ISO 8601 format, e.g. "2012-03-21T05:40Z" (в реальности "2016-10-13T11:20:02.7187476+03:00")
             return JsonConvert.SerializeObject(oToSave, Formatting.Indented, settings);
         }
+        
+        public static string SaveToStringWithNullAndDefaultValues(object oToSave)
+        {
+            JsonSerializerSettings settings = new JsonSerializerSettings();
+            return JsonConvert.SerializeObject(oToSave, Formatting.Indented, settings);
+        }
 
         public static T LoadFromString<T>(string str) where T : new()
         {
             //MissingMemberHandling By default Json.NET ignores JSON if there is no field or property for its value to be set to during deserialization.
             return (T)JsonConvert.DeserializeObject<T>(str);
+        }
+        public static object LoadFromString(string str, Type t)
+        {
+            //MissingMemberHandling By default Json.NET ignores JSON if there is no field or property for its value to be set to during deserialization.
+            return JsonConvert.DeserializeObject(str, t);
         }
         public static T LoadFromFile<T>(string fileName) where T : new()
         {

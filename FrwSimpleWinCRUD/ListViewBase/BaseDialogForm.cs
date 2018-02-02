@@ -30,7 +30,7 @@ namespace FrwSoftware
             InitializeComponent();
             try
             {
-                WinFormsUtils.SetNewControlFont(this, FrwSimpleWinCRUDConfig.GetApplicationFont());//if this.AutoScaleMode = Font - Setting the font will change the size of the window 
+                WinFormsUtils.SetNewControlFont(this, (Font)FrwConfig.Instance.GetPropertyValue(FrwSimpleWinCRUDConfig.APPLICATION_FONT));//if this.AutoScaleMode = Font - Setting the font will change the size of the window 
             }
             catch (Exception)
             {

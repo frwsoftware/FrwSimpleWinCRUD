@@ -115,6 +115,42 @@ namespace FrwSoftware {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Country.
+        /// </summary>
+        internal static string JCountry_Country {
+            get {
+                return ResourceManager.GetString("JCountry_Country", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flag.
+        /// </summary>
+        internal static string JCountry_Flag {
+            get {
+                return ResourceManager.GetString("JCountry_Flag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Identifier.
+        /// </summary>
+        internal static string JCountry_Identifier {
+            get {
+                return ResourceManager.GetString("JCountry_Identifier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        internal static string JCountry_Name {
+            get {
+                return ResourceManager.GetString("JCountry_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Preferences.
         /// </summary>
         internal static string JPreferences {

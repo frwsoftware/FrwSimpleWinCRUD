@@ -42,15 +42,42 @@ namespace FrwSoftware
             PropertyBag bag = (PropertyBag)context.Instance;
             string pName = context.PropertyDescriptor.Name;
             object rowObject = bag.SourceObject;
-            string name = ModelHelper.GetPropertyNameForDescription(bag.SourceObjectType, pName);
-            if (name == null) name = pName;
+            PropertySpecDescriptor pd = context.PropertyDescriptor as PropertySpecDescriptor;
+            string name = pd.PropTag as string;
+            //string name = ModelHelper.GetPropertyNameForDescription(bag.SourceObjectType, pName);
+            //if (name == null) name = pName;
             bool complated = false;
             object res = AppManager.Instance.ProcessEditCustomPropertyValue(rowObject, name, out complated, null);
             bag.OnValueModified(null);
             return res;
         }
     }
-    
+    //for settings 
+    public class CustomSettingEditor : UITypeEditor
+    {
+        public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
+        {
+            return UITypeEditorEditStyle.Modal;
+        }
+
+        public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
+        {
+            var svc = (IWindowsFormsEditorService)provider.GetService(typeof(IWindowsFormsEditorService));
+            PropertyBag bag = (PropertyBag)context.Instance;
+            string pName = context.PropertyDescriptor.Name;
+            PropertySpecDescriptor pd = context.PropertyDescriptor as PropertySpecDescriptor;
+            JSetting setting = pd.PropTag as JSetting;
+            bool complated = false;
+            object res = AppManager.Instance.EditCustomSettingValue(setting, out complated, null);
+            if (complated)
+            {
+                setting.ForceValueChangedEvent(this);
+                bag.OnValueModified(null);
+            }
+            return res;
+        }
+    }
+
     //https://rsdn.org/article/dotnet/PropertyGridFAQ.xml
     class BooleanTypeConverter : BooleanConverter
     {

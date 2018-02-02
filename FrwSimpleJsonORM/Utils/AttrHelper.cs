@@ -243,7 +243,21 @@ namespace FrwSoftware
             return newObject;
         }
         #endregion
-
+        public static object ReplaceObjectByPkOnlyObject(object realObject)
+        {
+            if (realObject != null)
+            {
+                Type foreinEntityType = realObject.GetType();
+                object blankObject = Activator.CreateInstance(foreinEntityType);
+                PropertyInfo fePkProp = AttrHelper.GetProperty<JPrimaryKey>(foreinEntityType);
+                if (fePkProp == null) throw new Exception("No pk property in entity type: " + foreinEntityType.FullName);
+                object pkValue = fePkProp.GetValue(realObject);
+                if (pkValue == null) throw new Exception("Empty pk value found in entity type: " + foreinEntityType.FullName);
+                fePkProp.SetValue(blankObject, pkValue);
+                return blankObject;
+            }
+            else return null;
+        }
     }
 
     #endregion

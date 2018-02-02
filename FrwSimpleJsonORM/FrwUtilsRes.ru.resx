@@ -168,4 +168,16 @@
   <data name="JPreferences_Name" xml:space="preserve">
     <value>Наименовние блока настроек</value>
   </data>
+  <data name="JCountry_Country" xml:space="preserve">
+    <value>Страна</value>
+  </data>
+  <data name="JCountry_Identifier" xml:space="preserve">
+    <value>Идентификатор</value>
+  </data>
+  <data name="JCountry_Name" xml:space="preserve">
+    <value>Название</value>
+  </data>
+  <data name="JCountry_Flag" xml:space="preserve">
+    <value>Флаг</value>
+  </data>
 </root>

@@ -124,6 +124,15 @@ namespace FrwSoftware {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Application Font.
+        /// </summary>
+        internal static string Application_Font {
+            get {
+                return ResourceManager.GetString("Application_Font", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Application settings.
         /// </summary>
         internal static string AppSettingsWindow_Title {
@@ -250,11 +259,39 @@ namespace FrwSoftware {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Common settings.
+        /// </summary>
+        internal static string Common_settings {
+            get {
+                return ResourceManager.GetString("Common_settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
         internal static string Delete {
             get {
                 return ResourceManager.GetString("Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DPI Awareness Support for Windows Fonts.
+        /// </summary>
+        internal static string DPI_Awareness_Support_for_Windows_Fonts {
+            get {
+                return ResourceManager.GetString("DPI_Awareness_Support_for_Windows_Fonts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DPI Awareness Support for Windows Fonts (&gt;= Windows 8). Application restart required..
+        /// </summary>
+        internal static string DPI_Awareness_Support_for_Windows_Fonts_____Windows_8___Application_restart_required_ {
+            get {
+                return ResourceManager.GetString("DPI_Awareness_Support_for_Windows_Fonts_____Windows_8___Application_restart_requi" +
+                        "red_", resourceCulture);
             }
         }
         

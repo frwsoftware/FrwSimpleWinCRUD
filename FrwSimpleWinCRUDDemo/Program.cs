@@ -52,7 +52,7 @@ namespace FrwSoftware
                     AppManager.Instance = new DemoAppManager();
                     MainAppUtils.InitAppPaths();
                     AppManager.Instance.MainAppFormType = typeof(FrwMainAppForm);
-                    form = AppManager.Instance.LoadDocPanelContainersState();
+                    form = AppManager.Instance.LoadDocPanelContainersState(true);
                     form.FormClosing += Form_FormClosing;
                     form.FormClosed += Form_FormClosed;
 

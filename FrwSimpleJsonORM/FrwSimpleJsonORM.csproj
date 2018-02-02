@@ -75,7 +75,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\JPreferences.cs" />
+    <Compile Include="Model\JCountry.cs" />
     <Compile Include="Model\JUserAgent.cs" />
     <Compile Include="Model\Support\WebEntryInfo.cs" />
     <Compile Include="Utils\AttrHelper.cs" />

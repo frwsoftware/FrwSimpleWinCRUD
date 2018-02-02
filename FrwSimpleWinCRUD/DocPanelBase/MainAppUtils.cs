@@ -143,7 +143,8 @@ namespace FrwSoftware
             FrwConfig.Instance.LoadConfig();
             //create database manager instance (includes database loading and relationship resolving) 
             Dm.Instance.Init();
-
+            //attache entities to settings 
+            FrwConfig.Instance.ComplateSettingsRelations();
         }
 
         static public void DestroyApp()

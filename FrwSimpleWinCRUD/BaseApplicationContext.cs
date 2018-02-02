@@ -65,18 +65,21 @@ namespace FrwSoftware
             notifyIcon.MouseUp += notifyIcon_MouseUp;
             notifyIcon.BalloonTipClicked += NotifyIcon_BalloonTipClicked;
 
-            JSetting setting = null;
-            setting = new JSetting()
+            JSetting setting = FrwConfig.Instance.CreatePropertyIfNotExist(new JSetting()
             {
                 Name = "MainApp.showMainFormOnStartup",
                 Description = FrwCRUDRes.BaseApplicationContext_Show_Main_Window_OnStartup,
-                IsUser = true,
-                Value = true
-            };
-            FrwConfig.Instance.SetProperty(setting);
-            if (FrwConfig.Instance.GetPropertyValueAsBool("MainApp.showMainFormOnStartup", true))
+                Value = true,
+                IsUser = true
+            });
+            if (FrwConfig.Instance.GetPropertyValueAsBool(setting.Name, true))
             {
-                ShowDetailsForm();
+                CreateOrShowDetailsForm(true);
+            }
+            else
+            {
+                //we need allways create form because some logic will be activated in form constructor
+                CreateOrShowDetailsForm(false);
             }
             //timer for balloon tooltips and change systray icon
             notificationTimer.Interval = 3000;
@@ -133,7 +136,7 @@ namespace FrwSoftware
             {
                 try
                 {
-                    ShowDetailsForm();
+                    CreateOrShowDetailsForm(true);
                 }
                 catch (Exception ex)
                 {
@@ -162,11 +165,11 @@ namespace FrwSoftware
         }
         
 
-        private void ShowDetailsForm()
+        private void CreateOrShowDetailsForm(bool visible)
         {
             if (AppManager.Instance.GetMainContainer() == null)
             {
-                AppManager.Instance.LoadDocPanelContainersState();
+                Form form = AppManager.Instance.LoadDocPanelContainersState(visible);
             }
             else
             {
@@ -185,7 +188,7 @@ namespace FrwSoftware
         }
         private void NotifyIcon_BalloonTipClicked(object sender, EventArgs e)
         {
-            ShowDetailsForm();
+            CreateOrShowDetailsForm(true);
             AppManager.Instance.ActivateNotificationPanel();
         }
 

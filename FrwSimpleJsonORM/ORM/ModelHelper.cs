@@ -163,7 +163,7 @@ namespace FrwSoftware
             PropertyInfo IsArchiveProp = t.GetProperty("IsArchive");
             if (IsArchiveProp != null && IsArchiveProp.PropertyType == typeof(bool) && (bool)IsArchiveProp.GetValue(o) == true)
             {
-                s = s + " (archived)";
+                s = "A* " + s + " (archived)";
             }
             return s;
         }
@@ -175,7 +175,7 @@ namespace FrwSoftware
             PropertyInfo IsArchiveProp = t.GetProperty("IsArchive");
             if (IsArchiveProp != null && IsArchiveProp.PropertyType == typeof(bool) && (bool)IsArchiveProp.GetValue(o) == true)
             {
-                s = s + " (archived)";
+                s = "A* " + s + " (archived)";
             }
             return s;
         }

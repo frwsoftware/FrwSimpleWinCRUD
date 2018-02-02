@@ -28,6 +28,8 @@ namespace FrwSoftware
         protected Queue<string> localNotificationQueue = new Queue<string>();
         protected JobLog localNotificationLog = new JobLog();
         protected System.Windows.Forms.Timer notificationTimer;
+        protected System.Windows.Forms.ToolStripSplitButton eventWarrningButton;
+
 
 
         protected DeserializeDockContent m_deserializeDockContent;
@@ -48,6 +50,22 @@ namespace FrwSoftware
         public BaseMainAppForm()
         {
             InitializeComponent();
+
+            // 
+            // eventWarrningButton
+            // 
+            this.eventWarrningButton = new System.Windows.Forms.ToolStripSplitButton();
+            this.eventWarrningButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.eventWarrningButton.Enabled = false;
+            this.eventWarrningButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.eventWarrningButton.Name = "eventWarrningButton";
+            this.eventWarrningButton.Size = new System.Drawing.Size(19, 23);
+            this.eventWarrningButton.Text = "toolStripSplitButton1";
+            this.eventWarrningButton.ToolTipText = "Есть новые события";
+            this.eventWarrningButton.Click += eventWarrningButton_ButtonClick;
+            this.eventWarrningButton.Image = FrwSoftware.Properties.Resources.yellow;
+
+
             this.notificationTimer = new System.Windows.Forms.Timer(this.components);
             this.notificationTimer.Interval = 3000;
             this.notificationTimer.Tick += new System.EventHandler(this.notificationTimer_Tick);
@@ -60,7 +78,8 @@ namespace FrwSoftware
             this.FormClosing += BaseMainAppForm_FormClosing;
             this.FormClosing += BaseMainAppForm_FormClosing1;
 
-            JSetting s = FrwSimpleWinCRUDConfig.GetApplicationFontProperty();
+            JSetting s = FrwConfig.Instance.GetProperty(FrwSimpleWinCRUDConfig.APPLICATION_FONT);
+            
             if (s != null)
             {
                 if (s.Value == null) s.Value = this.Font;
@@ -85,6 +104,19 @@ namespace FrwSoftware
             notificationTimer.Enabled = true;
 
         }
+        private void eventWarrningButton_ButtonClick(object sender, EventArgs e)
+        {
+            try
+            {
+                //((JustAppManager)AppManager.Instance).ShowEventListWindow(this);
+                eventWarrningButton.Enabled = false;
+                eventWarrningButton.ToolTipText = null;
+            }
+            catch (Exception ex)
+            {
+                Log.ShowError(ex);
+            }
+        }
 
         private void notificationTimer_Tick(object sender, EventArgs e)
         {
@@ -100,9 +132,38 @@ namespace FrwSoftware
         }
         virtual protected void ProcessNotificationTimer()
         {
+            ProcessNotificationQueueCheck();
+        }
+        protected void ProcessNotificationQueueCheck()
+        {
+            try
+            {
+                if (localNotificationQueue.Count > 0)
+                {
+                    bool first = true;
+                    while (localNotificationQueue.Count > 0)
+                    {
+                        string notif = localNotificationQueue.Dequeue();
+                        localNotificationLog.Error(notif);
+                        if (first)
+                        {
+                            if (eventWarrningButton.Enabled == false)
+                            {
+                                eventWarrningButton.Enabled = true;
+                                eventWarrningButton.ToolTipText = notif;
+                            }
+                            first = false;
+                        }
+                    }
+                    //localNotificationQueue.Clear();//todo
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.LogError(ex);
+            }
 
         }
-
         private void Log_EventLogEvent(object sender, EventLogEventArgs e)
         {
             localNotificationQueue.Enqueue(e.Message);
@@ -695,7 +756,7 @@ namespace FrwSoftware
             try
             {
                 // Font installation for all forms
-                WinFormsUtils.SetNewControlFont(this, FrwSimpleWinCRUDConfig.GetApplicationFont());//if this.AutoScaleMode = Font - Setting the font will change the size of the window 
+                WinFormsUtils.SetNewControlFont(this, (Font)FrwConfig.Instance.GetPropertyValue(FrwSimpleWinCRUDConfig.APPLICATION_FONT));//if this.AutoScaleMode = Font - Setting the font will change the size of the window 
             }
             catch (Exception ex)
             {
@@ -707,7 +768,7 @@ namespace FrwSoftware
         {
             //todo - do not save if not modified
             CloseAllHiddenContents();
-            FrwSimpleWinCRUDConfig.SetApplicationFont(Font);
+            FrwConfig.Instance.SetPropertyValue( FrwSimpleWinCRUDConfig.APPLICATION_FONT, Font);
             string configFile = GetContentConfigFileName();
 
             MemoryStream xmlStream = new MemoryStream();

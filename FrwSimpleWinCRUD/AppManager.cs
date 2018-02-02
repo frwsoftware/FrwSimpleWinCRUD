@@ -110,7 +110,7 @@ namespace FrwSoftware
             CurrentLayout = layout;
 
             //todo load container layout 
-            LoadDocPanelContainersStateLocal(layout.Containers);
+            LoadDocPanelContainersStateLocal(layout.Containers, true);
             //todo open new  docContentContainer if need
             int g = docContents.Count;
             int i = 0;
@@ -515,14 +515,14 @@ namespace FrwSoftware
             }
 
         }
-        public Form LoadDocPanelContainersState()
+        public Form LoadDocPanelContainersState(bool visible)
         {
             if (MainAppFormType == null) throw new Exception("MainAppFormType must be set before  call of this method");
 
             string configFilePath = GetDockPanelContainersXmlPath();
             FileInfo fi = new FileInfo(configFilePath);
-            if (fi.Exists == true) LoadDocPanelContainersStateLocal(File.ReadAllText(fi.FullName));
-            else LoadDocPanelContainersStateLocal(null);
+            if (fi.Exists == true) LoadDocPanelContainersStateLocal(File.ReadAllText(fi.FullName), visible);
+            else LoadDocPanelContainersStateLocal(null, visible);
 
             object mainForm = docContentContainers.Count > 0 ? docContentContainers[0] : null;
             if (mainForm == null)
@@ -535,7 +535,7 @@ namespace FrwSoftware
         {
             return Path.Combine(FrwConfig.Instance.ProfileConfigDir, "DockPanelContainersXml.xml");
         }
-        private void LoadDocPanelContainersStateLocal(string xmlStr)
+        private void LoadDocPanelContainersStateLocal(string xmlStr, bool visible)
         {
             bool loaded = false;
             try
@@ -627,9 +627,12 @@ namespace FrwSoftware
                 */
             }
             //show
-            foreach (var c in docContentContainers)
+            if (visible)
             {
-                if (c is Form) (c as Form).Show();
+                foreach (var c in docContentContainers)
+                {
+                    if (c is Form) (c as Form).Show();
+                }
             }
         }
 
@@ -668,9 +671,16 @@ namespace FrwSoftware
         virtual public bool IsOnlyImageColumnProperty(Type sourceObjectType, string aspectName)
         {
             Type pType = AttrHelper.GetPropertyType(sourceObjectType, aspectName);
+            PropertyInfo propInfo = sourceObjectType.GetProperty(aspectName);
             if (AttrHelper.GetAttribute<JText>(sourceObjectType, aspectName) != null) return true;
             else if (pType == typeof(JAttachment)) return true;
             else if (AttrHelper.IsGenericListTypeOf(pType, typeof(JAttachment))) return true;
+            else if (AttrHelper.GetAttribute<JDictProp>(propInfo) != null)
+            {
+                JDictProp dictAttr = AttrHelper.GetAttribute<JDictProp>(propInfo);
+                if (dictAttr.DictPropertyStyle == DisplyPropertyStyle.ImageOnly) return true;
+                else return false;
+            }
             else return false;
         }
 
@@ -724,6 +734,142 @@ namespace FrwSoftware
         public object ProcessEditCustomPropertyValue(object rowObject, string aspectName, out bool complated, IWin32Window owner)
         {
             return EditCustomPropertyValue(rowObject, aspectName, out complated, owner);
+        }
+        virtual public object EditCustomSettingValue(JSetting setting, out bool complated, IWin32Window owner)
+        {
+            complated = false;
+            Type propertyType = setting.ValueType;
+            JEntity entityAttr = AttrHelper.GetClassAttribute<JEntity>(propertyType);
+            if (setting.DictId != null)
+            {
+                if (setting.AllowMultiValues)
+                {
+                    SimpleMultivalueDictFieldItemListDialog listDialog = new SimpleMultivalueDictFieldItemListDialog(setting.DictId);
+                    IList list = setting.Value as IList;
+                    List<JDictItem> listd = new List<JDictItem>();
+                    if (list != null)
+                    {
+                        foreach (var l in list)
+                        {
+                            listd.Add(Dm.Instance.GetDictText(setting.DictId, l.ToString()));
+                        }
+                    }
+                    listDialog.SourceObjects = listd;
+                    DialogResult res = listDialog.ShowDialog(owner);
+                    if (res == DialogResult.OK)
+                    {
+                        IList newObjects = listDialog.SourceObjects;//SourceObjects
+
+                        if (propertyType == typeof(int))
+                        {
+                            List<int> listkeys = new List<int>();
+                            foreach (var newObject in newObjects)
+                            {
+                                listkeys.Add(int.Parse(((JDictItem)newObject).Key));
+                            }
+                            setting.Value = listkeys;
+                        }
+                        if (propertyType == typeof(long))
+                        {
+                            List<long> listkeys = new List<long>();
+                            foreach (var newObject in newObjects)
+                            {
+                                listkeys.Add(long.Parse(((JDictItem)newObject).Key));
+                            }
+                            setting.Value = listkeys;
+                        }
+                        else
+                        {
+                            List<string> listkeys = new List<string>();
+                            foreach (var newObject in newObjects)
+                            {
+                                listkeys.Add(((JDictItem)newObject).Key);
+                            }
+                            setting.Value = listkeys;
+                        }
+                        complated = true;
+                    }
+                }
+                else
+                {
+                    SimpleDictListDialog listDialog = new SimpleDictListDialog(setting.DictId, false);
+                    DialogResult res = listDialog.ShowDialog(owner);
+                    if (res == DialogResult.OK && listDialog.SelectedObjects != null)
+                    {
+                        IList newObjects = listDialog.SelectedObjects;
+                        if (newObjects.Count > 0)
+                        {
+                            JDictItem d = (JDictItem)newObjects[0];
+                            if (propertyType == typeof(int))
+                                setting.Value = int.Parse(d.Key);
+                            else if (propertyType == typeof(long))
+                                setting.Value = long.Parse(d.Key);
+                            else
+                                setting.Value = d.Key;
+                        }
+                        else setting.Value = null;
+                        complated = true;
+                    }
+                }
+
+            }
+            else if (entityAttr != null)
+            {
+                if (setting.AllowMultiValues)
+                {
+                    SimpleMultivalueFieldItemListDialog listDialog = new SimpleMultivalueFieldItemListDialog(propertyType);
+                    IList list = (IList)setting.Value;
+                    IList tempLIst = new List<object>();
+                    if (list != null)
+                    {
+                        foreach (var item in list)
+                        {
+                            tempLIst.Add(item);
+                        }
+                    }
+                    listDialog.SourceObjects = tempLIst;
+                    DialogResult res = listDialog.ShowDialog(owner);
+                    if (res == DialogResult.OK && listDialog.SourceObjects != null)
+                    {
+                        IList newList = listDialog.SourceObjects;
+                        IList newListToSave = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(propertyType));
+                        if (newList != null)
+                        {
+                            foreach (var l in newList)
+                            {
+                                newListToSave.Add(l);
+                            }
+                        }
+                        setting.Value = newListToSave;
+                        complated = true;
+                    }
+                }
+                else
+                {
+                    SimpleListDialog listDialog = new SimpleListDialog(propertyType);
+                    listDialog.EnableSetNull = true;
+                    //todo select value in dialog
+                    DialogResult res = listDialog.ShowDialog(owner);
+                    if (res == DialogResult.OK && listDialog.SelectedObjects != null && listDialog.SelectedObjects.Count > 0)
+                    {
+                        IList newObjects = listDialog.SelectedObjects;
+                        object value = newObjects[0];
+                        setting.Value = value;
+                        complated = true;
+                    }
+                    else if (res == DialogResult.Abort)
+                    {
+                        setting.Value = null;
+                        complated = true;
+                    }
+                }
+            }
+            object newStrValue = null;
+            if (complated)
+            {
+                newStrValue = Dm.Instance.GetCustomSettingValue(setting);
+            }
+            return newStrValue;
         }
         virtual public object EditCustomPropertyValue(object rowObject, string aspectName, out bool complated, IWin32Window owner)
         {
@@ -834,9 +980,12 @@ namespace FrwSoftware
                 SimpleMultivalueFieldItemListDialog listDialog = new SimpleMultivalueFieldItemListDialog(AttrHelper.GetGenericListArgType(p.PropertyType));
                 IList list = (IList)AttrHelper.GetPropertyValue(rowObject, aspectName);
                 IList tempLIst = new List<object>();
-                foreach (var item in list)
+                if (list != null)
                 {
-                    tempLIst.Add(item);
+                    foreach (var item in list)
+                    {
+                        tempLIst.Add(item);
+                    }
                 }
                 listDialog.SourceObjects = tempLIst;
                 DialogResult res = listDialog.ShowDialog(owner);
@@ -844,9 +993,12 @@ namespace FrwSoftware
                 {
                     IList newList = listDialog.SourceObjects;
                     IList newListToSave = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(AttrHelper.GetGenericListArgType(pType)));
-                    foreach (var l in newList)
+                    if (newList != null)
                     {
-                        newListToSave.Add(l);
+                        foreach (var l in newList)
+                        {
+                            newListToSave.Add(l);
+                        }
                     }
                     AttrHelper.SetPropertyValue(rowObject, aspectName, newListToSave);
                     complated = true;
@@ -857,9 +1009,12 @@ namespace FrwSoftware
                 SimpleMultivalueFieldItemListDialog listDialog = new SimpleMultivalueFieldItemListDialog(AttrHelper.GetGenericListArgType(p.PropertyType));
                 IList list = (IList)AttrHelper.GetPropertyValue(rowObject, aspectName);
                 IList tempLIst = new List<object>();
-                foreach (var item in list)
+                if (list != null)
                 {
-                    tempLIst.Add(item);
+                    foreach (var item in list)
+                    {
+                        tempLIst.Add(item);
+                    }
                 }
                 listDialog.SourceObjects = tempLIst;
                 DialogResult res = listDialog.ShowDialog(owner);
@@ -867,9 +1022,12 @@ namespace FrwSoftware
                 {
                     IList newList = listDialog.SourceObjects;
                     IList newListToSave = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(AttrHelper.GetGenericListArgType(pType)));
-                    foreach (var l in newList)
+                    if (newList != null)
                     {
-                        newListToSave.Add(l);
+                        foreach (var l in newList)
+                        {
+                            newListToSave.Add(l);
+                        }
                     }
                     AttrHelper.SetPropertyValue(rowObject, aspectName, newListToSave);
                     complated = true;

@@ -13,9 +13,13 @@
  **********************************************************************************/
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.ComponentModel;
 using System.IO;
+using System.Reflection;
+using FrwSoftware.Properties;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace FrwSoftware
 {
@@ -34,15 +38,76 @@ namespace FrwSoftware
 
     public class JSetting
     {
-        public event JSettingChangedEventHandler ValueChanged;
+        /// <summary>
+        /// System name
+        /// </summary>
         public string Name { get; set; }
-        public string ValueTypeName { get; set; }//to save in json file
-        public object Value { get; set; }
-        public string Description { get; set; }
-        public bool IsUser { get; set; }//Custom settings are displayed in the settings window 
+        /// <summary>
+        /// Full Name of Class Type of value
+        /// We need this field to save json
+        /// </summary>
+        public string ValueTypeName {
+            get
+            {
+                return ValueType != null ? ValueType.FullName : null;
+            }
+            set
+            {
+                if (value == null) ValueType = null;
+                else ValueType = TypeHelper.FindType(value);
+            }
+        }
+        /// <summary>
+        /// Class Type of value
+        /// </summary>
         [JsonIgnore]
-        public bool IsAttachedToComputer { get; set; }//Settings that need to be stored on a specific computer 
+        public Type ValueType { get; set; }
+        /// <summary>
+        /// Value
+        /// </summary>
+        public object Value { get; set; }
+        /// <summary>
+        /// Brief description to display in gri column
+        /// </summary>
+        public string Description {
+            get
+            {
+                if (string.IsNullOrEmpty(description) == false) return description;
+                else return Name;
+            }
+            set
+            {
+                description = value;
+            }
+        }
+        private string description = null;
+        /// <summary>
+        /// Group name (to display in the settings window)
+        /// </summary>
+        public string Group { get; set; }
+        /// <summary>
+        /// Full description
+        /// </summary>
+        public string Help { get; set; }
+        /// <summary>
+        /// Id of dictionary (dictionaty setting)
+        /// </summary>
+        public string DictId { get; set; }
+        /// <summary>
+        /// Allow multi values
+        /// </summary>
+        public bool AllowMultiValues { get; set; }
+        /// <summary>
+        /// Custom settings are displayed in the settings window
+        /// </summary>
+        public bool IsUser { get; set; }
+        /// <summary>
+        /// Settings that need to be stored on a specific computer 
+        /// </summary>
+        [JsonIgnore]
+        public bool IsAttachedToComputer { get; set; }
 
+        public event JSettingChangedEventHandler ValueChanged;
         public void ForceValueChangedEvent(object sender)
         {
             if (this.ValueChanged != null)
@@ -50,7 +115,24 @@ namespace FrwSoftware
                 this.ValueChanged(sender, new JSettingChangedEventArgs() { Setting = this });
             }
         }
+        public bool IsCustomSetting()
+        {
+            if (this.ValueType != null)
+            {
+                if (DictId != null) return true;
+                else if (ValueType != typeof(string))
+                {
+                    JEntity entityAttr = AttrHelper.GetClassAttribute<JEntity>(ValueType);
+                    if (entityAttr != null)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
     }
+
 
     /// <summary>
     /// Configuration manager
@@ -174,31 +256,57 @@ namespace FrwSoftware
                 throw new ArgumentException();
             }
         }
-        public void SetProperty(JSetting setting)
+        public JSetting CreatePropertyIfNotExist(JSetting newSetting)
         {
-            object value = GetPropertyValue(setting.Name, setting.Value);
-            setting.Value = value;
-            // You can also use the Item property to add new elements by setting the value of a key that does not exist in the Dictionary<TKey, TValue>; for example, myCollection[myKey] = myValue (in Visual Basic, myCollection(myKey) = myValue). However, if the specified key already exists in the Dictionary<TKey, TValue>, setting the Item property overwrites the old value. In contrast, the Addmethod throws an exception if a value with the specified key already exists.
-            settings[setting.Name] = setting;
-        }
-        public void AddProperty(JSetting setting)
-        {
-            settings.Add(setting.Name, setting);
-        }
+            JSetting setting = GetProperty(newSetting.Name);
+            if (setting == null)
+            {
+                setting = newSetting;
 
+                if (string.IsNullOrEmpty(setting.Name)) throw new ArgumentException("Name can not be empty");
+                //if (setting.Value == null && setting.ValueType == null) throw new ArgumentException("Both Value and ValueType can not be empty");
+                //set valuetype
+                if (setting.ValueType == null) {
+                    if (setting.Value != null) setting.ValueType = setting.Value.GetType();
+                    else setting.ValueType = typeof(string);
+                }
+                else if (setting.Value != null && setting.ValueType != null) {
+                    if (setting.Value.GetType().Equals(setting.ValueType) == false) throw new ArgumentException("ValueTypeName (" + setting.ValueType.FullName + ") not equals Value type (" + setting.Value.GetType() + ")");
+                }
+
+                settings[setting.Name] = setting;
+            }
+            else
+            {
+                //wee need due to i18n
+                setting.Description = newSetting.Description;
+                setting.Help = newSetting.Help;
+                setting.Group = newSetting.Group;
+            }
+            return setting;
+        }
+        
+        public JSetting CreatePropertyIfNotExist(string name, string description, object defaultValue = null)
+        {
+            JSetting setting = new JSetting();
+            setting.Name = name;
+            setting.Description = description;
+            setting.Value = defaultValue;
+            return CreatePropertyIfNotExist(setting);
+        }
+        
         public JSetting SetPropertyValue(string name, object value)
         {
             JSetting setting = GetProperty(name);
             if (setting != null)
             {
                 setting.Value = value;
+                if (setting.Value != null) setting.ValueType = setting.Value.GetType();
                 return setting;
             }
             else
             {
-                setting = new JSetting() { Name = name, Value = value };
-                AddProperty(setting);
-                return setting;
+                throw new ArgumentException("Setting not found withd name: " + name + ". Create it first.");
             }
         }
         #endregion
@@ -208,6 +316,87 @@ namespace FrwSoftware
         /// </summary>
         virtual protected void CreateProperties()
         {
+        }
+
+        public void ComplateSettingsRelations()
+        {
+            foreach (var s in settings.Values)
+            {
+                if (s.Value != null)
+                {
+                    Type type = s.ValueType;
+                    JEntity entityAttr = AttrHelper.GetClassAttribute<JEntity>(type);
+                    if (entityAttr != null)//todo list 
+                    {
+                        PropertyInfo pkProp = AttrHelper.GetProperty<JPrimaryKey>(type);
+                        if (pkProp == null) throw new Exception("Primary key not found in referenced entity");
+
+                        if (s.AllowMultiValues)
+                        {
+                            IList list = (IList)s.Value;
+                            IList values = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(type));
+                            foreach (var val in list)
+                            {
+                                object pvReal = null;
+                                object pkValue = pkProp.GetValue(val);
+                                if (pkValue != null)
+                                {
+                                    try
+                                    {
+                                        pvReal = Dm.Instance.Find(type, pkValue);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        PropertyInfo nameProp = AttrHelper.GetProperty<JNameProperty>(type);
+                                        if (nameProp != null) nameProp.SetValue(val, Resources.Dm_ErrorFinding + ex);
+                                        pvReal = val;
+                                    }
+                                    if (pvReal != null)
+                                    {
+                                    }
+                                    else
+                                    {
+                                        //may be removed 
+                                        PropertyInfo nameProp = AttrHelper.GetProperty<JNameProperty>(type);
+                                        if (nameProp != null) nameProp.SetValue(val, Resources.Dm_NotFound);
+                                        pvReal = val;
+                                    }
+                                }
+                                values.Add(pvReal);
+                            }
+                            s.Value = values;
+                        }
+                        else
+                        {
+                           
+                            object pvReal = null;
+                            object pkValue = pkProp.GetValue(s.Value);
+                            if (pkValue != null)
+                            {
+                                try
+                                {
+                                    pvReal = Dm.Instance.Find(type, pkValue);
+                                }
+                                catch (Exception ex)
+                                {
+                                    PropertyInfo nameProp = AttrHelper.GetProperty<JNameProperty>(type);
+                                    if (nameProp != null) nameProp.SetValue(s.Value, Resources.Dm_ErrorFinding + ex);
+                                }
+                                if (pvReal != null)
+                                {
+                                    s.Value = pvReal;
+                                }
+                                else
+                                {
+                                    //may be removed 
+                                    PropertyInfo nameProp = AttrHelper.GetProperty<JNameProperty>(type);
+                                    if (nameProp != null) nameProp.SetValue(s.Value, Resources.Dm_NotFound);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -229,17 +418,6 @@ namespace FrwSoftware
                 foreach (var s in settingsList)
                 {
                     s.IsAttachedToComputer = false;
-                    if (s.ValueTypeName != null) {
-                        Type type = TypeHelper.FindType(s.ValueTypeName);
-                        if (type != typeof(string))
-                        {
-                            TypeConverter converter = TypeDescriptor.GetConverter(type);
-                            if (converter != null)
-                            {
-                                s.Value = converter.ConvertFromString((string)s.Value);
-                            }
-                        }
-                    }
                     settings.Add(s.Name, s);
                 }
             }
@@ -262,19 +440,46 @@ namespace FrwSoftware
                 foreach (var s in settingsList)
                 {
                     s.IsAttachedToComputer = true;
-                    if (s.ValueTypeName != null)
+                    settings[s.Name] = s;
+                }
+            }
+
+            foreach (JSetting setting in settings.Values)
+            {
+                if (setting.Value != null)
+                {
+                    Type type = setting.ValueType;
+                    if (type != typeof(string))
                     {
-                        Type type = TypeHelper.FindType(s.ValueTypeName);
-                        if (type != typeof(string))
+                        JEntity entityAttr = AttrHelper.GetClassAttribute<JEntity>(type);
+                        if (entityAttr != null)
+                        {
+                            if (setting.AllowMultiValues)
+                            {
+                                IList list = (IList)setting.Value;
+                                IList values = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(type));
+                                foreach (var pkOnlyObject in list)
+                                {
+                                    string str = JsonSerializeHelper.SaveToString(pkOnlyObject);
+                                    object realObject = JsonSerializeHelper.LoadFromString(str, type);
+                                    values.Add(realObject);
+                                }
+                                setting.Value = values;
+                            }
+                            else
+                            {
+                                setting.Value = JsonSerializeHelper.LoadFromString(JsonSerializeHelper.SaveToString(setting.Value), type);
+                            }
+                        }
+                        else
                         {
                             TypeConverter converter = TypeDescriptor.GetConverter(type);
-                            if (converter != null)
+                            if (converter != null)//for system types (Font, etc.)
                             {
-                                s.Value = converter.ConvertFromString((string)s.Value);
+                                setting.Value = converter.ConvertFromString((string)setting.Value);
                             }
                         }
                     }
-                    settings.Add(s.Name, s);
                 }
             }
             CreateProperties();
@@ -286,20 +491,38 @@ namespace FrwSoftware
         {
             foreach (var s in settings.Values)
             {
-                if (s.Value != null)
+                if (s.Value != null && s.ValueType == null)
                 {
-                    s.ValueTypeName = s.Value.GetType().FullName;
+                    s.ValueType = s.Value.GetType();
                 }
-
                 if (s.Value != null)
                 {
-                    Type type = s.Value.GetType();
-                    if (type != typeof(string))
+                    if (s.ValueType != typeof(string))
                     {
-                        TypeConverter converter = TypeDescriptor.GetConverter(type);
-                        if (converter != null)
+                        JEntity entityAttr = AttrHelper.GetClassAttribute<JEntity>(s.ValueType);
+                        if (entityAttr != null)
                         {
-                            s.Value = converter.ConvertToString(s.Value);
+                            if (s.AllowMultiValues)
+                            {
+                                IList list = (IList)s.Value;
+                                IList values = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(s.ValueType));
+                                foreach (var realObject in list)
+                                {
+                                   values.Add(AttrHelper.ReplaceObjectByPkOnlyObject(realObject));
+                                }
+                                s.Value = values;
+                            }
+                            else
+                            {
+                                s.Value = AttrHelper.ReplaceObjectByPkOnlyObject(s.Value);
+                            }
+                        }
+                        else {
+                            TypeConverter converter = TypeDescriptor.GetConverter(s.ValueType);
+                            if (converter != null)
+                            {
+                                s.Value = converter.ConvertToString(s.Value);
+                            }
                         }
                     }
                 }
@@ -333,7 +556,7 @@ namespace FrwSoftware
                 if (s.IsAttachedToComputer)
                     settingsList.Add(s);
             }
-            JsonSerializeHelper.SaveToFile(settingsList, filename);
+            File.WriteAllText(filename, JsonSerializeHelper.SaveToString(settingsList), Encoding.UTF8);//short
         }
     }
 }

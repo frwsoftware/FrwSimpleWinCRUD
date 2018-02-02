@@ -505,7 +505,8 @@ namespace FrwSoftware
                     OLVHelper.SaveStateAdvanced(listView, state);
                 }
                 state.HotItemStyle = HotItemStyle;
-                string newConfigStr = JsonSerializeHelper.SaveToString(state);
+                //use save with defaults (sort column = 0);
+                string newConfigStr = JsonSerializeHelper.SaveToStringWithNullAndDefaultValues(state);
                 if (newConfigStr.Equals(configFileStr) == false)
                 {
                     File.WriteAllText(filename, newConfigStr, Encoding.UTF8);

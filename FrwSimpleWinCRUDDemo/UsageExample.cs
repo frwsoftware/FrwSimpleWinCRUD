@@ -126,7 +126,7 @@ namespace FrwSoftware
             MainAppUtils.InitAppPaths();
             //set type of your main application form 
             AppManager.Instance.MainAppFormType = typeof(MyMainForm);
-            MyMainForm form = (MyMainForm)AppManager.Instance.LoadDocPanelContainersState();
+            MyMainForm form = (MyMainForm)AppManager.Instance.LoadDocPanelContainersState(true);
             Application.Run(form);
         }
 

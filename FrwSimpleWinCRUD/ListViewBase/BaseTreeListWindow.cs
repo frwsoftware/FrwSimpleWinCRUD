@@ -154,6 +154,12 @@ namespace FrwSoftware
             return node;
         }
 
+        public TreeNode GetFirstNode()
+        {
+            if (treeControl.Nodes.Count > 0) return treeControl.Nodes[0];
+            else return null;
+        }
+
         override protected void DeleteObject(object selectedListItem, object[] selectedObjects)
         {
             DialogResult res = MessageBox.Show(null, FrwCRUDRes.List_Delete_Record_Confirmation,

@@ -1,5 +1,4 @@
-﻿using FrwSoftware.Properties;
-/**********************************************************************************
+﻿/**********************************************************************************
 *   FrwSimpleWinCRUD   https://github.com/frwsoftware/FrwSimpleWinCRUD
 *   The Open-Source Library for most quick  WinForm CRUD application creation
 *   MIT License Copyright (c) 2016 FrwSoftware
@@ -13,6 +12,7 @@
 *   SOFTWARE.
 **********************************************************************************/
 using System;
+using FrwSoftware.Properties;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -122,8 +122,6 @@ namespace FrwSoftware
     ///     System.ComponentModel.DataAnnotations.StringLengthAttribute
     ///     System.Web.Security.MembershipPasswordAttribute
     /// </summary>
-
-
     public class JValidationError
     {
         public string PropertyName { get; set; }
@@ -391,6 +389,26 @@ namespace FrwSoftware
 
 
         #region Relation
+        virtual public object GetCustomSettingValue(JSetting setting, bool asPlainText = true, int maxCount = TRUNCATED_VALUE_MAX_ITEM_COUNT, int maxLength = TRUNCATED_VALUE_MAX_STRING_LENGTH, TruncatedValueSufix truncatedValueSufix = TruncatedValueSufix.DotsAndShown, string delimeter = ", ")
+        {
+
+            if (setting.Value == null) return null;
+            JEntity entityAttr = AttrHelper.GetClassAttribute<JEntity>(setting.ValueType);
+            if (setting.DictId != null)
+            {
+                return Dm.MakeStringFromObjectList(ResolveDictionaryForSetting(setting), maxCount, maxLength, truncatedValueSufix, delimeter);
+
+            }
+            else if (entityAttr != null)
+            {
+                if (setting.AllowMultiValues)
+                {
+                    return (setting.Value != null) ? Dm.MakeStringFromObjectList((IList)setting.Value, maxCount, maxLength, truncatedValueSufix, delimeter) : null;
+                }
+                else return (setting.Value != null) ? Dm.MakeStringFromObjectList(new List<object>() { setting.Value }, maxCount, maxLength, truncatedValueSufix, delimeter) : null;
+            }
+            else return setting.Value;
+        }
 
         virtual public object GetCustomPropertyValue(object rowObject, string aspectName, bool asPlainText = true, int maxCount = TRUNCATED_VALUE_MAX_ITEM_COUNT, int maxLength = TRUNCATED_VALUE_MAX_STRING_LENGTH, TruncatedValueSufix truncatedValueSufix = TruncatedValueSufix.DotsAndShown, string delimeter = ", ")
         {
@@ -451,11 +469,7 @@ namespace FrwSoftware
             else if (AttrHelper.GetAttribute<JDictProp>(propInfo) != null)
             {
                 JDictProp dictAttr = AttrHelper.GetAttribute<JDictProp>(propInfo);
-                if (dictAttr.DictPropertyStyle == DisplyPropertyStyle.ImageOnly) return null;
-                else
-                {
-                    return Dm.MakeStringFromObjectList(ResolveDictionary(rowObject, aspectName), maxCount, maxLength, truncatedValueSufix, delimeter);
-                }
+                return Dm.MakeStringFromObjectList(ResolveDictionary(rowObject, aspectName), maxCount, maxLength, truncatedValueSufix, delimeter);
             }
             else if (AttrHelper.GetAttribute<JImageName>(propInfo) != null
                 && AttrHelper.GetAttribute<JImageName>(propInfo).DictPropertyStyle == DisplyPropertyStyle.ImageOnly)
@@ -513,17 +527,8 @@ namespace FrwSoftware
             List<string> list2 = new List<string>();
             foreach (var l in list)
             {
-                Type t = l.GetType();
-                PropertyInfo pName = AttrHelper.GetProperty<JNameProperty>(t);
-                if (pName != null)
-                {
-                    object o = pName.GetValue(l);
-                    list2.Add(o != null ? o.ToString() : null);
-                }
-                else
-                {
-                    list2.Add(l.ToString());
-                }
+                string name = ModelHelper.GetNameForObjectAdv(l);
+                list2.Add(name);
             }
             return MakeStringFromStringList(list2,  totalCount, maxCount,  maxLength, truncatedValueSufix, delimeter);
         }
@@ -604,7 +609,6 @@ namespace FrwSoftware
                     //PropertyInfo foreinPkProp = AttrHelper.GetProperty<JPrimaryKey>(foreinEntityType);
                     //object foreinPKValue = AttrHelper.GetPropertyValue(newObject, foreinPkProp.Name);
                     //if (Find(foreinEntityType, foreinPKValue) == null) throw new Exception("Object from field " + p.Name + " not present in referenced entity " + foreinEntityType);
-
                     if (!allMayBeReferenced.Contains(newObject)) throw new Exception("Object from field " + p.Name + " not present in referenced entity " + foreinEntityType);
                 }
 
@@ -1006,7 +1010,6 @@ namespace FrwSoftware
             if (rowObject == null) return values;
             Type sourceEntityType = rowObject.GetType();
             PropertyInfo foreinEntityPK = AttrHelper.GetProperty<JPrimaryKey>(foreinEntityType);
-            PropertyInfo pName = AttrHelper.GetProperty<JNameProperty>(foreinEntityType);
             PropertyInfo foreinEntityManyToOne = FindRefFieldInForeinEntity(sourceEntityType, foreinEntityType, typeof(JManyToOne), refFieldNameInForeinEntity);
             IList list = FindAll(foreinEntityType);
             //Selection of all values corresponding to our value 
@@ -1250,7 +1253,6 @@ namespace FrwSoftware
                         }
                     }
                 }
-                //other realationship property is optional, so we must find all reference form other entities
             }
 
             //find all many to many 
@@ -1383,52 +1385,6 @@ namespace FrwSoftware
                     }
                 }
             }
-            /*
-            JManyToMany manyToManyAttr = AttrHelper.GetAttribute<JManyToMany>(p);
-            if (manyToManyAttr != null)
-            {
-                Type foreinEntityType = AttrHelper.GetGenericListArgType(p.PropertyType);
-                if (foreinEntityType == sourceEntityType)
-                {
-                    HashSet<object> referenced = null;
-                    rels.TryGetValue(entity, out referenced);
-                    if (referenced == null)
-                    {
-                        referenced = new HashSet<object>();
-                        rels.Add(entity, referenced);
-                    }
-
-                    TypeComparer typeComparer = new TypeComparer();
-                    Type[] ts = new Type[] { sourceEntityType, foreinEntityType };
-                    Array.Sort(ts, typeComparer);
-                    JoinEntityData cross = FindAllJoinData(ts[0], ts[1], manyToManyAttr.JoinName);
-                    bool reverse = false;
-                    if (ts[0].Equals(sourceEntityType) == false) reverse = true;
-                    //from crosstable
-                    foreach (var l in cross.DataList)
-                    {
-                        if (reverse)
-                        {
-                            if (sourcePKValue.Equals(l.Pk2))
-                            {
-                                object refO = Find(foreinEntityType, l.Pk1);
-                                if (refO != null) referenced.Add(refO);
-                            }
-                        }
-                        else
-                        {
-                            if (sourcePKValue.Equals(l.Pk1))
-                            {
-                                object refO = Find(foreinEntityType, l.Pk2);
-                                if (refO != null) referenced.Add(refO);
-                            }
-                        }
-                    }
-
-                }
-
-            }
-            */
             foreach (JoinEntityData s in joinDatas)
             {
                 if (s.DataType1.Equals(sourceEntityType) || s.DataType2.Equals(sourceEntityType))
@@ -2001,8 +1957,6 @@ namespace FrwSoftware
             {
                 if (p.GetSetMethod() != null)
                 {
-                    //JOneToOne oneToOneAttr = AttrHelper.GetAttribute<JOneToOne>(p);
-                    //JManyToOne manyToOneAttr = AttrHelper.GetAttribute<JManyToOne>(p);
                     JOneToMany oneToManyAttr = AttrHelper.GetAttribute<JOneToMany>(p);
                     JManyToMany manyToManyAttr = AttrHelper.GetAttribute<JManyToMany>(p);
                     Type foreinEntityType = null;
@@ -2076,21 +2030,7 @@ namespace FrwSoftware
             return destObject;
         }
 
-        private object ReplaceObjectByPkOnlyObject(object realObject)
-        {
-            if (realObject != null)
-            {
-                Type foreinEntityType = realObject.GetType();
-                object blankObject = Activator.CreateInstance(foreinEntityType);
-                PropertyInfo fePkProp = AttrHelper.GetProperty<JPrimaryKey>(foreinEntityType);
-                if (fePkProp == null) throw new Exception("No pk property in entity type: " + foreinEntityType.FullName);
-                object pkValue = fePkProp.GetValue(realObject);
-                if (pkValue == null) throw new Exception("Empty pk value found in entity type: " + foreinEntityType.FullName);
-                fePkProp.SetValue(blankObject, pkValue);
-                return blankObject;
-            }
-            else return null;
-        }
+ 
         private object FindObjectByPkOnlyObject(object blankObject)
         {
             if (blankObject != null)
@@ -2134,7 +2074,7 @@ namespace FrwSoftware
                                     object realObject = p.GetValue(o);
                                     if (realObject != null)
                                     {
-                                        p.SetValue(destObject, ReplaceObjectByPkOnlyObject(realObject));
+                                        p.SetValue(destObject, AttrHelper.ReplaceObjectByPkOnlyObject(realObject));
                                     }
                                 }
                                 //other rels do not copy
@@ -2152,7 +2092,7 @@ namespace FrwSoftware
                                     object realObject = p.GetValue(o);
                                     if (realObject != null)
                                     {
-                                        p.SetValue(destObject, ReplaceObjectByPkOnlyObject(realObject));
+                                        p.SetValue(destObject, AttrHelper.ReplaceObjectByPkOnlyObject(realObject));
                                     }
                                 }
                                 else if (oneToManyAttr != null || manyToManyAttr != null)
@@ -2163,7 +2103,7 @@ namespace FrwSoftware
                                         IList values = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(foreinEntityType));
                                         foreach (var realObject in value)
                                         {
-                                            values.Add(ReplaceObjectByPkOnlyObject(realObject));
+                                            values.Add(AttrHelper.ReplaceObjectByPkOnlyObject(realObject));
                                         }
                                         p.SetValue(destObject, values);
                                     }
@@ -2219,40 +2159,6 @@ namespace FrwSoftware
                 object av = CloneObject(v, CloneObjectType.ForSave);
                 alist.Add(av);
             }
- 
-            /*
-            //clear relations 
-            foreach (var v in (IList)list)
-            {
-                Type t = v.GetType();
-                foreach (PropertyInfo p in t.GetProperties())
-                {
-                    JManyToOne manyToOneAttr = AttrHelper.GetAttribute<JManyToOne>(v, p.Name);
-                    JOneToMany oneToManyAttr = AttrHelper.GetAttribute<JOneToMany>(v, p.Name);
-                    JManyToMany manyToManyAttr = AttrHelper.GetAttribute<JManyToMany>(v, p.Name);
-                    if (oneToManyAttr != null || manyToManyAttr != null)//(manyToOneAttr != null)
-                        p.SetValue(v, null);
-                    else if (manyToOneAttr != null)
-                    {
-                        //new
-                        object realObject = p.GetValue(v);
-                        if (realObject != null)
-                        {
-                            object blankObject = Activator.CreateInstance(p.PropertyType);
-                            PropertyInfo pkProp = AttrHelper.GetProperty<JPrimaryKey>(p.PropertyType);
-                            if (pkProp == null) throw new Exception("No pk property in entity type: " + p.PropertyType.FullName);
-                            object pkValue = pkProp.GetValue(realObject);
-                            if (pkValue == null) throw new Exception("Empty pk value found in entity type: " + p.PropertyType.FullName);
-                            pkProp.SetValue(blankObject, pkValue);
-                            p.SetValue(v, blankObject);
-                            //todo final 
-                            //set null to fk
-                        }
-                    }
-
-                }
-            }
-            */
             //
             JsonSerializeHelper.SaveToFile(alist, filename);
 
@@ -2413,67 +2319,55 @@ namespace FrwSoftware
             else return null;
         }
 
-
         private IList ResolveDictionary(object rowObject, string aspectName)
         {
             if (rowObject == null) return null;
             PropertyInfo p = AttrHelper.GetProperty(rowObject.GetType(), aspectName);
-            //Type sourceEntityType = rowObject.GetType();
-            //PropertyInfo pkProp = AttrHelper.GetProperty<JPrimaryKey>(sourceEntityType);
             JDictProp dictAttr = AttrHelper.GetAttribute<JDictProp>(rowObject, aspectName);
             if (dictAttr != null)
             {
-                IList oList = new List<object>();
                 object value = AttrHelper.GetPropertyValue(rowObject, aspectName);
-                if (value != null)
-                {
-                    if (dictAttr.AllowMultiValues == true)
-                    {
-                        IList vList = (IList)value;
-                        foreach (var v in vList)
-                        {
-                            JDictItem dictItem = Dm.Instance.GetDictText(dictAttr.Id, v.ToString());
-                            if (dictItem != null) oList.Add(dictItem.Text);
-                            else oList.Add("Text not found for: " + v);
-                        }
-
-                    }
-                    else
-                    {
-                        JDictItem dictItem = Dm.Instance.GetDictText(dictAttr.Id, value.ToString());
-                        if (dictItem != null) oList.Add(dictItem.Text);
-                        else oList.Add("Text not found for: " + value);
-                    }
-                }
-                return oList;
+                return ResolveDictionaryLocal(dictAttr.Id, dictAttr.AllowMultiValues, value);
             }
             else return null;
-
         }
-
-        #endregion
-
-        #region JPreferences
-
-        static protected string DEFAULT_PREFERENCES_ID = "1";
-        public Type PreferencesType { get; set; }
-
-        public JPreferences Preferences {
-            get
+        private IList ResolveDictionaryForSetting(JSetting setting)
+        {
+            if (setting.Value == null) return null;
+            if (setting.DictId != null)
             {
-                if (PreferencesType == null) throw new InvalidOperationException("PreferencesType must be set");// PreferencesType = typeof(JPreferences);
-                JPreferences preferences = Find(PreferencesType, DEFAULT_PREFERENCES_ID) as JPreferences;
-                if (preferences == null)
-                {
-                    preferences = EmptyObject(PreferencesType, null) as JPreferences;
-                    SaveObject(preferences);
-                }
-                return preferences;
+                return ResolveDictionaryLocal(setting.DictId, setting.AllowMultiValues, setting.Value);
             }
+            else return null;
+        }
+
+
+        private IList ResolveDictionaryLocal(string dictId, bool allowMultiValues, object value)
+        {
+            IList oList = new List<object>();
+            if (value != null)
+            {
+                if (allowMultiValues == true)
+                {
+                    IList vList = (IList)value;
+                    foreach (var v in vList)
+                    {
+                        JDictItem dictItem = Dm.Instance.GetDictText(dictId, v.ToString());
+                        if (dictItem != null) oList.Add(dictItem.Text);
+                        else oList.Add("Text not found for: " + v);
+                    }
+
+                }
+                else
+                {
+                    JDictItem dictItem = Dm.Instance.GetDictText(dictId, value.ToString());
+                    if (dictItem != null) oList.Add(dictItem.Text);
+                    else oList.Add("Text not found for: " + value);
+                }
+            }
+            return oList;
         }
 
         #endregion
-
-
     }
 }

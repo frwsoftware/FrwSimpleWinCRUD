@@ -1,21 +1,23 @@
-﻿/**********************************************************************************
- *   FrwSimpleWinCRUD   https://github.com/frwsoftware/FrwSimpleWinCRUD
- *   The Open-Source Library for most quick  WinForm CRUD application creation
- *   MIT License Copyright (c) 2016 FrwSoftware
- *
- *   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *   SOFTWARE.
- **********************************************************************************/
+﻿using FrwSoftware.Properties;
+/**********************************************************************************
+*   FrwSimpleWinCRUD   https://github.com/frwsoftware/FrwSimpleWinCRUD
+*   The Open-Source Library for most quick  WinForm CRUD application creation
+*   MIT License Copyright (c) 2016 FrwSoftware
+*
+*   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+*   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+*   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+*   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+*   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+*   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+*   SOFTWARE.
+**********************************************************************************/
 using System.Drawing;
 using System.Windows.Forms;
 using Flobbster.Windows.Forms;
 using System.Collections;
 using FrwSoftware;
+using System;
 
 namespace FrwSoftware
 {
@@ -32,13 +34,28 @@ namespace FrwSoftware
             bag1.GetValue += new PropertySpecEventHandler(this.bag1_GetValue);
             bag1.SetValue += new PropertySpecEventHandler(this.bag1_SetValue);
             PropertySpec props = null;
-            string group = "Settings";
-            foreach (JSetting itemdata in FrwConfig.Instance.Settings)
+            string defaultGroup = FrwCRUDRes.Common_settings;
+            foreach (JSetting setting in FrwConfig.Instance.Settings)
             {
-                if (itemdata.IsUser)
+                if (setting.IsUser)
                 {
-                    props = new PropertySpec(itemdata.Name, itemdata.Value != null ? itemdata.Value.GetType() : typeof(string), group,
-                        itemdata.Description);
+                    bool isCustomEdit = false;
+                    if (setting.IsCustomSetting())
+                    {
+                        isCustomEdit = true;
+                    }
+                    Type pType = null;
+                    if (isCustomEdit) pType = typeof(string);//disabled comboboxes for list type fields 
+                    else pType = setting.Value != null ? setting.Value.GetType() : typeof(string);
+
+                    props = new PropertySpec(setting.Description, pType, setting.Group != null ? setting.Group : defaultGroup,
+                        setting.Help);
+                    props.PropTag = setting;
+                    if (isCustomEdit)
+                    {
+                        props.EditorTypeName = typeof(CustomSettingEditor).ToString();
+                    }
+
                     bag1.Properties.Add(props);
                 }
             }
@@ -50,36 +67,46 @@ namespace FrwSoftware
 
         private void bag1_GetValue(object sender, PropertySpecEventArgs e)
         {
-            bool found = false;
-            foreach (JSetting s in FrwConfig.Instance.Settings)
+            try
             {
-                if (e.Property.Name.Equals(s.Name))
+                if (e.Property.PropTag != null && e.Property.PropTag is JSetting)
                 {
-                    e.Value = s.Value;
-                    found = true;
-                    break;
+                    JSetting setting = e.Property.PropTag as JSetting;
+                    if (setting.IsCustomSetting())
+                    {
+                        e.Value = Dm.Instance.GetCustomSettingValue(setting, true, AppManager.Instance.PropertyWindowTruncatedMaxItemCount, AppManager.Instance.PropertyWindowTruncatedMaxLength);
+                    }
+                    else e.Value = setting.Value;
+
                 }
             }
-            if (!found)
+            catch (Exception ex)
             {
-                e.Value = "";
+                Log.ShowError(ex);
             }
-           
         }
 
         private void bag1_SetValue(object sender, PropertySpecEventArgs e)
         {
-            foreach (JSetting s in FrwConfig.Instance.Settings)
+            try
             {
-                if (e.Property.Name.Equals(s.Name))
+                if (e.Property.PropTag != null && e.Property.PropTag is JSetting)
                 {
-
-                    s.Value = e.Value;
-                    s.ForceValueChangedEvent(this);
-                    break;
+                    JSetting setting = e.Property.PropTag as JSetting;
+                    if (setting.IsCustomSetting())
+                    {
+                    }
+                    else
+                    {
+                        setting.Value = e.Value;
+                        setting.ForceValueChangedEvent(this);
+                    }
                 }
             }
-     
+            catch (Exception ex)
+            {
+                Log.ShowError(ex);
+            }
         }
     }
 }

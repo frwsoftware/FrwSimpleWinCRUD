@@ -22,7 +22,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Flobbster.Windows.Forms;
 using System.Reflection;
-using FrwSoftware;
 using System.Collections;
 
 namespace FrwSoftware
@@ -34,11 +33,9 @@ namespace FrwSoftware
 
         public SimplePropertyWindow()
         {
-            //Console.WriteLine("$$$$$$$$$$$$$ SimplePropertyWindow  Constructor");
             InitializeComponent();
             Text = FrwCRUDRes.SimplePropertyWindow_Title;
             propertyGrid1.PropertySort = PropertySort.NoSort;
-
         }
         override public ViewMode ViewMode
         {
@@ -62,8 +59,6 @@ namespace FrwSoftware
                 }
             }
         }
-
-
 
         override public void CreateView()
         {
@@ -121,7 +116,6 @@ namespace FrwSoftware
                     }
                     else
                     {
-                        //JManyToOne manyToOneAttr = AttrHelper.GetAttribute<JManyToOne>(SourceObjectType, p.Name);
                         JReadOnly readOnlyAttr = AttrHelper.GetAttribute<JReadOnly>(SourceObjectType, p.Name);
                         JIgnore ignoreAttr = AttrHelper.GetAttribute<JIgnore>(SourceObjectType, p.Name);
 
@@ -138,7 +132,7 @@ namespace FrwSoftware
                         if (isCustomEdit) pType = typeof(string);//disabled comboboxes for list type fields 
                         else pType = p.PropertyType;
                         props = new PropertySpec(desc, pType, null, desc);
-                        //props.OriginalName = p.Name;
+                        props.PropTag = p.Name;
                         if (readOnlyAttr != null || viewMode == ViewMode.View || viewMode == ViewMode.ViewContent)
                         {
                             props.Attributes = new Attribute[] { new ReadOnlyAttribute(true) };
@@ -177,8 +171,7 @@ namespace FrwSoftware
                     }
                     else
                     {
-                        string aspectName = ModelHelper.GetPropertyNameForDescription(SourceObjectType, e.Property.Name);
-                        if (aspectName == null) aspectName = e.Property.Name;
+                        string aspectName = e.Property.PropTag as string;//
                         Type pType = AttrHelper.GetPropertyType(SourceObjectType, aspectName);
                         e.Value = Dm.Instance.GetCustomPropertyValue(tempSourceObject, aspectName, true, AppManager.Instance.PropertyWindowTruncatedMaxItemCount, AppManager.Instance.PropertyWindowTruncatedMaxLength);
                     }
@@ -209,38 +202,18 @@ namespace FrwSoftware
                     if (e.Property.PropTag != null && e.Property.PropTag is IField)
                     {
                         (e.Property.PropTag as IField).Value = (string)e.Value;
-
-                        //ChildObjectUpdateEventArgs ev = new ChildObjectUpdateEventArgs();
-                        //ev.UpdatedObject = tempSourceObject;
-                        //ev.UpdatedPropertyName = (e.Property.PropTag as IField).FieldSysname;
-                        //OnPropertyObjectUpdate(ev);
                     }
                     else
                     {
-                        string name = ModelHelper.GetPropertyNameForDescription(SourceObjectType, e.Property.Name);
-                        if (name == null) name = e.Property.Name;
+                        string name = e.Property.PropTag as string;
                         if (AppManager.Instance.IsCustomEditProperty(SourceObjectType, name))
                         {
                         }
                         else
                         {
                             object oldValue = null;
-                            //try
-                            //{
                             oldValue = AttrHelper.GetPropertyValue(tempSourceObject, name);
                             AttrHelper.SetPropertyValue(tempSourceObject, name, e.Value);
-
-                            //Dm.Instance.SaveObject(tempSourceObject, name);
-
-                            //ChildObjectUpdateEventArgs ev = new ChildObjectUpdateEventArgs();
-                            //ev.UpdatedObject = tempSourceObject;
-                            //OnPropertyObjectUpdate(ev);
-                            //}
-                            //catch(JValidationException ex)
-                            //{
-                            //   AppManager.ShowValidationErrorMessage(ex);
-                            //    AttrHelper.SetPropertyValue(tempSourceObject, name, oldValue);
-                            //}
                         }
                     }
                 }
@@ -283,10 +256,6 @@ namespace FrwSoftware
         }
         #endregion
 
-        private void toolStripContainer1_ContentPanel_Load(object sender, EventArgs e)
-        {
-
-        }
 
         private void saveButton_Click(object sender, EventArgs e)
         {

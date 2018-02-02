@@ -168,4 +168,16 @@
   <data name="JPreferences_Name" xml:space="preserve">
     <value>Preferences Name</value>
   </data>
+  <data name="JCountry_Country" xml:space="preserve">
+    <value>Country</value>
+  </data>
+  <data name="JCountry_Identifier" xml:space="preserve">
+    <value>Identifier</value>
+  </data>
+  <data name="JCountry_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="JCountry_Flag" xml:space="preserve">
+    <value>Flag</value>
+  </data>
 </root>

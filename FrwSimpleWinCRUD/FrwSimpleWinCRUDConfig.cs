@@ -1,16 +1,17 @@
-﻿/**********************************************************************************
- *   FrwSimpleWinCRUD   https://github.com/frwsoftware/FrwSimpleWinCRUD
- *   The Open-Source Library for most quick  WinForm CRUD application creation
- *   MIT License Copyright (c) 2016 FrwSoftware
- *
- *   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *   SOFTWARE.
- **********************************************************************************/
+﻿using FrwSoftware.Properties;
+/**********************************************************************************
+*   FrwSimpleWinCRUD   https://github.com/frwsoftware/FrwSimpleWinCRUD
+*   The Open-Source Library for most quick  WinForm CRUD application creation
+*   MIT License Copyright (c) 2016 FrwSoftware
+*
+*   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+*   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+*   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+*   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+*   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+*   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+*   SOFTWARE.
+**********************************************************************************/
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -22,50 +23,36 @@ namespace FrwSoftware
 {
     public class FrwSimpleWinCRUDConfig : FrwConfig
     {
-        private static string APPLICATION_FONT = "ApplicationFont";
+        public static string APPLICATION_FONT = "ApplicationFont";
 
         override protected void CreateProperties()
         {
             base.CreateProperties();
-            JSetting s = null;
-            s = new JSetting()
+            JSetting setting = FrwConfig.Instance.CreatePropertyIfNotExist(new JSetting()
             {
                 Name = "SetProcessDPIAware",
-                Description = "DPI Awareness Support for Windows Fonts (>= Windows 8). Application restart required.",
+                Description = FrwCRUDRes.DPI_Awareness_Support_for_Windows_Fonts,
+                Help = FrwCRUDRes.DPI_Awareness_Support_for_Windows_Fonts_____Windows_8___Application_restart_required_,
+                Value = true,
                 IsUser = true,
-                IsAttachedToComputer = true,
-                Value = true
-            };
-            s.ValueChanged += SetProcessDPIAware_ValueChanged;
-            FrwConfig.Instance.SetProperty(s);
+                IsAttachedToComputer = true
+            });
+            setting.ValueChanged += SetProcessDPIAware_ValueChanged;
             //special storage, 
             //we need this prorerty at the start ogf program 
-            FrwConfig.Instance.SetPropertyValue(s.Name, Properties.Settings.Default.SetProcessDPIAware);
+            FrwConfig.Instance.SetPropertyValue(setting.Name, Properties.Settings.Default.SetProcessDPIAware);
 
-
-            s = new JSetting()
+            setting = FrwConfig.Instance.CreatePropertyIfNotExist(new JSetting()
             {
                 Name = APPLICATION_FONT,
-                Description = "Application Font",
+                Description = FrwCRUDRes.Application_Font,
+                ValueType = typeof(Font),
                 IsUser = true,
                 IsAttachedToComputer = true,
-            };
-            FrwConfig.Instance.SetProperty(s);
+            });
 
         }
 
-        static public JSetting GetApplicationFontProperty()
-        {
-            return Instance.GetProperty(APPLICATION_FONT);
-        }
-        static public Font GetApplicationFont()
-        {
-            return (Font)Instance.GetProperty(APPLICATION_FONT).Value;
-        }
-        static public void SetApplicationFont(Font font)
-        {
-            Instance.GetProperty(APPLICATION_FONT).Value = font;
-        }
 
         private static void SetProcessDPIAware_ValueChanged(object sender, JSettingChangedEventArgs e)
         {

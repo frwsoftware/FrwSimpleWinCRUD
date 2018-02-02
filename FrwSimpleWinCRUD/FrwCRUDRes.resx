@@ -531,4 +531,16 @@
   <data name="BaseApplicationContext_Exit" xml:space="preserve">
     <value>Exit application</value>
   </data>
+  <data name="Common_settings" xml:space="preserve">
+    <value>Common settings</value>
+  </data>
+  <data name="DPI_Awareness_Support_for_Windows_Fonts_____Windows_8___Application_restart_required_" xml:space="preserve">
+    <value>DPI Awareness Support for Windows Fonts (&gt;= Windows 8). Application restart required.</value>
+  </data>
+  <data name="DPI_Awareness_Support_for_Windows_Fonts" xml:space="preserve">
+    <value>DPI Awareness Support for Windows Fonts</value>
+  </data>
+  <data name="Application_Font" xml:space="preserve">
+    <value>Application Font</value>
+  </data>
 </root>

@@ -425,13 +425,92 @@ namespace Flobbster.Windows.Forms
 	/// PropertyBag class.
 	/// </summary>
 	public delegate void PropertySpecEventHandler(object sender, PropertySpecEventArgs e);
+    public class PropertySpecDescriptor : PropertyDescriptor
+    {
+        private PropertyBag bag;
+        private PropertySpec item;
 
-	/// <summary>
-	/// Represents a collection of custom properties that can be selected into a
-	/// PropertyGrid to provide functionality beyond that of the simple reflection
-	/// normally used to query an object's properties.
-	/// </summary>
-	public class PropertyBag : ICustomTypeDescriptor
+        public PropertySpecDescriptor(PropertySpec item, PropertyBag bag, string name, Attribute[] attrs) :
+            base(name, attrs)
+        {
+            this.bag = bag;
+            this.item = item;
+        }
+        public object PropTag
+        {
+            get
+            {
+                return this.item.PropTag;
+            }
+        }
+        public override Type ComponentType
+        {
+            get { return item.GetType(); }
+        }
+
+        public override bool IsReadOnly
+        {
+            get { return (Attributes.Matches(ReadOnlyAttribute.Yes)); }
+        }
+
+        public override Type PropertyType
+        {
+            get
+            {
+                //return Type.GetType(item.TypeName);
+                return TypeHelper.FindType(item.TypeName);
+            }
+        }
+
+        public override bool CanResetValue(object component)
+        {
+            if (item.DefaultValue == null)
+                return false;
+            else
+                return !this.GetValue(component).Equals(item.DefaultValue);
+        }
+
+        public override object GetValue(object component)
+        {
+            // Have the property bag raise an event to get the current value
+            // of the property.
+
+            PropertySpecEventArgs e = new PropertySpecEventArgs(item, null);
+            bag.OnGetValue(e);
+            return e.Value;
+        }
+
+        public override void ResetValue(object component)
+        {
+            SetValue(component, item.DefaultValue);
+        }
+
+        public override void SetValue(object component, object value)
+        {
+            // Have the property bag raise an event to set the current value
+            // of the property.
+
+            PropertySpecEventArgs e = new PropertySpecEventArgs(item, value);
+            bag.OnSetValue(e);
+        }
+
+        public override bool ShouldSerializeValue(object component)
+        {
+            object val = this.GetValue(component);
+
+            if (item.DefaultValue == null && val == null)
+                return false;
+            else
+                return !val.Equals(item.DefaultValue);
+        }
+    }
+
+    /// <summary>
+    /// Represents a collection of custom properties that can be selected into a
+    /// PropertyGrid to provide functionality beyond that of the simple reflection
+    /// normally used to query an object's properties.
+    /// </summary>
+    public class PropertyBag : ICustomTypeDescriptor
 	{
         public object SourceObject { get; set; }
         public Type SourceObjectType { get; set; }//added j 
@@ -753,78 +832,6 @@ namespace Flobbster.Windows.Forms
 		}
 		#endregion
 		#region PropertySpecDescriptor class definition
-		private class PropertySpecDescriptor : PropertyDescriptor
-		{
-			private PropertyBag bag;
-			private PropertySpec item;
-
-			public PropertySpecDescriptor(PropertySpec item, PropertyBag bag, string name, Attribute[] attrs) :
-				base(name, attrs)
-			{
-				this.bag = bag;
-				this.item = item;
-			}
-
-			public override Type ComponentType
-			{
-				get { return item.GetType(); }
-			}
-
-			public override bool IsReadOnly
-			{
-				get { return (Attributes.Matches(ReadOnlyAttribute.Yes)); }
-			}
-
-			public override Type PropertyType
-			{
-				get {
-                    //return Type.GetType(item.TypeName);
-                    return TypeHelper.FindType(item.TypeName);
-                }
-			}
-
-			public override bool CanResetValue(object component)
-			{
-				if(item.DefaultValue == null)
-					return false;
-				else
-					return !this.GetValue(component).Equals(item.DefaultValue);
-			}
-
-			public override object GetValue(object component)
-			{
-				// Have the property bag raise an event to get the current value
-				// of the property.
-
-				PropertySpecEventArgs e = new PropertySpecEventArgs(item, null);
-				bag.OnGetValue(e);
-				return e.Value;
-			}
-
-			public override void ResetValue(object component)
-			{
-				SetValue(component, item.DefaultValue);
-			}
-
-			public override void SetValue(object component, object value)
-			{
-				// Have the property bag raise an event to set the current value
-				// of the property.
-
-				PropertySpecEventArgs e = new PropertySpecEventArgs(item, value);
-				bag.OnSetValue(e);
-			}
-
-			public override bool ShouldSerializeValue(object component)
-			{
-				object val = this.GetValue(component);
-
-				if(item.DefaultValue == null && val == null)
-					return false;
-				else
-					return !val.Equals(item.DefaultValue);
-			}
-		}
 		#endregion
 
 		private string defaultProperty;
@@ -873,7 +880,7 @@ namespace Flobbster.Windows.Forms
         /// Raises the GetValue event.
         /// </summary>
         /// <param name="e">A PropertySpecEventArgs that contains the event data.</param>
-        protected virtual void OnGetValue(PropertySpecEventArgs e)
+        public virtual void OnGetValue(PropertySpecEventArgs e)
 		{
 			if(GetValue != null)
 				GetValue(this, e);
@@ -883,7 +890,7 @@ namespace Flobbster.Windows.Forms
 		/// Raises the SetValue event.
 		/// </summary>
 		/// <param name="e">A PropertySpecEventArgs that contains the event data.</param>
-		protected virtual void OnSetValue(PropertySpecEventArgs e)
+		public virtual void OnSetValue(PropertySpecEventArgs e)
 		{
 			if(SetValue != null)
 				SetValue(this, e);
@@ -1050,7 +1057,7 @@ namespace Flobbster.Windows.Forms
 		/// <summary>
 		/// This member overrides PropertyBag.OnGetValue.
 		/// </summary>
-		protected override void OnGetValue(PropertySpecEventArgs e)
+		public override void OnGetValue(PropertySpecEventArgs e)
 		{
 			e.Value = propValues[e.Property.Name];
 			base.OnGetValue(e);
@@ -1059,7 +1066,7 @@ namespace Flobbster.Windows.Forms
 		/// <summary>
 		/// This member overrides PropertyBag.OnSetValue.
 		/// </summary>
-		protected override void OnSetValue(PropertySpecEventArgs e)
+		public override void OnSetValue(PropertySpecEventArgs e)
 		{
 			propValues[e.Property.Name] = e.Value;
 			base.OnSetValue(e);
