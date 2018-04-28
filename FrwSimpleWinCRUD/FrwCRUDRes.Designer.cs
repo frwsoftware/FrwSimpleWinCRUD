@@ -135,6 +135,15 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Application settings.
         /// </summary>
+        internal static string Application_settings {
+            get {
+                return ResourceManager.GetString("Application_settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Application settings.
+        /// </summary>
         internal static string AppSettingsWindow_Title {
             get {
                 return ResourceManager.GetString("AppSettingsWindow_Title", resourceCulture);
@@ -346,6 +355,51 @@ namespace FrwSoftware {
         internal static string EnableFloating {
             get {
                 return ResourceManager.GetString("EnableFloating", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Job &quot;.
+        /// </summary>
+        internal static string Job__ {
+            get {
+                return ResourceManager.GetString("Job__", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Job batch &quot;.
+        /// </summary>
+        internal static string Job_batch__ {
+            get {
+                return ResourceManager.GetString("Job_batch__", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Jobs and notifications.
+        /// </summary>
+        internal static string Jobs_and_notifications {
+            get {
+                return ResourceManager.GetString("Jobs_and_notifications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kill job batch thread.
+        /// </summary>
+        internal static string Kill_job_batch_thread {
+            get {
+                return ResourceManager.GetString("Kill_job_batch_thread", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kill job thread.
+        /// </summary>
+        internal static string Kill_job_thread {
+            get {
+                return ResourceManager.GetString("Kill_job_thread", resourceCulture);
             }
         }
         
@@ -891,6 +945,15 @@ namespace FrwSoftware {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Notifications and events.
+        /// </summary>
+        internal static string Notifications_and_events {
+            get {
+                return ResourceManager.GetString("Notifications_and_events", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No item found to display.
         /// </summary>
         internal static string Object_For_View_Not_Found {
@@ -950,6 +1013,24 @@ namespace FrwSoftware {
         internal static string SelectFieldToPaste {
             get {
                 return ResourceManager.GetString("SelectFieldToPaste", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show job batch console.
+        /// </summary>
+        internal static string Show_job_batch_console {
+            get {
+                return ResourceManager.GetString("Show_job_batch_console", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show job console.
+        /// </summary>
+        internal static string Show_job_console {
+            get {
+                return ResourceManager.GetString("Show_job_console", resourceCulture);
             }
         }
         
@@ -1278,6 +1359,15 @@ namespace FrwSoftware {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There are new notifications and events.
+        /// </summary>
+        internal static string There_are_new_notifications_and_events {
+            get {
+                return ResourceManager.GetString("There_are_new_notifications_and_events", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Toolbar.
         /// </summary>
         internal static string Toolbar {
@@ -1292,6 +1382,24 @@ namespace FrwSoftware {
         internal static string TreeList_Loading {
             get {
                 return ResourceManager.GetString("TreeList_Loading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Try to cancel job.
+        /// </summary>
+        internal static string Try_to_cancel_job {
+            get {
+                return ResourceManager.GetString("Try_to_cancel_job", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Try to cancel job batch.
+        /// </summary>
+        internal static string Try_to_cancel_job_batch {
+            get {
+                return ResourceManager.GetString("Try_to_cancel_job_batch", resourceCulture);
             }
         }
         

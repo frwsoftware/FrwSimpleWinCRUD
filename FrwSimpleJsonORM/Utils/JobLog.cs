@@ -1,18 +1,32 @@
-﻿using System;
+﻿/**********************************************************************************
+ *   FrwSimpleWinCRUD   https://github.com/frwsoftware/FrwSimpleWinCRUD
+ *   The Open-Source Library for most quick  WinForm CRUD application creation
+ *   MIT License Copyright (c) 2016 FrwSoftware
+ *
+ *   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *   SOFTWARE.
+ **********************************************************************************/
+ 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using FrwSoftware;
+
 
 namespace FrwSoftware
 {
     public class JobLog
     {
-        //TextWriter w = null;
-        //Stream stream = null;
+        static private string LOG_DATETIME_PATTERN = "yyyy/MM/dd HH:mm:ss ";
 
+        public JobLog ParentLog { get; set; }
         StringBuilder sb = null;
         StringWriter w = null;
         public bool WriteToConsole { get; set; }
@@ -34,8 +48,6 @@ namespace FrwSoftware
 
         public JobLog()
         {
-           //stream = new MemoryStream();
-            //w = new StreamWriter(stream);
             sb = new StringBuilder();
             w = new StringWriter(sb);
             WriteToConsole = true; //tmp 
@@ -46,24 +58,6 @@ namespace FrwSoftware
             get
             {
                 return sb.ToString();
-                /*
-                w.Flush();
-
-                // If we dispose the StreamWriter now, it will close 
-                // the BaseStream (which is our MemoryStream) which 
-                // will prevent us from reading from our MemoryStream
-                //DON'T DO THIS - sw.Dispose();
-
-                // The StreamReader will read from the current 
-                // position of the MemoryStream which is currently 
-                // set at the end of the string we just wrote to it. 
-                // We need to set the position to 0 in order to read 
-                // from the beginning.
-                stream.Position = 0;
-                var sr = new StreamReader(stream);
-                var myStr = sr.ReadToEnd();
-                return myStr;
-                */
             }
         }
 
@@ -81,10 +75,13 @@ namespace FrwSoftware
         private void WriteLine(string message, Exception e = null)
         {
             if (message == null) message = "";
-            if (e != null) message = message + e;//todo stack
-            w.WriteLine(message);
-            if (externalWriter != null) externalWriter.WriteLine(message);
+            DateTime time = DateTime.Now;
+            if (e != null) message = message + e;
+            string messageWithDate = time.ToString(LOG_DATETIME_PATTERN) + message; 
+            w.WriteLine(messageWithDate);
+            if (externalWriter != null) externalWriter.WriteLine(messageWithDate);
             if (WriteToConsole) Console.WriteLine(message);
+            if (ParentLog != null) ParentLog.WriteLine(message);
         }
 
         public void Info(string message)

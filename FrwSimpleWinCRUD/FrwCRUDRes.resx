@@ -543,4 +543,40 @@
   <data name="Application_Font" xml:space="preserve">
     <value>Application Font</value>
   </data>
+  <data name="Job__" xml:space="preserve">
+    <value>Job "</value>
+  </data>
+  <data name="Job_batch__" xml:space="preserve">
+    <value>Job batch "</value>
+  </data>
+  <data name="Try_to_cancel_job" xml:space="preserve">
+    <value>Try to cancel job</value>
+  </data>
+  <data name="Kill_job_thread" xml:space="preserve">
+    <value>Kill job thread</value>
+  </data>
+  <data name="Show_job_console" xml:space="preserve">
+    <value>Show job console</value>
+  </data>
+  <data name="Try_to_cancel_job_batch" xml:space="preserve">
+    <value>Try to cancel job batch</value>
+  </data>
+  <data name="Kill_job_batch_thread" xml:space="preserve">
+    <value>Kill job batch thread</value>
+  </data>
+  <data name="Show_job_batch_console" xml:space="preserve">
+    <value>Show job batch console</value>
+  </data>
+  <data name="Jobs_and_notifications" xml:space="preserve">
+    <value>Jobs and notifications</value>
+  </data>
+  <data name="Application_settings" xml:space="preserve">
+    <value>Application settings</value>
+  </data>
+  <data name="There_are_new_notifications_and_events" xml:space="preserve">
+    <value>There are new notifications and events</value>
+  </data>
+  <data name="Notifications_and_events" xml:space="preserve">
+    <value>Notifications and events</value>
+  </data>
 </root>

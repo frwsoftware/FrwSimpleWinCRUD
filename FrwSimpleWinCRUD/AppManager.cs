@@ -20,7 +20,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using FrwSoftware;
+
 
 namespace FrwSoftware
 {
@@ -67,7 +67,7 @@ namespace FrwSoftware
             }
         }
         private FrwClipboard clipboard = new FrwClipboard();
-        public FrwClipboard Clipboard
+        public FrwClipboard FrwClipboard
         {
             get
             {
@@ -124,6 +124,8 @@ namespace FrwSoftware
             }
 
         }
+
+
         public void SaveLayout(JDocPanelLayout layout)
         {
             CurrentLayout = layout;
@@ -151,8 +153,13 @@ namespace FrwSoftware
         virtual protected IListProcessor GetListWindowForType(Type type)
         {
             BaseListWindow w = null;
-            w = new SimpleListWindow();
-            w.SourceObjectType = type;
+            if (type == typeof(JJobType)) w = new JJobTypeListWindow();
+            else if (type == typeof(JRunningJob)) w = new JRunningJobListWindow();
+            else
+            {
+                w = new SimpleListWindow();
+                w.SourceObjectType = type;
+            }
             return w;
         }
         // the main function of creating a property form object 
@@ -538,6 +545,7 @@ namespace FrwSoftware
         private void LoadDocPanelContainersStateLocal(string xmlStr, bool visible)
         {
             bool loaded = false;
+            bool firstContainer = true;
             try
             {
                 if (xmlStr == null) xml.CreateRoot("DockPanelContainers");
@@ -564,6 +572,11 @@ namespace FrwSoftware
                         }
                         if (form == null)
                         {
+                            if (firstContainer && BaseApplicationContext.IsContextMode == true)
+                                BaseMainAppForm.CreateWindowNotClosable = true;
+                            else
+                                BaseMainAppForm.CreateWindowNotClosable = false;
+                            if (firstContainer) firstContainer = false;
                             string typeStr = xml.getAttrValue(dc, "Type");
                             if (typeStr != null)
                             {
@@ -650,6 +663,7 @@ namespace FrwSoftware
             Type pType = AttrHelper.GetPropertyType(sourceObjectType, aspectName);
             PropertyInfo propInfo = sourceObjectType.GetProperty(aspectName);
             if (AttrHelper.GetAttribute<JOneToMany>(propInfo) != null) return true;
+            else if (AttrHelper.GetAttribute<JPrimaryKey>(propInfo) != null) return true;
             else if (AttrHelper.GetAttribute<JManyToMany>(propInfo) != null) return true;
             else if (AttrHelper.GetAttribute<JOneToOne>(propInfo) != null) return true;
             else if (AttrHelper.GetAttribute<JManyToOne>(propInfo) != null) return true;
@@ -1137,10 +1151,16 @@ namespace FrwSoftware
                 NotificationEvent(null, e);
             }
         }
+        virtual public List<ToolStripItem> CreateOpenInBrowserContextMenu(WebEntryInfo webEntryInfo, IContentContainer contentContainer, object selectedObject, string webEntityInfoPropertyName = null)
+        {
+            return new List<ToolStripItem>();
 
-
+        }
+        virtual public List<ToolStripItem> CreateGetPasswordContextMenu(Action<string> setNewPassword)
+        {
+            return new List<ToolStripItem>();
+        }
     }
-
 
     public class FrwOlvDataObject : DataObject
     {

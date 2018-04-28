@@ -151,6 +151,231 @@ namespace FrwSoftware {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Job.
+        /// </summary>
+        internal static string JJobType {
+            get {
+                return ResourceManager.GetString("JJobType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cocurrent type .
+        /// </summary>
+        internal static string JJobType_ConcurrentType {
+            get {
+                return ResourceManager.GetString("JJobType_ConcurrentType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Is cancelable.
+        /// </summary>
+        internal static string JJobType_IsCancelable {
+            get {
+                return ResourceManager.GetString("JJobType_IsCancelable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Identifier.
+        /// </summary>
+        internal static string JJobType_JJobTypeId {
+            get {
+                return ResourceManager.GetString("JJobType_JJobTypeId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last batch run date.
+        /// </summary>
+        internal static string JJobType_JobBatchLastRunDate {
+            get {
+                return ResourceManager.GetString("JJobType_JobBatchLastRunDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Progress %.
+        /// </summary>
+        internal static string JJobType_JobBatchProgress {
+            get {
+                return ResourceManager.GetString("JJobType_JobBatchProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Queried jobs count.
+        /// </summary>
+        internal static string JJobType_JobBatchQueueCount {
+            get {
+                return ResourceManager.GetString("JJobType_JobBatchQueueCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Running jobs count.
+        /// </summary>
+        internal static string JJobType_JobBatchRunningCount {
+            get {
+                return ResourceManager.GetString("JJobType_JobBatchRunningCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Batch stage.
+        /// </summary>
+        internal static string JJobType_JobBatchStage {
+            get {
+                return ResourceManager.GetString("JJobType_JobBatchStage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last job run date.
+        /// </summary>
+        internal static string JJobType_LastRunDate {
+            get {
+                return ResourceManager.GetString("JJobType_LastRunDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last stage of job run.
+        /// </summary>
+        internal static string JJobType_LastStage {
+            get {
+                return ResourceManager.GetString("JJobType_LastStage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maximum threads.
+        /// </summary>
+        internal static string JJobType_MaxThreadCount {
+            get {
+                return ResourceManager.GetString("JJobType_MaxThreadCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        internal static string JJobType_Name {
+            get {
+                return ResourceManager.GetString("JJobType_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notification.
+        /// </summary>
+        internal static string JNotification {
+            get {
+                return ResourceManager.GetString("JNotification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Created date.
+        /// </summary>
+        internal static string JNotification_CreatedDate {
+            get {
+                return ResourceManager.GetString("JNotification_CreatedDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Описание.
+        /// </summary>
+        internal static string JNotification_Description {
+            get {
+                return ResourceManager.GetString("JNotification_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Archived.
+        /// </summary>
+        internal static string JNotification_IsArchive {
+            get {
+                return ResourceManager.GetString("JNotification_IsArchive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Identifier.
+        /// </summary>
+        internal static string JNotification_JNotificationId {
+            get {
+                return ResourceManager.GetString("JNotification_JNotificationId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        internal static string JNotification_NotificationType {
+            get {
+                return ResourceManager.GetString("JNotification_NotificationType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Source identifier.
+        /// </summary>
+        internal static string JNotification_SrcId {
+            get {
+                return ResourceManager.GetString("JNotification_SrcId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Source.
+        /// </summary>
+        internal static string JNotification_SrcType {
+            get {
+                return ResourceManager.GetString("JNotification_SrcType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        internal static string JNotification_Title {
+            get {
+                return ResourceManager.GetString("JNotification_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Job batch.
+        /// </summary>
+        internal static string Job_batch {
+            get {
+                return ResourceManager.GetString("Job_batch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Job batch canceled.
+        /// </summary>
+        internal static string Job_batch_canceled {
+            get {
+                return ResourceManager.GetString("Job_batch_canceled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Job batch completed.
+        /// </summary>
+        internal static string Job_batch_completed {
+            get {
+                return ResourceManager.GetString("Job_batch_completed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Preferences.
         /// </summary>
         internal static string JPreferences {
@@ -174,6 +399,69 @@ namespace FrwSoftware {
         internal static string JPreferences_Name {
             get {
                 return ResourceManager.GetString("JPreferences_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Job type.
+        /// </summary>
+        internal static string JRunningJob {
+            get {
+                return ResourceManager.GetString("JRunningJob", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Created date.
+        /// </summary>
+        internal static string JRunningJob_CreateDate {
+            get {
+                return ResourceManager.GetString("JRunningJob_CreateDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        internal static string JRunningJob_JJobType {
+            get {
+                return ResourceManager.GetString("JRunningJob_JJobType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Identifier.
+        /// </summary>
+        internal static string JRunningJob_JRunningJobId {
+            get {
+                return ResourceManager.GetString("JRunningJob_JRunningJobId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        internal static string JRunningJob_Name {
+            get {
+                return ResourceManager.GetString("JRunningJob_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Progress%.
+        /// </summary>
+        internal static string JRunningJob_Progress {
+            get {
+                return ResourceManager.GetString("JRunningJob_Progress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stage.
+        /// </summary>
+        internal static string JRunningJob_Stage {
+            get {
+                return ResourceManager.GetString("JRunningJob_Stage", resourceCulture);
             }
         }
         

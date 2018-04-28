@@ -180,4 +180,100 @@
   <data name="JCountry_Flag" xml:space="preserve">
     <value>Флаг</value>
   </data>
+  <data name="JRunningJob" xml:space="preserve">
+    <value>Запуски выполняемых задач</value>
+  </data>
+  <data name="JRunningJob_JRunningJobId" xml:space="preserve">
+    <value>Идентификатор</value>
+  </data>
+  <data name="JRunningJob_Name" xml:space="preserve">
+    <value>Наименование</value>
+  </data>
+  <data name="JRunningJob_JJobType" xml:space="preserve">
+    <value>Тип задания</value>
+  </data>
+  <data name="JRunningJob_CreateDate" xml:space="preserve">
+    <value>Дата создания</value>
+  </data>
+  <data name="JRunningJob_Stage" xml:space="preserve">
+    <value>Стадия</value>
+  </data>
+  <data name="JRunningJob_Progress" xml:space="preserve">
+    <value>Прогресс %</value>
+  </data>
+  <data name="JJobType" xml:space="preserve">
+    <value>Выполняемые задачи</value>
+  </data>
+  <data name="JJobType_JJobTypeId" xml:space="preserve">
+    <value>Идентификатор</value>
+  </data>
+  <data name="JJobType_Name" xml:space="preserve">
+    <value>Наименование</value>
+  </data>
+  <data name="JJobType_LastRunDate" xml:space="preserve">
+    <value>Время последнего запуска задания этого типа</value>
+  </data>
+  <data name="JJobType_JobBatchLastRunDate" xml:space="preserve">
+    <value>Время последнего запуска пакета заданий</value>
+  </data>
+  <data name="JJobType_ConcurrentType" xml:space="preserve">
+    <value>Тип конкурентного выполнения</value>
+  </data>
+  <data name="JJobType_IsCancelable" xml:space="preserve">
+    <value>Доступно ли прерывание</value>
+  </data>
+  <data name="JJobType_MaxThreadCount" xml:space="preserve">
+    <value>Максимальное кол-во потоков</value>
+  </data>
+  <data name="JJobType_LastStage" xml:space="preserve">
+    <value>Cтатус последнего запуска задания этого типа</value>
+  </data>
+  <data name="JJobType_JobBatchStage" xml:space="preserve">
+    <value>Cтатус запуска пакета заданий</value>
+  </data>
+  <data name="JJobType_JobBatchProgress" xml:space="preserve">
+    <value>Прогресс пакета заданий %</value>
+  </data>
+  <data name="JJobType_JobBatchQueueCount" xml:space="preserve">
+    <value>Кол-во ожидающих заданий из пакета</value>
+  </data>
+  <data name="JJobType_JobBatchRunningCount" xml:space="preserve">
+    <value>Кол-во работающих заданий из пакета</value>
+  </data>
+  <data name="JNotification" xml:space="preserve">
+    <value>Уведомление</value>
+  </data>
+  <data name="JNotification_JNotificationId" xml:space="preserve">
+    <value>Идентификатор</value>
+  </data>
+  <data name="JNotification_Title" xml:space="preserve">
+    <value>Наименование</value>
+  </data>
+  <data name="JNotification_Description" xml:space="preserve">
+    <value>Описание</value>
+  </data>
+  <data name="JNotification_CreatedDate" xml:space="preserve">
+    <value>Дата создания</value>
+  </data>
+  <data name="JNotification_NotificationType" xml:space="preserve">
+    <value>Тип</value>
+  </data>
+  <data name="JNotification_SrcType" xml:space="preserve">
+    <value>Источник</value>
+  </data>
+  <data name="JNotification_SrcId" xml:space="preserve">
+    <value>Идн. источника</value>
+  </data>
+  <data name="JNotification_IsArchive" xml:space="preserve">
+    <value>Архивный</value>
+  </data>
+  <data name="Job_batch_canceled" xml:space="preserve">
+    <value>Выполнение пакета заданий отменено</value>
+  </data>
+  <data name="Job_batch_completed" xml:space="preserve">
+    <value>Выполнение пакета заданий завершено</value>
+  </data>
+  <data name="Job_batch" xml:space="preserve">
+    <value>Пакет заданий</value>
+  </data>
 </root>

@@ -226,8 +226,8 @@ namespace FrwSoftware
                 FrwTreeDataObject dataObject = new FrwTreeDataObject();
                 dataObject.SelectedTreeNode = sourceObjects[0] as TreeNode;
                 CopyAdditionalObjectsToAppClipboard(sourceObjects, cut, dataObject);
-                AppManager.Instance.Clipboard.DataObject = dataObject;
-                AppManager.Instance.Clipboard.IsCutOperation = cut;
+                AppManager.Instance.FrwClipboard.DataObject = dataObject;
+                AppManager.Instance.FrwClipboard.IsCutOperation = cut;
 
             }
         }

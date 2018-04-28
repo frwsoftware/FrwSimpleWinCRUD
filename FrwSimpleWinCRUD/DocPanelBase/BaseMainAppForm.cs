@@ -30,11 +30,11 @@ namespace FrwSoftware
         protected System.Windows.Forms.Timer notificationTimer;
         protected System.Windows.Forms.ToolStripSplitButton eventWarrningButton;
 
-
+        static public bool CreateWindowNotClosable = false;//for create this instance (changed when before next instance creation)
+        protected bool NotClosable { get; set; }//for this instance (persistent)
 
         protected DeserializeDockContent m_deserializeDockContent;
 
-        protected bool NotClosable { get; set; }
         public int DocPanelIndex { get; set; }
         public Rectangle DocPanelBounds
         {
@@ -50,20 +50,33 @@ namespace FrwSoftware
         public BaseMainAppForm()
         {
             InitializeComponent();
-
+            //if (CreateWindowNotClosable) NotClosable = true;
             // 
             // eventWarrningButton
             // 
             this.eventWarrningButton = new System.Windows.Forms.ToolStripSplitButton();
             this.eventWarrningButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.eventWarrningButton.Enabled = false;
+            //this.eventWarrningButton.Enabled = false;
             this.eventWarrningButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.eventWarrningButton.Name = "eventWarrningButton";
             this.eventWarrningButton.Size = new System.Drawing.Size(19, 23);
             this.eventWarrningButton.Text = "toolStripSplitButton1";
-            this.eventWarrningButton.ToolTipText = "Есть новые события";
             this.eventWarrningButton.Click += eventWarrningButton_ButtonClick;
-            this.eventWarrningButton.Image = FrwSoftware.Properties.Resources.yellow;
+            setEventWarrningButton(false);
+            ToolStripItem item = new ToolStripMenuItem();
+            item.Text = "Notifications";
+            item.Click += (s1, em) =>
+            {
+                try
+                {
+                    CreateList(typeof(JNotification));
+                }
+                catch (Exception ex)
+                {
+                    Log.ShowError(ex);
+                }
+            };
+            eventWarrningButton.DropDownItems.Add(item);
 
 
             this.notificationTimer = new System.Windows.Forms.Timer(this.components);
@@ -104,13 +117,56 @@ namespace FrwSoftware
             notificationTimer.Enabled = true;
 
         }
+
+        private void setEventWarrningButton(bool events, string tooltips = null)
+        {
+            if (events)
+            {
+                this.eventWarrningButton.ToolTipText = tooltips != null ? tooltips : FrwCRUDRes.There_are_new_notifications_and_events;
+                this.eventWarrningButton.Image = FrwSoftware.Properties.Resources.if_info_b_86249;
+            }
+            else
+            {
+                this.eventWarrningButton.Image = FrwSoftware.Properties.Resources.if_info_172483;
+                eventWarrningButton.ToolTipText = FrwCRUDRes.Notifications_and_events;
+            }
+        }
+
         private void eventWarrningButton_ButtonClick(object sender, EventArgs e)
         {
             try
             {
-                //((JustAppManager)AppManager.Instance).ShowEventListWindow(this);
-                eventWarrningButton.Enabled = false;
-                eventWarrningButton.ToolTipText = null;
+                setEventWarrningButton(false);
+                /*
+                //eventWarrningButton.DropDownItems.Clear();//- очистка приводит к тому, что меню появляется по 0.0 координатам 
+                ToolStripItem sep = new ToolStripSeparator();
+                eventWarrningButton.DropDownItems.Add(sep);
+                List<ToolStripItem> tmp = new List<ToolStripItem>();
+                foreach (ToolStripItem c in eventWarrningButton.DropDownItems)
+                {
+                    if (c != sep) tmp.Add(c);
+                }
+                foreach (var c in tmp)
+                {
+                    eventWarrningButton.DropDownItems.Remove(c);
+                }
+                ToolStripItem item = new ToolStripMenuItem();
+                item.Text = "Notifications";
+                item.Click += (s, em) =>
+                {
+                    try
+                    {
+                        CreateList(typeof(JNotification));
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.ShowError(ex);
+                    }
+                };
+                eventWarrningButton.DropDownItems.Add(item);
+                */
+
+
             }
             catch (Exception ex)
             {
@@ -147,11 +203,7 @@ namespace FrwSoftware
                         localNotificationLog.Error(notif);
                         if (first)
                         {
-                            if (eventWarrningButton.Enabled == false)
-                            {
-                                eventWarrningButton.Enabled = true;
-                                eventWarrningButton.ToolTipText = notif;
-                            }
+                            setEventWarrningButton(true, notif);
                             first = false;
                         }
                     }
@@ -438,6 +490,25 @@ namespace FrwSoftware
                 Log.ShowError(ex);
             }
         }
+        protected void CreateHelpMenuItems(ToolStripMenuItem menuItemHelp, Form mainForm)
+        {
+            ToolStripMenuItem menuItem = null;
+            menuItem = new ToolStripMenuItem("About");
+            menuItem.Click += (s, em) =>
+            {
+                try
+                {
+                    BaseAboutDialog aboutDialog = new BaseAboutDialog(this);
+                    aboutDialog.ShowDialog(this);
+                }
+                catch (Exception ex)
+                {
+                    Log.ShowError(ex);
+                }
+            };
+            menuItemHelp.DropDownItems.Add(menuItem);
+
+        }
 
         protected void CreateFileMenuItems(ToolStripMenuItem menuItemFile)
         {
@@ -554,6 +625,7 @@ namespace FrwSoftware
                 try
                 {
                     Cursor.Current = Cursors.WaitCursor;
+                    BaseMainAppForm.CreateWindowNotClosable = false;
                     Form newWindow = (Form)Activator.CreateInstance(this.GetType());
                     newWindow.Show();
                 }
@@ -602,7 +674,20 @@ namespace FrwSoftware
                 menuItemFile.DropDownItems.Add(menuItem);
             }
         }
-  
+
+
+
+        protected void CreateToolsMenuItems(ToolStripMenuItem menuItemTools, ToolStrip toolBar, StatusStrip statusBar)
+        {
+            ToolStripMenuItem menuItem = null;
+            ////////////////////////////////////////
+            ToolStripMenuItem groupItem = new ToolStripMenuItem(FrwCRUDRes.Jobs_and_notifications);
+            menuItemTools.DropDownItems.Add(groupItem);
+            CreateMainMenuItemForEntityType(groupItem, typeof(JJobType));
+            CreateMainMenuItemForEntityType(groupItem, typeof(JRunningJob));
+            CreateMainMenuItemForEntityType(groupItem, typeof(JNotification));
+            CreateMainMenuItemForWindowType(menuItemTools, FrwCRUDRes.Application_settings, typeof(AppSettingsWindow));
+        }
 
         protected void CreateViewMenuItems(ToolStripMenuItem menuItemView, ToolStrip toolBar, StatusStrip statusBar)
         {
@@ -820,7 +905,8 @@ namespace FrwSoftware
         {
             get
             {
-                if (NotClosable && DocPanelIndex == 0) {
+                if (BaseMainAppForm.CreateWindowNotClosable) {
+                    NotClosable = true;
                     CreateParams myCp = base.CreateParams;
                     myCp.ClassStyle = myCp.ClassStyle | CP_NOCLOSE_BUTTON;
                     return myCp;

@@ -32,10 +32,20 @@ namespace FrwSoftware
         Dots,
         DotsAndShown
     }
+    public enum SecLevelEnum
+    {
+        Low = 0,
+        Middle = 1,
+        High = 2
+    }
 
     public class DictNames
     {
         public const string YesNo = "YesNo";
+        public const string NotificationType = "NotificationType";
+        public const string RunningJobStage = "RunningJobStage";
+        public const string JobConcurrentType = "JobConcurrentType";
+        public const string SecLevel = "SecLevel";
     }
 
     public class SData
@@ -221,14 +231,57 @@ namespace FrwSoftware
             ComplateAndVerifyEntityRegistration(true);
             InitDictionaries();
         }
+
+        public void AddDictionary(JDictionary dict)
+        {
+            dictionaries.Add(dict);
+        }
+
         virtual protected void InitDictionaries()
         {
             //create some tipical dictionaries 
+            //Note! Dictionary int field has defautl value 0. Dictionary string field has defautl value null (no value).
+
             JDictionary dict = null;
             dict = new JDictionary() { Id = DictNames.YesNo };
             dictionaries.Add(dict);
             dict.Items.Add(new JDictItem() { Key = "true", Text = FrwUtilsRes.Yes });
             dict.Items.Add(new JDictItem() { Key = "false", Text = FrwUtilsRes.No });
+
+            dict = new JDictionary() { Id = DictNames.NotificationType };
+            dictionaries.Add(dict);
+            dict.Items.Add(new JDictItem() { Key = NotificationTypeEnum.error.ToString(), Text = "Ошибка" });
+            dict.Items.Add(new JDictItem() { Key = NotificationTypeEnum.warning.ToString(), Text = "Предупреждение" });
+            dict.Items.Add(new JDictItem() { Key = NotificationTypeEnum.task.ToString(), Text = "Задача" });
+
+            dict = new JDictionary() { Id = DictNames.RunningJobStage };
+            dictionaries.Add(dict);
+            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.initial.ToString(), Image = Properties.Resources.if_application_task_45823, Text = "Создана" });
+            //dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.waiting.ToString(), Image = Properties.Resources.if_Line_ui_icons_Svg_17_1465831, Text = "Ожидает" });
+            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.waiting.ToString(), Image = Properties.Resources.if_msn_busy_4054, Text = "Ожидает" });
+            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.concurrent.ToString(), Image = Properties.Resources.if_Cancel_85238, Text = "Отклонена из-за конкур" });
+            //dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.running.ToString(), Image = Properties.Resources.if_Working_Tools_2_753919, Text = "Выполняется" });
+            //dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.running.ToString(), Image = Properties.Resources.if__40ui_2303145, Text = "Выполняется" });
+            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.running.ToString(), Image = Properties.Resources.execute, Text = "Выполняется" });
+            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.paused.ToString(), Image = Properties.Resources.if_Pause_657901, Text = "В паузе" });
+            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.aborted.ToString(), Image = Properties.Resources.if_cancel_43747, Text = "Отменена" });
+            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.error.ToString(), Image = Properties.Resources.if_Error_132716, Text = "Ошибка" });
+            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.warning.ToString(), Image = Properties.Resources.if_Warning_132616, Text = "Завер. с предупреждением" });
+            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.complated.ToString(), Image = Properties.Resources.if_tick_circle_12510, Text = "Завершена" });
+            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.exception.ToString(), Image = Properties.Resources.if_exclamation_diamond_frame_26309, Text = "Исключение" });
+
+            dict = new JDictionary() { Id = DictNames.JobConcurrentType };
+            dictionaries.Add(dict);
+            dict.Items.Add(new JDictItem() { Key = JobConcurrentTypeEnum.Allow.ToString(), Text = "Разрешено" });
+            dict.Items.Add(new JDictItem() { Key = JobConcurrentTypeEnum.Wait.ToString(), Text = "Ожидать" });
+            dict.Items.Add(new JDictItem() { Key = JobConcurrentTypeEnum.Cancel.ToString(), Text = "Отменить" });
+
+            dict = new JDictionary() { Id = DictNames.SecLevel };
+            dictionaries.Add(dict);
+            dict.Items.Add(new JDictItem() { Key = ((int)SecLevelEnum.Low).ToString(), Text = "Low" });//yellow
+            dict.Items.Add(new JDictItem() { Key = ((int)SecLevelEnum.Middle).ToString(), Text = "Middle" });//green
+            dict.Items.Add(new JDictItem() { Key = ((int)SecLevelEnum.High).ToString(), Text = "High" });//blue
+
         }
 
         virtual public void Destroy()
@@ -249,7 +302,8 @@ namespace FrwSoftware
         {
             //entities loading based on AppDomain.CurrentDomain.GetAssemblies()
             //Note: in some cases not all Assemblies loaded well. For example in separate UnitTest project for 
-            //project MyProject main assemble MyProject.exe not present in assembles list.  
+            //project MyProject main assemble MyProject.exe not present in assembles list. 
+            //Finally: dll present in AppDomain.CurrentDomain.GetAssemblies() only when it loaded (after first call of some classes)
             var entityTypes = AttrHelper.GetTypesWithAttribute<JEntity>(true);
             foreach (var sourceEntityType in entityTypes)
             {
@@ -417,7 +471,17 @@ namespace FrwSoftware
             Type pType = AttrHelper.GetPropertyType(sourceObjectType, aspectName);
             PropertyInfo propInfo = sourceObjectType.GetProperty(aspectName);
             if (pType == null) return null;//if aspectName not present for sourceObjectType
-            if (AttrHelper.GetAttribute<JText>(propInfo) != null)
+            if (AttrHelper.GetAttribute<JPrimaryKey>(propInfo) != null)
+            {
+                object o = AttrHelper.GetPropertyValue(rowObject, propInfo);
+                if (o != null)
+                {
+                    string oStr = o.ToString();
+                    return oStr.Length >= 10 ? oStr : (string.Concat(new string(' ', 10 - oStr.Length), oStr));
+                }
+                else return null;
+            }
+            else if (AttrHelper.GetAttribute<JText>(propInfo) != null)
             {
                 object o = AttrHelper.GetPropertyValue(rowObject, propInfo);
                 if (o != null)
@@ -1201,6 +1265,7 @@ namespace FrwSoftware
                 //However, in the case of working with a physical base, this can be implemented by a database
                 DeleteObject(l);
             }
+            RemoveAllObjectsFromPKCache(t);
         }
         virtual public void DeleteObject(object o)
         {
@@ -1208,7 +1273,7 @@ namespace FrwSoftware
             Type t = o.GetType();
             IList list = FindAll(t);
             list.Remove(o);
-
+            RemoveObjectFromPKCache(o);
             PropertyInfo[] ps = t.GetProperties();
             foreach (var p in ps)
             {
@@ -1475,6 +1540,7 @@ namespace FrwSoftware
             SetEntityModified(t);
         }
 
+        #region pk cache
         private void AddObjectToPKCache(object o)
         {
             Type t = o.GetType();
@@ -1485,6 +1551,22 @@ namespace FrwSoftware
                 GetSData(t).PkCache.Add(pk, o);
             }
         }
+        private void RemoveObjectFromPKCache(object o)
+        {
+            Type t = o.GetType();
+            PropertyInfo pkProp = AttrHelper.GetProperty<JPrimaryKey>(t);
+            if (pkProp != null)
+            {
+                object pk = pkProp.GetValue(o);
+                GetSData(t).PkCache.Remove(pk);
+            }
+        }
+        private void RemoveAllObjectsFromPKCache(Type t)
+        {
+            GetSData(t).PkCache.Clear();
+        }
+        //todo Update Cache when user modify pk
+        #endregion
 
         /// <summary>
         /// This method is called after the object is changed. Now it actually only changes the flag of the modification
@@ -1796,6 +1878,9 @@ namespace FrwSoftware
                 var props = t.GetProperties();
                 foreach (var p in props)
                 {
+                    JReadOnly readOnly = AttrHelper.GetAttribute<JReadOnly>(t, p.Name);
+                    if (p.CanWrite == false || readOnly != null) continue;
+
                     JOneToOne oneToOneAttr = AttrHelper.GetAttribute<JOneToOne>(t, p.Name);
                     JManyToOne manyToOneAttr = AttrHelper.GetAttribute<JManyToOne>(t, p.Name);
                     if (oneToOneAttr != null || manyToOneAttr != null)
@@ -1924,9 +2009,9 @@ namespace FrwSoftware
             }
         }
 
-        virtual protected string GetDataFilePathForType(Type dataType)
+        virtual protected string GetDataFilePathForType(Type dataType, string customDirPath = null)
         {
-            string dirPath = Path.Combine(FrwConfig.Instance.ProfileDir, DATA_STORAGE);
+            string dirPath = (customDirPath != null) ? customDirPath : Path.Combine(FrwConfig.Instance.ProfileDir, DATA_STORAGE);
             DirectoryInfo dir = new DirectoryInfo(dirPath);
             if (dir.Exists == false)
             {
@@ -2029,8 +2114,14 @@ namespace FrwSoftware
             CopyObjectProperties(o, destObject, copyRectLevel);
             return destObject;
         }
+        public object CloneObjectToOtherType(object o, Type destType)
+        {
+            if (o == null) return null;
+            object destObject = Activator.CreateInstance(destType);
+            CopyObjectProperties(o, destObject, CopyRestrictLevel.AllPropertiesNewLists);
+            return destObject;
+        }
 
- 
         private object FindObjectByPkOnlyObject(object blankObject)
         {
             if (blankObject != null)
@@ -2048,6 +2139,7 @@ namespace FrwSoftware
         public void CopyObjectProperties(object o, object destObject, CopyRestrictLevel cloneLevel)
         {
             Type t = o.GetType();
+            Type destT = destObject.GetType();
             foreach (PropertyInfo p in t.GetProperties())
             {
                 if (p.GetSetMethod() != null)
@@ -2074,7 +2166,10 @@ namespace FrwSoftware
                                     object realObject = p.GetValue(o);
                                     if (realObject != null)
                                     {
-                                        p.SetValue(destObject, AttrHelper.ReplaceObjectByPkOnlyObject(realObject));
+                                        if (destT.GetProperty(p.Name) != null && p.PropertyType.Equals(destT.GetProperty(p.Name).PropertyType))
+                                        {
+                                            p.SetValue(destObject, AttrHelper.ReplaceObjectByPkOnlyObject(realObject));
+                                        }
                                     }
                                 }
                                 //other rels do not copy
@@ -2092,7 +2187,10 @@ namespace FrwSoftware
                                     object realObject = p.GetValue(o);
                                     if (realObject != null)
                                     {
-                                        p.SetValue(destObject, AttrHelper.ReplaceObjectByPkOnlyObject(realObject));
+                                        if (destT.GetProperty(p.Name) != null && p.PropertyType.Equals(destT.GetProperty(p.Name).PropertyType))
+                                        {
+                                            p.SetValue(destObject, AttrHelper.ReplaceObjectByPkOnlyObject(realObject));
+                                        }
                                     }
                                 }
                                 else if (oneToManyAttr != null || manyToManyAttr != null)
@@ -2100,12 +2198,21 @@ namespace FrwSoftware
                                     IList value = (IList)AttrHelper.GetPropertyValue(o, p);
                                     if (value != null)
                                     {
-                                        IList values = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(foreinEntityType));
-                                        foreach (var realObject in value)
+                                        if (destT.GetProperty(p.Name) != null && p.PropertyType.Equals(destT.GetProperty(p.Name).PropertyType))
                                         {
-                                            values.Add(AttrHelper.ReplaceObjectByPkOnlyObject(realObject));
+                                            Type destForeinEntityType = AttrHelper.GetGenericListArgType(destT.GetProperty(p.Name).PropertyType, true);
+                                            if (foreinEntityType.Equals(destForeinEntityType))
+                                            {
+
+                                                IList values = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(foreinEntityType));
+                                                foreach (var realObject in value)
+                                                {
+                                                    values.Add(AttrHelper.ReplaceObjectByPkOnlyObject(realObject));
+                                                }
+
+                                                p.SetValue(destObject, values);
+                                            }
                                         }
-                                        p.SetValue(destObject, values);
                                     }
                                 }
 
@@ -2114,8 +2221,11 @@ namespace FrwSoftware
                             {
                                 if (oneToOneAttr != null || manyToOneAttr != null)
                                 {
-                                    //simple copy
-                                    p.SetValue(destObject, p.GetValue(o));
+                                    if (destT.GetProperty(p.Name) != null && p.PropertyType.Equals(destT.GetProperty(p.Name).PropertyType))
+                                    {
+                                        //simple copy
+                                        p.SetValue(destObject, p.GetValue(o));
+                                    }
                                 }
                                 else
                                 {
@@ -2123,15 +2233,23 @@ namespace FrwSoftware
                                     IList value = (IList)AttrHelper.GetPropertyValue(o, p);
                                     if (value != null)
                                     {
-                                        Type foreinEntityType = null;
-                                        if (manyToManyAttr != null || oneToManyAttr != null) foreinEntityType = AttrHelper.GetGenericListArgType(p.PropertyType);
-                                        else foreinEntityType = p.PropertyType;
-                                        IList values = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(foreinEntityType));
-                                        foreach (var v in value)
+                                        if (destT.GetProperty(p.Name) != null && p.PropertyType.Equals(destT.GetProperty(p.Name).PropertyType))
                                         {
-                                            values.Add(v);
+                                            Type foreinEntityType = null;
+                                            if (manyToManyAttr != null || oneToManyAttr != null) foreinEntityType = AttrHelper.GetGenericListArgType(p.PropertyType);
+                                            else foreinEntityType = p.PropertyType;
+                                            Type destForeinEntityType = AttrHelper.GetGenericListArgType(destT.GetProperty(p.Name).PropertyType, true);
+                                            if (foreinEntityType.Equals(destForeinEntityType))
+                                            {
+
+                                                IList values = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(foreinEntityType));
+                                                foreach (var v in value)
+                                                {
+                                                    values.Add(v);
+                                                }
+                                                p.SetValue(destObject, values);
+                                            }
                                         }
-                                        p.SetValue(destObject, values);
                                     }
                                 }
                             }
@@ -2140,28 +2258,40 @@ namespace FrwSoftware
                     }
                     else
                     {
-                        //simple property or no restriction
-                        p.SetValue(destObject, p.GetValue(o));
+                        if (destT.GetProperty(p.Name) != null && p.PropertyType.Equals(destT.GetProperty(p.Name).PropertyType))
+                        {
+                            //simple property or no restriction
+                            p.SetValue(destObject, p.GetValue(o));
+                        }
                     }
                 }//no set method
             }
         }
 
-        private void SaveEntityData(SData s)
+        public void SaveEntityDataToOtherLocation(IList list, Type type, string customDirPath)
         {
-            string filename = GetDataFilePathForType(s.DataType);// Path.Combine(dirPath, s.DataType.Name + ".json");
-            object list = s.DataList;
+            SaveEntityDataLocal(list, type, customDirPath);
+        }
+
+        private void SaveEntityDataLocal(IList list, Type type, string customDirPath)
+        {
+            string filename = GetDataFilePathForType(type, customDirPath);
             var lt = typeof(List<>);
-            var listType = lt.MakeGenericType(s.DataType);
+            var listType = lt.MakeGenericType(type);
             IList alist = (IList)Activator.CreateInstance(listType);
-            foreach (object v in (IList)list)
+            foreach (object v in list)
             {
                 object av = CloneObject(v, CloneObjectType.ForSave);
                 alist.Add(av);
             }
             //
             JsonSerializeHelper.SaveToFile(alist, filename);
+        }
 
+        private void SaveEntityData(SData s)
+        {
+            object list = s.DataList;
+            SaveEntityDataLocal((IList)list, s.DataType, null);
             //save join data
             foreach (var p in s.DataType.GetProperties())
             {

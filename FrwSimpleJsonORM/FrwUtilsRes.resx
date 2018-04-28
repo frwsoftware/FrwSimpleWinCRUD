@@ -180,4 +180,100 @@
   <data name="JCountry_Flag" xml:space="preserve">
     <value>Flag</value>
   </data>
+  <data name="JRunningJob" xml:space="preserve">
+    <value>Job type</value>
+  </data>
+  <data name="JRunningJob_JRunningJobId" xml:space="preserve">
+    <value>Identifier</value>
+  </data>
+  <data name="JRunningJob_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="JRunningJob_JJobType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="JRunningJob_CreateDate" xml:space="preserve">
+    <value>Created date</value>
+  </data>
+  <data name="JRunningJob_Stage" xml:space="preserve">
+    <value>Stage</value>
+  </data>
+  <data name="JRunningJob_Progress" xml:space="preserve">
+    <value>Progress%</value>
+  </data>
+  <data name="JJobType" xml:space="preserve">
+    <value>Job</value>
+  </data>
+  <data name="JJobType_JJobTypeId" xml:space="preserve">
+    <value>Identifier</value>
+  </data>
+  <data name="JJobType_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="JJobType_LastRunDate" xml:space="preserve">
+    <value>Last job run date</value>
+  </data>
+  <data name="JJobType_JobBatchLastRunDate" xml:space="preserve">
+    <value>Last batch run date</value>
+  </data>
+  <data name="JJobType_ConcurrentType" xml:space="preserve">
+    <value>Cocurrent type </value>
+  </data>
+  <data name="JJobType_IsCancelable" xml:space="preserve">
+    <value>Is cancelable</value>
+  </data>
+  <data name="JJobType_MaxThreadCount" xml:space="preserve">
+    <value>Maximum threads</value>
+  </data>
+  <data name="JJobType_LastStage" xml:space="preserve">
+    <value>Last stage of job run</value>
+  </data>
+  <data name="JJobType_JobBatchStage" xml:space="preserve">
+    <value>Batch stage</value>
+  </data>
+  <data name="JJobType_JobBatchProgress" xml:space="preserve">
+    <value>Progress %</value>
+  </data>
+  <data name="JJobType_JobBatchQueueCount" xml:space="preserve">
+    <value>Queried jobs count</value>
+  </data>
+  <data name="JJobType_JobBatchRunningCount" xml:space="preserve">
+    <value>Running jobs count</value>
+  </data>
+  <data name="JNotification" xml:space="preserve">
+    <value>Notification</value>
+  </data>
+  <data name="JNotification_JNotificationId" xml:space="preserve">
+    <value>Identifier</value>
+  </data>
+  <data name="JNotification_Title" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="JNotification_Description" xml:space="preserve">
+    <value>Описание</value>
+  </data>
+  <data name="JNotification_CreatedDate" xml:space="preserve">
+    <value>Created date</value>
+  </data>
+  <data name="JNotification_NotificationType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="JNotification_SrcType" xml:space="preserve">
+    <value>Source</value>
+  </data>
+  <data name="JNotification_SrcId" xml:space="preserve">
+    <value>Source identifier</value>
+  </data>
+  <data name="JNotification_IsArchive" xml:space="preserve">
+    <value>Archived</value>
+  </data>
+  <data name="Job_batch_canceled" xml:space="preserve">
+    <value>Job batch canceled</value>
+  </data>
+  <data name="Job_batch_completed" xml:space="preserve">
+    <value>Job batch completed</value>
+  </data>
+  <data name="Job_batch" xml:space="preserve">
+    <value>Job batch</value>
+  </data>
 </root>

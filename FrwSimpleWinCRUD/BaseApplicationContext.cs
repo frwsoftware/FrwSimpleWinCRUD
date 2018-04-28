@@ -15,7 +15,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Reflection;
-using FrwSoftware;
+
 using System.Collections.Generic;
 
 /// <summary>
@@ -38,6 +38,7 @@ namespace FrwSoftware
         protected static  int MaxTooltipLength = 63; // framework constraint
         protected Timer notificationTimer = new Timer();
         protected Queue<string> localNotificationQueue = new Queue<string>();
+        static public bool IsContextMode = false;
 
         //
         protected System.ComponentModel.IContainer components;	// a list of components to dispose when the context is disposed
@@ -48,6 +49,7 @@ namespace FrwSoftware
         /// </summary>
         public BaseApplicationContext()
         {
+            IsContextMode = true;
         }
 
         public void Load()

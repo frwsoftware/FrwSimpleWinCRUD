@@ -125,7 +125,7 @@ namespace FrwSoftware
         // unlike ReloadList does not access the repository
         override public void RefreshList()
         {
-            listView.BuildList(true);
+            if (listView != null) listView.BuildList(true);
         }
         override protected void EnsureAddedObjectVisible(object newObject)
         {
@@ -271,8 +271,8 @@ namespace FrwSoftware
             FrwOlvDataObject dataObject = new FrwOlvDataObject();
             dataObject.SelectedObjects = sourceObject;
             CopyAdditionalObjectsToAppClipboard(sourceObject, cut, dataObject);
-            AppManager.Instance.Clipboard.DataObject = dataObject;  // use our buffer, because SourceDataObject.GetData (typeof (BrightIdeasSoftware.OLVDataObject) returns null (apparently due to serialization)
-            AppManager.Instance.Clipboard.IsCutOperation = cut;
+            AppManager.Instance.FrwClipboard.DataObject = dataObject;  // use our buffer, because SourceDataObject.GetData (typeof (BrightIdeasSoftware.OLVDataObject) returns null (apparently due to serialization)
+            AppManager.Instance.FrwClipboard.IsCutOperation = cut;
         }
         private void ListView_ModelDropped(object sender, ModelDropEventArgs e)
         {

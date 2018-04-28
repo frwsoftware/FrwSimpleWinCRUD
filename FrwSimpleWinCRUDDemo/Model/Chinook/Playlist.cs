@@ -13,7 +13,7 @@
  **********************************************************************************/
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
-using FrwSoftware;
+
 using System.Collections.Generic;
 
 namespace FrwSoftware.Model.Chinook

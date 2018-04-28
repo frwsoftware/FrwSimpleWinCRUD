@@ -48,16 +48,16 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HtmlAgilityPack, Version=1.6.1.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <HintPath>..\packages\HtmlAgilityPack.1.6.1\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    <Reference Include="HtmlAgilityPack, Version=1.8.1.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\HtmlAgilityPack.1.8.1\lib\Net45\HtmlAgilityPack.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -76,7 +76,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\JCountry.cs" />
+    <Compile Include="Model\JJobType.cs" />
+    <Compile Include="Model\JNotification.cs" />
+    <Compile Include="Model\JRunningJob.cs" />
     <Compile Include="Model\JUserAgent.cs" />
+    <Compile Include="Model\Support\JBaseCategory.cs" />
     <Compile Include="Model\Support\WebEntryInfo.cs" />
     <Compile Include="Utils\AttrHelper.cs" />
     <Compile Include="ORM\Attributes.cs" />
@@ -135,12 +139,60 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Resources\" />
+    <None Include="Resources\Images\if_Working_Tools_2_753919.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Docs\Dm.cd" />
     <None Include="FrwSimpleJsonORM.nuspec" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\if_Pause_657901.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\if_tick_circle_12510.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\if_Warning_132616.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\if_application-task_45823.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\if_cancel_43747.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\if_cross_circle_frame_11739.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\if_Error_132716.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\if_exclamation-diamond-frame_26309.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\if_running_1054988.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\if_Cancel_85238.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\if_Line_ui_icons_Svg-17_1465831.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\if__40ui_2303145.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\execute.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\file_script.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\if_msn_busy_4054.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\useraway.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

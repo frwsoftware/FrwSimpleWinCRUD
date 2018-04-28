@@ -41,27 +41,31 @@
             this.mainMenu.SuspendLayout();
             this.SuspendLayout();
             // 
+            // notificationTimer
+            // 
+            this.notificationTimer.Enabled = true;
+            // 
             // dockPanel
             // 
             this.dockPanel.Location = new System.Drawing.Point(0, 53);
-            this.dockPanel.Size = new System.Drawing.Size(548, 292);
+            this.dockPanel.Size = new System.Drawing.Size(538, 276);
             // 
             // toolBar
             // 
             this.toolBar.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.toolBar.Location = new System.Drawing.Point(0, 28);
             this.toolBar.Name = "toolBar";
-            this.toolBar.Size = new System.Drawing.Size(548, 25);
+            this.toolBar.Size = new System.Drawing.Size(538, 25);
             this.toolBar.TabIndex = 14;
             // 
             // statusBar
             // 
             this.statusBar.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.statusBar.Location = new System.Drawing.Point(0, 345);
+            this.statusBar.Location = new System.Drawing.Point(0, 329);
             this.statusBar.Name = "statusBar";
             this.statusBar.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.statusBar.ShowItemToolTips = true;
-            this.statusBar.Size = new System.Drawing.Size(548, 22);
+            this.statusBar.Size = new System.Drawing.Size(538, 24);
             this.statusBar.TabIndex = 16;
             // 
             // mainMenu
@@ -77,53 +81,53 @@
             this.mainMenu.Location = new System.Drawing.Point(0, 0);
             this.mainMenu.MdiWindowListItem = this.menuItemWindow;
             this.mainMenu.Name = "mainMenu";
-            this.mainMenu.Size = new System.Drawing.Size(548, 28);
+            this.mainMenu.Size = new System.Drawing.Size(538, 28);
             this.mainMenu.TabIndex = 9;
             // 
             // menuItemFile
             // 
             this.menuItemFile.Name = "menuItemFile";
-            this.menuItemFile.Size = new System.Drawing.Size(40, 24);
+            this.menuItemFile.Size = new System.Drawing.Size(44, 24);
             this.menuItemFile.Text = "&File";
             // 
             // menuItemDict
             // 
             this.menuItemDict.Name = "menuItemDict";
-            this.menuItemDict.Size = new System.Drawing.Size(92, 24);
+            this.menuItemDict.Size = new System.Drawing.Size(100, 24);
             this.menuItemDict.Text = "Dictionaries";
             // 
             // menuItemView
             // 
             this.menuItemView.MergeIndex = 1;
             this.menuItemView.Name = "menuItemView";
-            this.menuItemView.Size = new System.Drawing.Size(49, 24);
+            this.menuItemView.Size = new System.Drawing.Size(53, 24);
             this.menuItemView.Text = "&View";
             // 
             // menuItemTools
             // 
             this.menuItemTools.MergeIndex = 2;
             this.menuItemTools.Name = "menuItemTools";
-            this.menuItemTools.Size = new System.Drawing.Size(55, 24);
+            this.menuItemTools.Size = new System.Drawing.Size(56, 24);
             this.menuItemTools.Text = "&Tools";
             // 
             // menuItemWindow
             // 
             this.menuItemWindow.MergeIndex = 2;
             this.menuItemWindow.Name = "menuItemWindow";
-            this.menuItemWindow.Size = new System.Drawing.Size(70, 24);
+            this.menuItemWindow.Size = new System.Drawing.Size(76, 24);
             this.menuItemWindow.Text = "&Window";
             // 
             // menuItemHelp
             // 
             this.menuItemHelp.MergeIndex = 3;
             this.menuItemHelp.Name = "menuItemHelp";
-            this.menuItemHelp.Size = new System.Drawing.Size(48, 24);
+            this.menuItemHelp.Size = new System.Drawing.Size(53, 24);
             this.menuItemHelp.Text = "&Help";
             // 
             // FrwMainAppForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(548, 367);
+            this.ClientSize = new System.Drawing.Size(538, 353);
             this.Controls.Add(this.toolBar);
             this.Controls.Add(this.mainMenu);
             this.Controls.Add(this.statusBar);

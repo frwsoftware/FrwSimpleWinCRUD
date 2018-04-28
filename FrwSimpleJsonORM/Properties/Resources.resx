@@ -123,4 +123,53 @@
   <data name="Dm_NotFound" xml:space="preserve">
     <value>Not Found!</value>
   </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="if_Pause_657901" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\if_Pause_657901.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="if_tick_circle_12510" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\if_tick_circle_12510.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="if_Warning_132616" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\if_Warning_132616.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="if_application_task_45823" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\if_application-task_45823.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="if_cancel_43747" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\if_cancel_43747.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="if_cross_circle_frame_11739" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\if_cross_circle_frame_11739.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="if_Error_132716" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\if_Error_132716.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="if_exclamation_diamond_frame_26309" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\if_exclamation-diamond-frame_26309.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="if_Cancel_85238" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\if_Cancel_85238.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="if_Line_ui_icons_Svg_17_1465831" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\if_Line_ui_icons_Svg-17_1465831.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="if_Working_Tools_2_753919" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\if_Working_Tools_2_753919.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="if__40ui_2303145" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\if__40ui_2303145.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="execute" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\execute.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="file_script" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\file_script.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="if_msn_busy_4054" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\if_msn_busy_4054.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="useraway" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Images\useraway.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

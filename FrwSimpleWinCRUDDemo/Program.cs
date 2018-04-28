@@ -24,7 +24,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using FrwSoftware;
+
 using FrwSoftware.Model.Chinook;
 
 namespace FrwSoftware
@@ -46,7 +46,7 @@ namespace FrwSoftware
                 {
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);
-                    MainAppUtils.CheckForSingleInstance();
+                    if (!MainAppUtils.CheckForSingleInstance()) return;
                     Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("en");
                     log = Log.GetLogger();
                     AppManager.Instance = new DemoAppManager();

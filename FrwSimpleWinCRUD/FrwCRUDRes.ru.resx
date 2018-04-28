@@ -543,4 +543,28 @@
   <data name="Application_Font" xml:space="preserve">
     <value>Шрифт приложения</value>
   </data>
+  <data name="Job__" xml:space="preserve">
+    <value>Задание</value>
+  </data>
+  <data name="Job_batch__" xml:space="preserve">
+    <value>Пакет заданий</value>
+  </data>
+  <data name="Try_to_cancel_job" xml:space="preserve">
+    <value>Попробовать прервать выполнение</value>
+  </data>
+  <data name="Kill_job_thread" xml:space="preserve">
+    <value>Уничтожить поток задания</value>
+  </data>
+  <data name="Show_job_console" xml:space="preserve">
+    <value>Показать консоль вывода</value>
+  </data>
+  <data name="Try_to_cancel_job_batch" xml:space="preserve">
+    <value>Попробовать прервать выполнение очереди заданий</value>
+  </data>
+  <data name="Kill_job_batch_thread" xml:space="preserve">
+    <value>Уничтожить поток очереди заданий и потоки заданий</value>
+  </data>
+  <data name="Show_job_batch_console" xml:space="preserve">
+    <value>Показать консоль вывода очереди заданий</value>
+  </data>
 </root>

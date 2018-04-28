@@ -166,14 +166,19 @@ namespace FrwSoftware
                    || potentialDescendant == potentialBase;
         }
 
-        static public Type GetGenericListArgType(Type type)
+        static public Type GetGenericListArgType(Type type, bool softCheck = false)
         {
             if (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(List<>) || type.GetGenericTypeDefinition() == typeof(IList<>)
                 || type.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
             {
                 return type.GetGenericArguments()[0];
             }
-            else throw new Exception("Not generic type " + type.FullName);
+            else
+            {
+                if (softCheck)
+                    throw new Exception("Not generic type " + type.FullName);
+                else return null;
+            }
         }
 
         static public bool IsGenericListTypeOf(Type type, Type testedType)

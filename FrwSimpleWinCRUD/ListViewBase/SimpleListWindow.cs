@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using BrightIdeasSoftware;
 using System.Collections;
-using FrwSoftware;
+
 using System.Reflection;
 
 namespace FrwSoftware
@@ -70,8 +70,11 @@ namespace FrwSoftware
                         try
                         {
                             if (AppManager.Instance.IsOnlyImageColumnProperty(SourceObjectType, column.AspectName)) return null;
-                            else return Dm.Instance.GetCustomPropertyValue(rowObject, column.AspectName, true,
+                            else
+                            {
+                                return Dm.Instance.GetCustomPropertyValue(rowObject, column.AspectName, true,
                                 AppManager.Instance.ListCellTruncatedMaxItemCount, AppManager.Instance.ListCellTruncatedMaxLength);
+                            }
                         }
                         catch (Exception ex)
                         {

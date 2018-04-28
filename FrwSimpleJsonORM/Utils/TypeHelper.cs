@@ -146,5 +146,37 @@ namespace FrwSoftware
         }
 
 
+        //////////////////////////////////////////
+        //todo
+        #region PreLoadAllAssemblies
+        //from https://stackoverflow.com/questions/3021613/how-to-pre-load-all-deployed-assemblies-for-an-appdomain
+        static public void PreLoadAllAssemblies()
+        {
+            AssembliesFromApplicationBaseDirectory();
+        }
+
+        static void AssembliesFromApplicationBaseDirectory()
+        {
+            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            AssembliesFromPath(baseDirectory);
+
+            string privateBinPath = AppDomain.CurrentDomain.SetupInformation.PrivateBinPath;
+            if (Directory.Exists(privateBinPath))
+                AssembliesFromPath(privateBinPath);
+        }
+
+        static void AssembliesFromPath(string path)
+        {
+            var assemblyFiles = Directory.GetFiles(path)
+                .Where(file => Path.GetExtension(file).Equals(".dll", StringComparison.OrdinalIgnoreCase));
+
+            foreach (var assemblyFile in assemblyFiles)
+            {
+                // TODO: check it isnt already loaded in the app domain
+                Assembly.LoadFrom(assemblyFile);
+            }
+        }
+        #endregion
+
     }
 }

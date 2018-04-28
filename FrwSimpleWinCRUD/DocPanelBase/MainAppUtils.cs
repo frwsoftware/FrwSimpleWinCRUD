@@ -21,7 +21,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.IO;
 using System.Configuration;
-using FrwSoftware;
+using System.Diagnostics;
 
 namespace FrwSoftware
 {
@@ -80,19 +80,30 @@ namespace FrwSoftware
             }
         }
 
-        static public void CheckForSingleInstance()
+        static public string GetMainAppName()
         {
-            string appName = System.AppDomain.CurrentDomain.FriendlyName;
+            string appName = System.AppDomain.CurrentDomain.FriendlyName; // MyApp.exe or MyApp.vhost.exe if you running the application in debug mode
+            //string appName = Process.GetCurrentProcess().ProcessName;// MyApp or MyApp.vhost if you running the application in debug mode
+            int dotIndex = appName.IndexOf(".");
+            if (dotIndex > -1) appName = appName.Substring(0, dotIndex);
+            return appName;
+        }
+
+
+        static public bool CheckForSingleInstance()
+        {
+            string appName = GetMainAppName();
             //test for single instance 
             bool mutexCreated;
-            m = new Mutex(false, appName, out mutexCreated);
+            m = new Mutex(true, appName, out mutexCreated);
             if (!mutexCreated)
             {
                 MessageBox.Show(null, FrwCRUDRes.Application_Allready_Running, FrwCRUDRes.WARNING,
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Application.Exit();
-                return;
+                return false;
             }
+            return true;
         }
 
         static public void InitAppPaths()

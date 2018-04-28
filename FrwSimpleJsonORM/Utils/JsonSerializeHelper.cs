@@ -92,6 +92,61 @@ namespace FrwSoftware
         }
 
     }
+    //http://stackoverflow.com/questions/40256323/json-net-serialize-datetime-minvalue-as-null
+    //todo - this method gets error 
+    public class DateTimeConverter : JsonConverter
+    {
+        public override void WriteJson(JsonWriter jsonWriter, object inputObject, JsonSerializer jsonSerializer)
+        {
+            // Typecast the input object
+            var dateTimeObject = inputObject as DateTime?;
+
+            // Set the properties of the Json Writer
+            jsonWriter.Formatting = Newtonsoft.Json.Formatting.Indented;
+
+            if (dateTimeObject == DateTime.MinValue)
+                jsonWriter.WriteValue((DateTime?)null);
+            else
+                jsonWriter.WriteValue(dateTimeObject);
+        }
+        public override object ReadJson(JsonReader reader,
+            Type objectType,
+            object existingValue,
+            JsonSerializer serializer)
+        {
+            DateTime? readValue = reader.ReadAsDateTime();
+
+            return (readValue == null) ? DateTime.MinValue : readValue;
+
+        }
+        public override bool CanConvert(Type objectType)
+        {
+            return typeof(DateTime?).IsAssignableFrom(objectType);
+        }
+    }
+    public class MinDateTimeConverter : DateTimeConverterBase
+    {
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.Value == null)
+                return DateTime.MinValue;
+
+            return (DateTime)reader.Value;
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            DateTime dateTimeValue = (DateTime)value;
+            if (dateTimeValue == DateTime.MinValue)
+            {
+                writer.WriteNull();
+                return;
+            }
+
+            writer.WriteValue(value);
+        }
+    }
+
 
 }
 

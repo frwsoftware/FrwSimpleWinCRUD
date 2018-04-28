@@ -17,6 +17,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
+using System.Collections;
 
 namespace FrwSoftware
 {
@@ -67,11 +68,13 @@ namespace FrwSoftware
         ssh,
         rdp
     }
+
     public class WebEntryInfoWrap
     {
         public WebEntryInfo WebEntryInfo { get; set; }
         public PropertyInfo Property { get; set; }
     }
+
     public class WebEntryInfo
     {
         public WebEntryInfo()
@@ -81,7 +84,7 @@ namespace FrwSoftware
             BrowserPrivateType = BrowserPrivateType.COMMON_CACHE;
         }
 
-
+        public int SecLevel { get; set; }
         private IList<string> protocols = new List<string>();
         public IList<string> Protocols {
             get
@@ -241,6 +244,9 @@ namespace FrwSoftware
         public string CachePath { get; set; }
         public BrowserPrivateType BrowserPrivateType { get; set; }
         public JUserAgent JUserAgent { get; set; }
+
+        public IList AllowedNetworks { get; set; }
+       
 
         static public WebEntryInfo GetWebEntryInfoFromObject(object o)
         {

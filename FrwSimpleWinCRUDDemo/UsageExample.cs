@@ -120,7 +120,7 @@ namespace FrwSoftware
         /// </summary>
         static public void StartupExample()
         {
-            MainAppUtils.CheckForSingleInstance();
+            if (!MainAppUtils.CheckForSingleInstance()) return;
             //Initializes all required objects. If you need to initialize objects individually or perform a 
             //special initialization, copy the code from the body of this method and modify it.
             MainAppUtils.InitAppPaths();

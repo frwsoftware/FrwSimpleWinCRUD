@@ -24,7 +24,7 @@ using System.Reflection;
 using System.Resources;
 using System.Text;
 using System.Windows.Forms;
-using FrwSoftware;
+
 
 
 namespace FrwSoftware
@@ -40,6 +40,8 @@ namespace FrwSoftware
         public event ObjectSelectEventHandler OnObjectSelectEvent;
         public bool IsBufferToCut { get; set; }//for copy/past
         protected SimplePropertyDialog propertyDialog = null;
+        private Timer refreshTimer = null;
+
         #region paren-child property view
         public string PaneUID { get; set; }
         protected List<IChildView> childViews = new List<IChildView>();
@@ -97,6 +99,25 @@ namespace FrwSoftware
         // updates the view of the object in the list (it is used from the edit form)
         virtual public void RefreshObject(object o)
         {
+        }
+
+        protected void StartRefreshing()
+        {
+            if (refreshTimer == null)
+            {
+                refreshTimer = new Timer(components);
+                refreshTimer.Interval = 2000;
+                refreshTimer.Tick += RefreshTimer_Tick;
+            }
+            refreshTimer.Start();
+        }
+        protected void StopRefreshing()
+        {
+            if (refreshTimer != null) refreshTimer.Stop();
+        }
+        private void RefreshTimer_Tick(object sender, EventArgs e)
+        {
+            RefreshList();
         }
 
         // updates the view of all objects in the list
@@ -490,8 +511,8 @@ namespace FrwSoftware
         }
         private bool CanPasteObjectFromAppClipboard(object destListItem)
         {
-            if (AppManager.Instance.Clipboard.DataObject != null)
-                return CanPasteObjectsFromIDataObject(destListItem, AppManager.Instance.Clipboard.DataObject);
+            if (AppManager.Instance.FrwClipboard.DataObject != null)
+                return CanPasteObjectsFromIDataObject(destListItem, AppManager.Instance.FrwClipboard.DataObject);
             else return false;
         }
 
@@ -583,10 +604,10 @@ namespace FrwSoftware
         } 
         private bool PasteSelectedObjectsFromAppClipBoard(object destListItem)
         {
-            if (AppManager.Instance.Clipboard.DataObject != null)
+            if (AppManager.Instance.FrwClipboard.DataObject != null)
             {
-                bool res = PasteSelectedObjectsFromIDataObject(destListItem, AppManager.Instance.Clipboard.DataObject, AppManager.Instance.Clipboard.IsCutOperation);
-                AppManager.Instance.Clipboard.Clear();
+                bool res = PasteSelectedObjectsFromIDataObject(destListItem, AppManager.Instance.FrwClipboard.DataObject, AppManager.Instance.FrwClipboard.IsCutOperation);
+                AppManager.Instance.FrwClipboard.Clear();
                 return res;
             }
             else return false;

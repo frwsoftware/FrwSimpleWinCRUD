@@ -179,6 +179,14 @@ namespace FrwSoftware
             }
             return s;
         }
+
+        static public bool IsContainsDict(IList<string> dictField, object testedItem)
+        {
+            if (dictField == null) return false;
+            if (dictField.Contains(testedItem.ToString())) return true;
+            return false;
+        }
+
     }
 
 }
