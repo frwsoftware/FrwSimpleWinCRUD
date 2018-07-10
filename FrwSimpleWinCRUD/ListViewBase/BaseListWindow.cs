@@ -145,8 +145,11 @@ namespace FrwSoftware
         virtual protected bool DeleteAllObjectsInStorage()
         {
             bool deleted = false;
-            Dm.Instance.DeleteAllObjects(SourceObjectType);
-            deleted = true;
+            if (SourceObjectType != null)
+            {
+                Dm.Instance.DeleteAllObjects(SourceObjectType);
+                deleted = true;
+            }
             return deleted;
         }
         virtual protected object EmptyObjectInStorage(Type sourceObjectType, IDictionary<string, object> pars = null)
@@ -180,7 +183,9 @@ namespace FrwSoftware
         #region saverestorestate
         protected string GetStateConfigFileName(bool dlgMode)
         {
-            string filename = Path.Combine(FrwConfig.Instance.ProfileConfigDir, GetType().FullName + "_" + this.SourceObjectType.FullName +  (dlgMode? "_dlgMode" : "") + "_state.config");
+            string filename = Path.Combine(FrwConfig.Instance.ProfileConfigDir, GetType().FullName + "_" 
+                + (SourceObjectType != null ? SourceObjectType.FullName : this.GetType().FullName)
+                +  (dlgMode? "_dlgMode" : "") + "_state.config");
             return filename;
         }
 
@@ -469,24 +474,27 @@ namespace FrwSoftware
         virtual protected void MakeContextMenuAddBlock(List<ToolStripItem> menuItemList, object selectedListItem, object selectedObject, JRights rights)
         {
             ToolStripMenuItem menuItem = null;
-            menuItem = new ToolStripMenuItem();
-            menuItem.Text = FrwCRUDRes.List_Create_New_Record;
-            menuItem.Image = Properties.Resources.AllPics_05;
-            menuItem.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
-            menuItem.ImageScaling = ToolStripItemImageScaling.None;
-            menuItem.Enabled = rights.CanAdd;
-            menuItem.Click += (s, em) =>
+            if (SourceObjectType != null)
             {
-                try
+                menuItem = new ToolStripMenuItem();
+                menuItem.Text = FrwCRUDRes.List_Create_New_Record;
+                menuItem.Image = Properties.Resources.AllPics_05;
+                menuItem.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
+                menuItem.ImageScaling = ToolStripItemImageScaling.None;
+                menuItem.Enabled = rights.CanAdd;
+                menuItem.Click += (s, em) =>
                 {
-                    AddObject(selectedListItem, selectedObject, SourceObjectType);
-                }
-                catch (Exception ex)
-                {
-                    Log.ShowError(ex);
-                }
-            };
-            menuItemList.Add(menuItem);
+                    try
+                    {
+                        AddObject(selectedListItem, selectedObject, SourceObjectType);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.ShowError(ex);
+                    }
+                };
+                menuItemList.Add(menuItem);
+            }
         }
 
  
@@ -746,7 +754,7 @@ namespace FrwSoftware
             ToolStripMenuItem menuItem = null;
             if (aspectName != null)
             {
-                if (AppManager.Instance.IsCustomEditProperty(SourceObjectType, aspectName))
+                if (SourceObjectType != null && AppManager.Instance.IsCustomEditProperty(SourceObjectType, aspectName))
                 {
                     object rowObject = selectedObject;
 
@@ -806,62 +814,65 @@ namespace FrwSoftware
 
             if (selectedObject != null)
             {
-                menuItem = new ToolStripMenuItem();
-                menuItem.Text = FrwCRUDRes.List_View_Of_Record;
-                menuItem.Image = Properties.Resources.AllPics_08;
-                menuItem.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
-                menuItem.ImageScaling = ToolStripItemImageScaling.None;
-                menuItem.Enabled = rights.CanView;
-                menuItem.Click += (s, em) =>
+                if (!(selectedObject is string))
                 {
-                    try
+                    menuItem = new ToolStripMenuItem();
+                    menuItem.Text = FrwCRUDRes.List_View_Of_Record;
+                    menuItem.Image = Properties.Resources.AllPics_08;
+                    menuItem.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
+                    menuItem.ImageScaling = ToolStripItemImageScaling.None;
+                    menuItem.Enabled = rights.CanView;
+                    menuItem.Click += (s, em) =>
                     {
-                        ViewObjectLocal(selectedObject);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.ShowError(ex);
-                    }
-                };
-                menuItemList.Add(menuItem);
+                        try
+                        {
+                            ViewObjectLocal(selectedObject);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.ShowError(ex);
+                        }
+                    };
+                    menuItemList.Add(menuItem);
 
-                menuItem = new ToolStripMenuItem();
-                menuItem.Text = FrwCRUDRes.List_Edit_Record;
-                menuItem.Image = Properties.Resources.AllPics_09;
-                menuItem.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
-                menuItem.ImageScaling = ToolStripItemImageScaling.None;
-                menuItem.Enabled = rights.CanUpdate;
-                menuItem.Click += (s, em) =>
-                {
-                    try
+                    menuItem = new ToolStripMenuItem();
+                    menuItem.Text = FrwCRUDRes.List_Edit_Record;
+                    menuItem.Image = Properties.Resources.AllPics_09;
+                    menuItem.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
+                    menuItem.ImageScaling = ToolStripItemImageScaling.None;
+                    menuItem.Enabled = rights.CanUpdate;
+                    menuItem.Click += (s, em) =>
                     {
-                        UpdateObject(selectedObject);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.ShowError(ex);
-                    }
-                };
-                menuItemList.Add(menuItem);
+                        try
+                        {
+                            UpdateObject(selectedObject);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.ShowError(ex);
+                        }
+                    };
+                    menuItemList.Add(menuItem);
 
-                menuItem = new ToolStripMenuItem();
-                menuItem.Text = FrwCRUDRes.List_Remove_Record;
-                menuItem.Image = Properties.Resources.AllPics_06;
-                menuItem.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
-                menuItem.ImageScaling = ToolStripItemImageScaling.None;
-                menuItem.Enabled = rights.CanDelete;
-                menuItem.Click += (s, em) =>
-                {
-                    try
+                    menuItem = new ToolStripMenuItem();
+                    menuItem.Text = FrwCRUDRes.List_Remove_Record;
+                    menuItem.Image = Properties.Resources.AllPics_06;
+                    menuItem.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
+                    menuItem.ImageScaling = ToolStripItemImageScaling.None;
+                    menuItem.Enabled = rights.CanDelete;
+                    menuItem.Click += (s, em) =>
                     {
-                        DeleteObject(selectedListItem, new object[] { selectedObject });
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.ShowError(ex);
-                    }
-                };
-                menuItemList.Add(menuItem);
+                        try
+                        {
+                            DeleteObject(selectedListItem, new object[] { selectedObject });
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.ShowError(ex);
+                        }
+                    };
+                    menuItemList.Add(menuItem);
+                }
 
                 menuItem = new ToolStripMenuItem();
                 menuItem.Text = FrwCRUDRes.List_Remove_All_Records;
@@ -950,16 +961,18 @@ namespace FrwSoftware
                     }
                 };
                 menuItemList.Add(menuItem);
-
-                menuItem = new ToolStripMenuItem();
-                menuItem.Text = FrwCRUDRes.BaseListWindow_DependenciesReport;
-                menuItem.Click += (s, em) =>
+                if (!(selectedObject is string))
                 {
-                    SimpleTextEditDialog dlg = new SimpleTextEditDialog();
-                    dlg.EditedText = Dm.Instance.GetDependencyReport(selectedObject);//  JMailAccount.DependencyAnalysis(item);
+                    menuItem = new ToolStripMenuItem();
+                    menuItem.Text = FrwCRUDRes.BaseListWindow_DependenciesReport;
+                    menuItem.Click += (s, em) =>
+                    {
+                        SimpleTextEditDialog dlg = new SimpleTextEditDialog();
+                        dlg.EditedText = Dm.Instance.GetDependencyReport(selectedObject);//  JMailAccount.DependencyAnalysis(item);
                     dlg.ShowDialog();
-                };
-                menuItemList.Add(menuItem);
+                    };
+                    menuItemList.Add(menuItem);
+                }
             }
         }
 
@@ -1035,8 +1048,11 @@ namespace FrwSoftware
         {
             try
             {
-                 object selectedObject = GetSelectedObject();
-                 AddObject(GetSelectedListItem(), selectedObject, SourceObjectType);
+                if (SourceObjectType != null)
+                {
+                    object selectedObject = GetSelectedObject();
+                    AddObject(GetSelectedListItem(), selectedObject, SourceObjectType);
+                }
             }
             catch (Exception ex)
             {
@@ -1112,8 +1128,11 @@ namespace FrwSoftware
             try
             {
                 Cursor.Current = Cursors.WaitCursor;
+                if (SourceObjectType != null)
+                {
 
-                if (SourceObjectType != null) Dm.Instance.SaveEntityData(SourceObjectType);
+                    if (SourceObjectType != null) Dm.Instance.SaveEntityData(SourceObjectType);
+                }
             }
             catch (Exception ex)
             {
