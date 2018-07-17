@@ -33,7 +33,7 @@ namespace FrwSoftware
    
     public delegate bool CanExpandGetterDelegate(TreeNode parentNode);
     public delegate IEnumerable ChildrenGetterDelegate(TreeNode parentNode);
-    public delegate void AfterEditTreeNodeLabelDelegate(object model, string labelText);
+    public delegate bool AfterEditTreeNodeLabelDelegate(object model, string labelText);
     public delegate void InitialCreateTreeNodeRootDelegate();
     public delegate void ComplateNodeDelegate(TreeNode node, object o);
 
@@ -428,9 +428,11 @@ namespace FrwSoftware
                     {
                         if (e.Node.Tag != null)
                         {
-                            AfterEditTreeNodeLabel(e.Node.Tag, e.Label);
+                            bool res = AfterEditTreeNodeLabel(e.Node.Tag, e.Label);
+                            e.CancelEdit = !res;
+                            e.Node.EndEdit(!res);
                         }
-                        e.Node.EndEdit(false);
+                        else  e.Node.EndEdit(false);
                     }
                     else
                     {

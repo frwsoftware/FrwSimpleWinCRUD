@@ -171,7 +171,7 @@ namespace FrwSoftware
             //InsertOrUpdateObjectInStorage(e.UpdatedObject, e.UpdatedPropertyName);
             if (e.ViewMode == ViewMode.New)
             {
-                EnsureAddedObjectVisible(e.UpdatedObject);
+                EnsureAddedObjectVisible(e);
             }
             else
             {
@@ -352,7 +352,7 @@ namespace FrwSoftware
                 Cursor.Current = cursor;
             }
         }
-        virtual protected void AddObject(object selectedListItem, object selectedObject, Type sourceObjectType, IDictionary<string, object> extraParams = null)
+        virtual protected void AddObject(object selectedListItem, object selectedObject, Type sourceObjectType, IDictionary<string, object> extraParams)
         {
 
         }
@@ -388,7 +388,10 @@ namespace FrwSoftware
                     DialogResult res = propertyDialog.ShowDialog();
                     if (res == DialogResult.OK)
                     {
-                        EnsureAddedObjectVisible(o);
+                        ChildObjectUpdateEventArgs e = new ChildObjectUpdateEventArgs();
+                        e.UpdatedObject = o;
+                        e.ViewMode = propertyDialog.ViewMode;
+                        EnsureAddedObjectVisible(e);
                         return o;
                     }
                     else return null;
@@ -412,7 +415,7 @@ namespace FrwSoftware
             }
         }
 
-        virtual protected void EnsureAddedObjectVisible(object newObject)
+        virtual protected void EnsureAddedObjectVisible(ChildObjectUpdateEventArgs e)
         {
             RefreshList();
         }
@@ -470,7 +473,31 @@ namespace FrwSoftware
                 Cursor.Current = cursor;
             }
         }
-    
+        protected ToolStripMenuItem CreateAddNode(object selectedListItem, object selectedObject, JRights rights, Type addedType, RefEntityInfo addedRefInfo)
+        {
+            //TreeNode selectedNode = selectedListItem as TreeNode;
+            ToolStripMenuItem menuItem = new ToolStripMenuItem();
+            string addedTypeDescr = (addedRefInfo != null)? addedRefInfo.GetRelDescription() : ModelHelper.GetEntityJDescriptionOrName(addedType);
+            menuItem.Text = "Создать " + addedTypeDescr;
+            menuItem.Enabled = rights.CanAdd;
+            menuItem.Click += (s, em) =>
+            {
+                try
+                {
+                    Dictionary<string, object> pars = null;
+                    //todo multi refs case 
+                    string propName = (addedRefInfo != null && addedRefInfo.foreinProperty != null) ? addedRefInfo.foreinProperty.Name : selectedObject.GetType().Name;
+                    if (!(selectedObject is string)) pars = new Dictionary<string, object> { { propName, selectedObject } };
+                    AddObject(selectedListItem, selectedObject, addedType, pars);
+                }
+                catch (Exception ex)
+                {
+                    Log.ShowError(ex);
+                }
+            };
+            return menuItem;
+        }
+
         virtual protected void MakeContextMenuAddBlock(List<ToolStripItem> menuItemList, object selectedListItem, object selectedObject, JRights rights)
         {
             ToolStripMenuItem menuItem = null;
@@ -486,7 +513,7 @@ namespace FrwSoftware
                 {
                     try
                     {
-                        AddObject(selectedListItem, selectedObject, SourceObjectType);
+                        AddObject(selectedListItem, selectedObject, SourceObjectType, null);
                     }
                     catch (Exception ex)
                     {
@@ -494,6 +521,27 @@ namespace FrwSoftware
                     }
                 };
                 menuItemList.Add(menuItem);
+
+                List<RefEntityInfo> rels = Dm.Instance.GetAllReferencedToEntity(selectedObject, false);
+                if (rels.Count(s => s.foreinProperty != null) > 0)
+                //if (rels.Count > 0)
+                {
+                    menuItem = new ToolStripMenuItem();
+                    menuItem.Text = FrwCRUDRes.List_Create_New_Record + "( Childs)";
+                    menuItem.Image = Properties.Resources.AllPics_05;
+                    menuItem.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
+                    menuItem.ImageScaling = ToolStripItemImageScaling.None;
+                    menuItem.Enabled = rights.CanAdd;
+
+                    List<ToolStripItem> menuItemList1 = new List<ToolStripItem>();
+                    foreach (var rt in rels)
+                    {
+                        if (rt.foreinProperty != null)
+                            menuItemList1.Add(CreateAddNode(selectedListItem, selectedObject, rights, rt.RefEntity, rt));
+                    }
+                    menuItem.DropDownItems.AddRange(menuItemList1.ToArray<ToolStripItem>());
+                    menuItemList.Add(menuItem);
+                }
             }
         }
 
@@ -973,7 +1021,20 @@ namespace FrwSoftware
                     };
                     menuItemList.Add(menuItem);
                 }
+                IList<WebEntryInfoWrap> webEntryInfos = WebEntryInfo.GetWebEntryInfosFromObject(selectedObject);
+                foreach (var w in webEntryInfos)
+                {
+                    //todo name of field
+                    menuItemList.AddRange(AppManager.Instance.CreateOpenInBrowserContextMenu(w.WebEntryInfo, this.ContentContainer, selectedObject));
+                }
+                //todo
+                //menuItemList.AddRange(AppManager.Instance.CreateGetPasswordContextMenu(newPassword =>
+                //{
+                  //  item.Password = newPassword;
+                //}));
+
             }
+
         }
 
 
@@ -1051,7 +1112,7 @@ namespace FrwSoftware
                 if (SourceObjectType != null)
                 {
                     object selectedObject = GetSelectedObject();
-                    AddObject(GetSelectedListItem(), selectedObject, SourceObjectType);
+                    AddObject(GetSelectedListItem(), selectedObject, SourceObjectType, null);
                 }
             }
             catch (Exception ex)

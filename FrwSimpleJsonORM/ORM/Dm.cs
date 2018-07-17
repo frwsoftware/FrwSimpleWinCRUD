@@ -187,6 +187,32 @@ namespace FrwSoftware
         public JValidationResult ValidationResult { get; set; }
     }
 
+    public class RefEntityInfo
+    {
+        public Type RefEntity = null;
+        public HashSet<object> Records = null;
+        public PropertyInfo thisProperty = null;
+        public PropertyInfo foreinProperty = null;
+
+        public bool IsSelfRelation()
+        {
+            if (foreinProperty != null && foreinProperty.PropertyType.Equals(RefEntity)) return true;
+            else return false;
+        }
+        public string GetRelDescription()
+        {
+            string relDescr = ModelHelper.GetEntityJDescriptionOrName(this.RefEntity);
+            if (this.thisProperty != null || this.foreinProperty != null)
+            {
+                relDescr = relDescr + "(" +
+                      ((this.thisProperty != null) ? ModelHelper.GetPropertyJDescriptionOrName(this.thisProperty) : "")
+                    + ((this.foreinProperty != null) ? (" /" + ModelHelper.GetPropertyJDescriptionOrName(this.foreinProperty)) : "")
+                    + ")";
+            }
+            return relDescr;
+        }
+    }
+
     public partial class Dm
     {
         public static Dm Instance
@@ -1087,6 +1113,24 @@ namespace FrwSoftware
             }
             return values;
         }
+        public object ResolveOneToOneRelation(object rowObject, Type foreinEntityType, string refFieldNameInForeinEntity = null)
+        {
+            //todo optimization if present field in rowObject
+            if (rowObject == null) return null;
+            Type sourceEntityType = rowObject.GetType();
+            PropertyInfo foreinEntityPK = AttrHelper.GetProperty<JPrimaryKey>(foreinEntityType);
+            PropertyInfo foreinEntityOneToOne = FindRefFieldInForeinEntity(sourceEntityType, foreinEntityType, typeof(JOneToOne), refFieldNameInForeinEntity);
+            IList list = FindAll(foreinEntityType);
+            foreach (var l in list)
+            {
+                var foreinEntityValue = foreinEntityOneToOne.GetValue(l);
+                if (rowObject.Equals(foreinEntityValue))
+                {
+                    return l;
+                }
+            }
+            return null; 
+        }
 
 
         private void CompareLists(IList oldList, IList newList, out IList addList, out IList removeList)
@@ -1123,18 +1167,21 @@ namespace FrwSoftware
             }
             else
             {
-                if (typeof(JOneToOne).Equals(attrTypeToFind)) throw new ArgumentException();
+                //if (typeof(JOneToOne).Equals(attrTypeToFind)) throw new ArgumentException();
                 
                 //nameToFind Set explicitly, which is relevant if the table has several fields of the same type that refer to the same table
                 foreach (var p in foreinEntityRefFields)
                 {
-                    Type refType = (typeof(JManyToOne).Equals(attrTypeToFind)) ? p.PropertyType : AttrHelper.GetGenericListArgType(p.PropertyType);
+                    Type refType = (typeof(JManyToOne).Equals(attrTypeToFind) || typeof(JOneToOne).Equals(attrTypeToFind)) ? p.PropertyType : AttrHelper.GetGenericListArgType(p.PropertyType);
                     if (refType.Equals(sourceEntityType))
                     {
                         if (
                             ((typeof(JManyToOne).Equals(attrTypeToFind) || typeof(JOneToMany).Equals(attrTypeToFind)) && (p.Name).Equals(nameToFind))
                             || 
-                            (typeof(JManyToMany).Equals(attrTypeToFind) && (p.Name).Equals(nameToFind)))//todo 
+                            (typeof(JManyToMany).Equals(attrTypeToFind) && (p.Name).Equals(nameToFind))
+                            ||
+                            (typeof(JOneToOne).Equals(attrTypeToFind) && (p.Name).Equals(nameToFind))
+                            )//todo 
                         {
                             foreinEntityRefField = p;
                             break;
@@ -1235,20 +1282,41 @@ namespace FrwSoftware
                 else if (p.PropertyType == typeof(DateTimeOffset))
                     p.SetValue(o, new DateTimeOffset(cur));
             }
+            ResolveToManyRelations(o);
             if (pars != null)
             {
-                props = o.GetType().GetProperties();
-                foreach (var p in props)
+                foreach (var d in pars)
                 {
-                    object value = DictHelper.Get(pars, p.Name);
-                    if (value != null)
+                    object value = d.Value;
+                    props = o.GetType().GetProperties();
+                    bool found = false;
+                    foreach (var p in props)
                     {
-                        //todo check type
-                        p.SetValue(o, value);
+                        if (p.Name.Equals(d.Key))
+                        {
+                            JOneToMany oneToManyAttr = AttrHelper.GetAttribute<JOneToMany>(o.GetType(), p.Name);
+                            JManyToMany manyToManyAttr = AttrHelper.GetAttribute<JManyToMany>(o.GetType(), p.Name);
+                            JDictProp dictAttr = AttrHelper.GetAttribute<JDictProp>(o.GetType(), p.Name);
+                            if (oneToManyAttr != null || manyToManyAttr != null || (dictAttr != null && dictAttr.AllowMultiValues == true))
+                            {
+                                IList list = (IList)AttrHelper.GetPropertyValue(o, p.Name);
+                                if (AttrHelper.GetGenericListArgType(p.PropertyType).Equals(value.GetType()) == false)
+                                    throw new ArgumentException("Wrong type " + value.GetType() + " for field " + p.Name + " (field list type: " + AttrHelper.GetGenericListArgType(p.PropertyType) + ")");
+                                list.Add(value);
+                            }
+                            else
+                            {
+                                //todo lists 
+                                if (p.PropertyType.Equals(value.GetType()) == false)
+                                    throw new ArgumentException("Wrong type " + value.GetType() + " for field " + p.Name + " (field type: " + p.PropertyType + ")");
+                                p.SetValue(o, value);
+                            }
+                            found = true;
+                        }
                     }
+                    if (!found) throw new ArgumentException("Wrong name of params " + d.Key + " - not found from properties of " + o.GetType().FullName);
                 }
             }
-            ResolveToManyRelations(o);
             return o;
         }
         virtual public void DeleteAllObjects(Type t)
@@ -1409,14 +1477,21 @@ namespace FrwSoftware
 
             SetEntityModified(t);
         }
+        public List<RefEntityInfo> GetAllReferencedToEntity(object o, bool fillRecords = true)
+        {
+            return GetAllReferencedToEntityLocal(o, fillRecords);
+        }
+ 
 
-        public string GetDependencyReport(object o, string br = "\r\n")
+        private List<RefEntityInfo> GetAllReferencedToEntityLocal(object o, bool fillRecords = true)
         {
             if (o == null) return null;
             Type sourceEntityType = o.GetType();
+
+            List<RefEntityInfo> rels = new List<RefEntityInfo>();
+            //Dictionary<Type, HashSet<object>> rels = new Dictionary<Type, HashSet<object>>();
             PropertyInfo pkProp = AttrHelper.GetProperty<JPrimaryKey>(sourceEntityType);
             object sourcePKValue = pkProp.GetValue(o);
-            Dictionary<Type, HashSet<object>> rels = new Dictionary<Type, HashSet<object>>();
             foreach (var entity in entities)
             {
                 foreach (PropertyInfo p in entity.GetProperties())
@@ -1428,6 +1503,24 @@ namespace FrwSoftware
                         Type foreinEntityType = p.PropertyType;
                         if (foreinEntityType == sourceEntityType)
                         {
+                            RefEntityInfo refEntityInfo = new RefEntityInfo();
+                            if (fillRecords) refEntityInfo.Records = new HashSet<object>();
+                            refEntityInfo.RefEntity = entity;
+                            refEntityInfo.foreinProperty = p;
+                            rels.Add(refEntityInfo);
+                            //todo rel name
+                            foreach (PropertyInfo pp in sourceEntityType.GetProperties())
+                            {
+                                JOneToMany oneToManyAttr = AttrHelper.GetAttribute<JOneToMany>(pp);
+                                if (oneToManyAttr != null)
+                                {
+                                    Type foreinEntityType1 = AttrHelper.GetGenericListArgType(pp.PropertyType);
+                                    if (foreinEntityType1 == foreinEntityType)
+                                    {
+                                        refEntityInfo.thisProperty = pp;
+                                    }
+                                }
+                            }                            /*
                             HashSet<object> referenced = null;
                             rels.TryGetValue(entity, out referenced);
                             if (referenced == null)
@@ -1435,14 +1528,17 @@ namespace FrwSoftware
                                 referenced = new HashSet<object>();
                                 rels.Add(entity, referenced);
                             }
-
-                            IList allMayBeReferenced = FindAll(entity);
-                            foreach (object l in allMayBeReferenced)
+                            */
+                            if (fillRecords)
                             {
-                                object foreinEntityValue = p.GetValue(l);
-                                if (foreinEntityValue != null && foreinEntityValue == o)
+                                IList allMayBeReferenced = FindAll(entity);
+                                foreach (object l in allMayBeReferenced)
                                 {
-                                    if (referenced.Contains(l) == false) referenced.Add(l);
+                                    object foreinEntityValue = p.GetValue(l);
+                                    if (foreinEntityValue != null && foreinEntityValue == o)
+                                    {
+                                        if (refEntityInfo.Records.Contains(l) == false) refEntityInfo.Records.Add(l);
+                                    }
                                 }
                             }
                         }
@@ -1462,7 +1558,39 @@ namespace FrwSoftware
                         foreinEntityType = s.DataType1;
                     }
                     else foreinEntityType = s.DataType2;
+                    RefEntityInfo refEntityInfo = new RefEntityInfo();
+                    if (fillRecords) refEntityInfo.Records = new HashSet<object>();
+                    refEntityInfo.RefEntity = foreinEntityType;
+                    rels.Add(refEntityInfo);
 
+                    //todo join name 
+                    foreach (PropertyInfo p in foreinEntityType.GetProperties())
+                    {
+                        JManyToMany manyToManyAttr = AttrHelper.GetAttribute<JManyToMany>(p);
+                        if (manyToManyAttr != null)
+                        {
+                            Type foreinEntityType1 = AttrHelper.GetGenericListArgType(p.PropertyType);
+                            if (foreinEntityType1 == sourceEntityType)
+                            {
+                                refEntityInfo.foreinProperty = p;
+                            }
+                        }
+                    }
+                    //todo join name
+                    foreach (PropertyInfo p in sourceEntityType.GetProperties())
+                    {
+                        JManyToMany manyToManyAttr = AttrHelper.GetAttribute<JManyToMany>(p);
+                        if (manyToManyAttr != null)
+                        {
+                            Type foreinEntityType1 = AttrHelper.GetGenericListArgType(p.PropertyType);
+                            if (foreinEntityType1 == foreinEntityType)
+                            {
+                                refEntityInfo.thisProperty = p;
+                            }
+                        }
+                    }
+
+                    /*
                     HashSet<object> referenced = null;
                     rels.TryGetValue(foreinEntityType, out referenced);
                     if (referenced == null)
@@ -1470,33 +1598,43 @@ namespace FrwSoftware
                         referenced = new HashSet<object>();
                         rels.Add(foreinEntityType, referenced);
                     }
-
+                    */
                     //from crosstable
-                    foreach (var l in s.DataList)
+                    if (fillRecords)
                     {
-                        if (reverse)
+                        foreach (var l in s.DataList)
                         {
-                            if (sourcePKValue.Equals(l.Pk2))
+                            if (reverse)
                             {
-                                object refO = Find(foreinEntityType, l.Pk1);
-                                if (refO != null) referenced.Add(refO);
+                                if (sourcePKValue.Equals(l.Pk2))
+                                {
+                                    object refO = Find(foreinEntityType, l.Pk1);
+                                    if (refO != null) refEntityInfo.Records.Add(refO);
+                                }
                             }
-                        }
-                        else
-                        {
-                            if (sourcePKValue.Equals(l.Pk1))
+                            else
                             {
-                                object refO = Find(foreinEntityType, l.Pk2);
-                                if (refO != null) referenced.Add(refO);
+                                if (sourcePKValue.Equals(l.Pk1))
+                                {
+                                    object refO = Find(foreinEntityType, l.Pk2);
+                                    if (refO != null) refEntityInfo.Records.Add(refO);
+                                }
                             }
                         }
                     }
                 }
             }
+            return rels;
+        }
 
+        public string GetDependencyReport(object o, string br = "\r\n")
+        {
+            List<RefEntityInfo> rels = GetAllReferencedToEntityLocal(o);
 
             string hr = "=============================================" + br;
             string usingInStr = FrwUtilsRes.Dm_UsedInEntity + " ";
+            string thisField = "This entity field" + " ";
+            string refField = "Referenced entity field" + " ";
             string totalStr = " " + FrwUtilsRes.Dm_Total + ": ";
 
             StringBuilder str = new StringBuilder();
@@ -1507,10 +1645,24 @@ namespace FrwSoftware
 
             foreach (var rt in rels)
             {
-                HashSet<object> refs = rt.Value;
+                HashSet<object> refs = rt.Records;
                 if (refs.Count > 0)
                 {
-                    str.Append(usingInStr + ModelHelper.GetEntityJDescriptionOrFullName(rt.Key) + totalStr + refs.Count);
+                    str.Append(usingInStr + ModelHelper.GetEntityJDescriptionOrFullName(rt.RefEntity) + totalStr + refs.Count);
+                    if (rt.thisProperty != null)
+                    {
+                        str.Append(br);
+                        str.Append(thisField);
+                        str.Append(": ");
+                        str.Append(ModelHelper.GetPropertyJDescriptionOrName(rt.thisProperty));
+                    }
+                    if (rt.foreinProperty != null)
+                    {
+                        str.Append(br);
+                        str.Append(refField);
+                        str.Append(": ");
+                        str.Append(ModelHelper.GetPropertyJDescriptionOrName(rt.foreinProperty));
+                    }
                     str.Append(br);
                     str.Append(hr);
                     foreach (var m in refs)
@@ -1748,6 +1900,17 @@ namespace FrwSoftware
                 ResolveToManyRelationsForEntity(sdata);
             }
             return (IList)sdata.DataList;
+        }
+        virtual public IList FindRootList(Type t)
+        {
+            PropertyInfo p = ModelHelper.GetSelfPropertiesForEntity(t).FirstOrDefault();
+            List<object> rootList = new List<object>();
+            IList list = Dm.Instance.FindAll(t);
+            foreach (var l in list)
+            {
+                if (p.GetValue(l) == null) rootList.Add(l);
+            }
+            return rootList;
         }
         public IList<T> FindAll<T>()
         {

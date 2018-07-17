@@ -127,7 +127,7 @@ namespace FrwSoftware
         {
             if (listView != null) listView.BuildList(true);
         }
-        override protected void EnsureAddedObjectVisible(object newObject)
+        override protected void EnsureAddedObjectVisible(ChildObjectUpdateEventArgs e)
         {
             // the standard listView method, when the filter is enabled, adds a record to the sources and rebuilds the list
             // and at us record in the source is already added, therefore the duplication
@@ -141,9 +141,9 @@ namespace FrwSoftware
             }
             else
             {
-                this.listView.AddObject(newObject);
+                this.listView.AddObject(e.UpdatedObject);
             }
-            this.listView.EnsureModelVisible(newObject); //? 
+            this.listView.EnsureModelVisible(e.UpdatedObject); //? 
         }
         override public IList SelectedObjects
         {
@@ -860,9 +860,9 @@ namespace FrwSoftware
             }
             else return null;
         }
-        override protected void AddObject(object selectedListItem, object selectedObject, Type sourceObjectType, IDictionary<string, object> extraParams = null)
+        override protected void AddObject(object selectedListItem, object selectedObject, Type sourceObjectType, IDictionary<string, object> extraParams)
         {
-            object newObject = AddObjectLocal(selectedObject, SourceObjectType);
+            object newObject = AddObjectLocal(selectedObject, sourceObjectType, extraParams);
             /*
             if (newObject != null)
             {

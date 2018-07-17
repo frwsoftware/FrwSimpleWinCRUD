@@ -187,6 +187,24 @@ namespace FrwSoftware
             return false;
         }
 
+        static public bool IsSingleHierEntity(Type t)
+        {
+            return (GetSelfPropertiesForEntity(t).Count == 1);
+        }
+        static public IList<PropertyInfo> GetSelfPropertiesForEntity(Type t)
+        {
+            List<PropertyInfo> list = new List<PropertyInfo>();
+            foreach (var p in t.GetProperties())
+            {
+                JManyToOne manyToOneAttr = p.GetCustomAttribute<JManyToOne>();
+                if (manyToOneAttr != null && p.PropertyType.Equals(t))
+                {
+                   list.Add(p);
+                }
+            }
+            return list;
+        }
+ 
     }
 
 }

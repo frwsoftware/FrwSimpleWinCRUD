@@ -13,6 +13,7 @@
  **********************************************************************************/
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,6 +39,13 @@ namespace FrwSoftware
             }
 
             return String.Format("{0} bytes", size);
+        }
+        public static Color GetColorBySecLevel(int level)
+        {
+            if (level == (int)SecLevelEnum.Low) return Color.Black;
+            else if (level == (int)SecLevelEnum.Middle) return Color.Blue;
+            else if (level == (int)SecLevelEnum.High) return Color.Green;
+            else return Color.Black;
         }
 
     }

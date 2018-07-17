@@ -120,7 +120,7 @@ namespace FrwSoftware
             node.ToolTipText = name;
         }
 
-        override protected void AddObject(object selectedListItem, object selectedObject, Type sourceObjectType, IDictionary<string, object> extraParams = null)
+        override protected void AddObject(object selectedListItem, object selectedObject, Type sourceObjectType, IDictionary<string, object> extraParams)
         {
             object newObject = AddObjectLocal(selectedObject, sourceObjectType, extraParams);
             if (newObject != null)
@@ -413,7 +413,7 @@ namespace FrwSoftware
             {
                 try
                 {
-                    AddObject(selectedListItem, selectedObject, SourceObjectType);
+                    AddObject(selectedListItem, selectedObject, SourceObjectType, null);
                 }
                 catch (Exception ex)
                 {
@@ -495,6 +495,11 @@ namespace FrwSoftware
 
         }
         #endregion
+        override protected void EnsureAddedObjectVisible(ChildObjectUpdateEventArgs e)
+        {
+            //todo reload only spec TreeNode
+            ReloadList();
+        }
     }
     public class TreeListState
     {

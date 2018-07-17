@@ -305,6 +305,10 @@
     <Compile Include="ListViewBase\SimpleTextDialog.Designer.cs">
       <DependentUpon>SimpleTextDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="ListViewBase\SimpleTreeListWindow.cs" />
+    <Compile Include="ListViewBase\SimpleTreeListWindow.Designer.cs">
+      <DependentUpon>SimpleTreeListWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="ListViewBase\SimpleViewControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
