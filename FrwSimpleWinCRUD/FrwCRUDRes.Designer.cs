@@ -61,6 +61,24 @@ namespace FrwSoftware {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to About.
+        /// </summary>
+        internal static string About {
+            get {
+                return ResourceManager.GetString("About", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Active.
+        /// </summary>
+        internal static string Active {
+            get {
+                return ResourceManager.GetString("Active", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Active document window.
         /// </summary>
         internal static string ActiveDocumentWindow {
@@ -277,11 +295,29 @@ namespace FrwSoftware {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Console.
+        /// </summary>
+        internal static string Console {
+            get {
+                return ResourceManager.GetString("Console", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
         internal static string Delete {
             get {
                 return ResourceManager.GetString("Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dictionaries.
+        /// </summary>
+        internal static string Dictionaries {
+            get {
+                return ResourceManager.GetString("Dictionaries", resourceCulture);
             }
         }
         
@@ -359,6 +395,33 @@ namespace FrwSoftware {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error and notification console.
+        /// </summary>
+        internal static string Error_and_notification_console {
+            get {
+                return ResourceManager.GetString("Error_and_notification_console", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File.
+        /// </summary>
+        internal static string File {
+            get {
+                return ResourceManager.GetString("File", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Help.
+        /// </summary>
+        internal static string Help {
+            get {
+                return ResourceManager.GetString("Help", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Job &quot;.
         /// </summary>
         internal static string Job__ {
@@ -400,6 +463,15 @@ namespace FrwSoftware {
         internal static string Kill_job_thread {
             get {
                 return ResourceManager.GetString("Kill_job_thread", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Layout.
+        /// </summary>
+        internal static string Layout {
+            get {
+                return ResourceManager.GetString("Layout", resourceCulture);
             }
         }
         
@@ -909,6 +981,15 @@ namespace FrwSoftware {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to View.
+        /// </summary>
+        internal static string Menu_View {
+            get {
+                return ResourceManager.GetString("Menu_View", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This drag&amp;drop is not possible. The source or destination does not allow this operation..
         /// </summary>
         internal static string Move_Not_Allowed_1 {
@@ -995,6 +1076,15 @@ namespace FrwSoftware {
         internal static string Remove {
             get {
                 return ResourceManager.GetString("Remove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save all entities data.
+        /// </summary>
+        internal static string Save_all_entities_data {
+            get {
+                return ResourceManager.GetString("Save_all_entities_data", resourceCulture);
             }
         }
         
@@ -1377,6 +1467,15 @@ namespace FrwSoftware {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tools.
+        /// </summary>
+        internal static string Tools {
+            get {
+                return ResourceManager.GetString("Tools", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading.
         /// </summary>
         internal static string TreeList_Loading {
@@ -1436,6 +1535,15 @@ namespace FrwSoftware {
         internal static string WidgetSConfiguration {
             get {
                 return ResourceManager.GetString("WidgetSConfiguration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Window.
+        /// </summary>
+        internal static string Window {
+            get {
+                return ResourceManager.GetString("Window", resourceCulture);
             }
         }
         

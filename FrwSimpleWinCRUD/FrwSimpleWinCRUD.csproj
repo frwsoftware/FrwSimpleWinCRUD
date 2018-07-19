@@ -93,6 +93,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationConsoleWindow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ApplicationConsoleWindow.Designer.cs">
+      <DependentUpon>ApplicationConsoleWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="BaseAboutDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -340,6 +346,12 @@
     </Compile>
     <Compile Include="ListViewImpl\JRunningJobListWindow.Designer.cs">
       <DependentUpon>JRunningJobListWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NotifAndErrorConsoleWindow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NotifAndErrorConsoleWindow.Designer.cs">
+      <DependentUpon>NotifAndErrorConsoleWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FrwCRUDRes.Designer.cs">

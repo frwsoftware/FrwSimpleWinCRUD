@@ -87,7 +87,7 @@ namespace FrwSoftware
             }
             if (ModelHelper.IsIsArchiveFieldPresent(SourceObjectType))
             {
-                isActiveCheckBox.Text = "Актив.";
+                isActiveCheckBox.Text = FrwCRUDRes.Active;
                 isActiveCheckBox.Checked = true;
                 isActiveCheckBox.CheckStateChanged += (s, ex) => { listView.UpdateColumnFiltering(); };
                 AddToolStripItem(new ToolStripControlHost(isActiveCheckBox));

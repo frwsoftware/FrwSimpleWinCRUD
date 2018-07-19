@@ -19,6 +19,7 @@ namespace FrwSoftware
         {
             InitializeComponent();
             this.mainForm = mainForm;
+            this.Text = FrwCRUDRes.About;
         }
 
         private void AboutDialog_Load(object sender, EventArgs e)

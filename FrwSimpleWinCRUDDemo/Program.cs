@@ -83,19 +83,13 @@ namespace FrwSoftware
 
         private static void Form_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // before we exit, let forms clean themselves up.
-            //if (appManager != null)
-            //{
-            //myMainApplycationForm.Close();
             AppManager.Instance.SaveAndClose((Form)sender);
-            // }
         }
 
         private static void Form_FormClosed(object sender, FormClosedEventArgs e)
         {
             try
             {
-
                 MainAppUtils.DestroyApp();
             }
             catch (Exception ex)

@@ -567,4 +567,52 @@
   <data name="Show_job_batch_console" xml:space="preserve">
     <value>Показать консоль вывода очереди заданий</value>
   </data>
+  <data name="Jobs_and_notifications" xml:space="preserve">
+    <value>Задания и нотификация</value>
+  </data>
+  <data name="Application_settings" xml:space="preserve">
+    <value>Настройки приложения</value>
+  </data>
+  <data name="There_are_new_notifications_and_events" xml:space="preserve">
+    <value>Есть новые события и нотофикации</value>
+  </data>
+  <data name="Notifications_and_events" xml:space="preserve">
+    <value>Нотификации и события</value>
+  </data>
+  <data name="File" xml:space="preserve">
+    <value>Файл</value>
+  </data>
+  <data name="Dictionaries" xml:space="preserve">
+    <value>Справочнки</value>
+  </data>
+  <data name="Tools" xml:space="preserve">
+    <value>Сервис</value>
+  </data>
+  <data name="Window" xml:space="preserve">
+    <value>Окно</value>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>Помощь</value>
+  </data>
+  <data name="Layout" xml:space="preserve">
+    <value>Конфигурация</value>
+  </data>
+  <data name="Save_all_entities_data" xml:space="preserve">
+    <value>Сохранить данные всех сущностей</value>
+  </data>
+  <data name="Menu_View" xml:space="preserve">
+    <value>Вид</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>О программе</value>
+  </data>
+  <data name="Error_and_notification_console" xml:space="preserve">
+    <value>Консоль ошибок и уведомлений</value>
+  </data>
+  <data name="Console" xml:space="preserve">
+    <value>Консоль</value>
+  </data>
+  <data name="Active" xml:space="preserve">
+    <value>Актив.</value>
+  </data>
 </root>

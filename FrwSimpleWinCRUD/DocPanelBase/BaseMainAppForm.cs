@@ -493,7 +493,7 @@ namespace FrwSoftware
         protected void CreateHelpMenuItems(ToolStripMenuItem menuItemHelp, Form mainForm)
         {
             ToolStripMenuItem menuItem = null;
-            menuItem = new ToolStripMenuItem("About");
+            menuItem = new ToolStripMenuItem(FrwCRUDRes.About);
             menuItem.Click += (s, em) =>
             {
                 try
@@ -617,6 +617,7 @@ namespace FrwSoftware
                 AppManager.Instance.SaveLayout(AppManager.Instance.CurrentLayout);
             };
             groupItem.DropDownItems.Add(menuItem);
+            CreateMainMenuItemForEntityType(groupItem, typeof(JDocPanelLayout));
 
             menuItem = new ToolStripMenuItem(FrwCRUDRes.BaseMainAppForm_OpenNewContainerWindow);
             menuItem.Click += (s, em) =>

@@ -487,7 +487,7 @@ namespace FrwSoftware
                     Dictionary<string, object> pars = null;
                     //todo multi refs case 
                     string propName = (addedRefInfo != null && addedRefInfo.foreinProperty != null) ? addedRefInfo.foreinProperty.Name : selectedObject.GetType().Name;
-                    if (!(selectedObject is string)) pars = new Dictionary<string, object> { { propName, selectedObject } };
+                    if (selectedObject != null && AttrHelper.GetClassAttribute<JEntity>(selectedObject.GetType()) != null)  pars = new Dictionary<string, object> { { propName, selectedObject } };
                     AddObject(selectedListItem, selectedObject, addedType, pars);
                 }
                 catch (Exception ex)

@@ -87,7 +87,7 @@ namespace FrwSoftware
             this.labelLibVersion.TabIndex = 5;
             this.labelLibVersion.Text = "labelLibVersion";
             // 
-            // AboutDialog
+            // BaseAboutDialog
             // 
             this.AcceptButton = this.buttonOK;
             this.CancelButton = this.buttonOK;
@@ -101,10 +101,11 @@ namespace FrwSoftware
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "AboutDialog";
+            this.Name = "BaseAboutDialog";
+            this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "О программе";
+            this.Text = "About";
             this.Load += new System.EventHandler(this.AboutDialog_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

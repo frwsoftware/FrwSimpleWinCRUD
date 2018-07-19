@@ -276,4 +276,58 @@
   <data name="Job_batch" xml:space="preserve">
     <value>Пакет заданий</value>
   </data>
+  <data name="Error" xml:space="preserve">
+    <value>Ошибка</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Предупреждение</value>
+  </data>
+  <data name="Task" xml:space="preserve">
+    <value>Задача</value>
+  </data>
+  <data name="Initial" xml:space="preserve">
+    <value>Создана</value>
+  </data>
+  <data name="Waiting" xml:space="preserve">
+    <value>Ожидает</value>
+  </data>
+  <data name="Concurrent" xml:space="preserve">
+    <value>Отклонена из-за конкруренции</value>
+  </data>
+  <data name="Running" xml:space="preserve">
+    <value>Выполняется</value>
+  </data>
+  <data name="Paused" xml:space="preserve">
+    <value>В паузе</value>
+  </data>
+  <data name="Aborted" xml:space="preserve">
+    <value>Отменена</value>
+  </data>
+  <data name="Completed_with_Warning" xml:space="preserve">
+    <value>Завершена с предупреждением</value>
+  </data>
+  <data name="Complated_with_OK" xml:space="preserve">
+    <value>Завершена ОК</value>
+  </data>
+  <data name="Exception" xml:space="preserve">
+    <value>Ошибка выполнения</value>
+  </data>
+  <data name="Allow" xml:space="preserve">
+    <value>Разрешено</value>
+  </data>
+  <data name="Wait" xml:space="preserve">
+    <value>Ожидать</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Отменить</value>
+  </data>
+  <data name="Low" xml:space="preserve">
+    <value>Низкий</value>
+  </data>
+  <data name="Middle" xml:space="preserve">
+    <value>Средний</value>
+  </data>
+  <data name="High" xml:space="preserve">
+    <value>Высокий</value>
+  </data>
 </root>

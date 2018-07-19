@@ -21,7 +21,7 @@ namespace FrwSoftware
         public ConsoleAdvancedWindow()
         {
             InitializeComponent();
-            Text = "Console";
+            Text = FrwCRUDRes.Console;
         }
 
         public TextWriter ConsoleWriter

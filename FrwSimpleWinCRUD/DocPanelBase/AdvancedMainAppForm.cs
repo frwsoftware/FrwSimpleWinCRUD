@@ -22,7 +22,6 @@ namespace FrwSoftware
         protected ToolStripMenuItem menuItemHelp;
         protected ToolStripMenuItem menuItemLayouts;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.ToolStripButton saveDatabaseButton;
 
 
@@ -100,41 +99,41 @@ namespace FrwSoftware
             // 
             this.menuItemFile.Name = "menuItemFile";
             this.menuItemFile.Size = new System.Drawing.Size(44, 24);
-            this.menuItemFile.Text = "&File";
+            this.menuItemFile.Text = FrwCRUDRes.File;
             // 
             // menuItemDict
             // 
             this.menuItemDict.Name = "menuItemDict";
             this.menuItemDict.Size = new System.Drawing.Size(100, 24);
-            this.menuItemDict.Text = "Dictionaries";
+            this.menuItemDict.Text = FrwCRUDRes.Dictionaries;
             // 
             // menuItemView
             // 
             this.menuItemView.MergeIndex = 1;
             this.menuItemView.Name = "menuItemView";
             this.menuItemView.Size = new System.Drawing.Size(53, 24);
-            this.menuItemView.Text = "&View";
+            this.menuItemView.Text = FrwCRUDRes.Menu_View;
             // 
             // menuItemTools
             // 
             this.menuItemTools.MergeIndex = 2;
             this.menuItemTools.Name = "menuItemTools";
             this.menuItemTools.Size = new System.Drawing.Size(56, 24);
-            this.menuItemTools.Text = "&Tools";
+            this.menuItemTools.Text = FrwCRUDRes.Tools;
             // 
             // menuItemWindow
             // 
             this.menuItemWindow.MergeIndex = 2;
             this.menuItemWindow.Name = "menuItemWindow";
             this.menuItemWindow.Size = new System.Drawing.Size(76, 24);
-            this.menuItemWindow.Text = "&Window";
+            this.menuItemWindow.Text = FrwCRUDRes.Window;
             // 
             // menuItemHelp
             // 
             this.menuItemHelp.MergeIndex = 3;
             this.menuItemHelp.Name = "menuItemHelp";
             this.menuItemHelp.Size = new System.Drawing.Size(53, 24);
-            this.menuItemHelp.Text = "&Help";
+            this.menuItemHelp.Text = FrwCRUDRes.Help;
             // 
             // menuItemLayouts
             // 
@@ -142,7 +141,7 @@ namespace FrwSoftware
             this.toolStripSeparator1});
             this.menuItemLayouts.Name = "menuItemLayouts";
             this.menuItemLayouts.Size = new System.Drawing.Size(124, 24);
-            this.menuItemLayouts.Text = "Конфигурации";
+            this.menuItemLayouts.Text = FrwCRUDRes.Layout;
             this.menuItemLayouts.Click += new System.EventHandler(this.menuItemLayouts_Click);
             // 
             // saveDatabaseButton
@@ -151,7 +150,7 @@ namespace FrwSoftware
             this.saveDatabaseButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.saveDatabaseButton.Name = "saveDatabaseButton";
             this.saveDatabaseButton.Size = new System.Drawing.Size(23, 24);
-            this.saveDatabaseButton.Text = "Сохранить все базы данных";
+            this.saveDatabaseButton.Text = FrwCRUDRes.Save_all_entities_data;
             this.saveDatabaseButton.Click += new System.EventHandler(this.saveDatabaseButton_Click);
             //this.saveDatabaseButton.Image = Properties.Resources.download;
             // 
@@ -174,8 +173,8 @@ namespace FrwSoftware
             this.Controls.Add(this.mainMenu);
             this.Controls.Add(this.statusBar);
             this.DocPanelBounds = new System.Drawing.Rectangle(19, 19, 789, 445);
-            this.Name = "WebAccountMainForm";
-            this.Text = "Web Account Helper";
+            this.Name = "MainForm";
+            this.Text = "MainForm";
             this.Controls.SetChildIndex(this.dockPanel, 0);
             this.Controls.SetChildIndex(this.statusBar, 0);
             this.Controls.SetChildIndex(this.mainMenu, 0);

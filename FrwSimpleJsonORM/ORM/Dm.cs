@@ -276,37 +276,34 @@ namespace FrwSoftware
 
             dict = new JDictionary() { Id = DictNames.NotificationType };
             dictionaries.Add(dict);
-            dict.Items.Add(new JDictItem() { Key = NotificationTypeEnum.error.ToString(), Text = "Ошибка" });
-            dict.Items.Add(new JDictItem() { Key = NotificationTypeEnum.warning.ToString(), Text = "Предупреждение" });
-            dict.Items.Add(new JDictItem() { Key = NotificationTypeEnum.task.ToString(), Text = "Задача" });
+            dict.Items.Add(new JDictItem() { Key = NotificationTypeEnum.error.ToString(), Text = FrwUtilsRes.Error });
+            dict.Items.Add(new JDictItem() { Key = NotificationTypeEnum.warning.ToString(), Text = FrwUtilsRes.Warning });
+            dict.Items.Add(new JDictItem() { Key = NotificationTypeEnum.task.ToString(), Text = FrwUtilsRes.Task });
 
             dict = new JDictionary() { Id = DictNames.RunningJobStage };
             dictionaries.Add(dict);
-            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.initial.ToString(), Image = Properties.Resources.if_application_task_45823, Text = "Создана" });
-            //dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.waiting.ToString(), Image = Properties.Resources.if_Line_ui_icons_Svg_17_1465831, Text = "Ожидает" });
-            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.waiting.ToString(), Image = Properties.Resources.if_msn_busy_4054, Text = "Ожидает" });
-            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.concurrent.ToString(), Image = Properties.Resources.if_Cancel_85238, Text = "Отклонена из-за конкур" });
-            //dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.running.ToString(), Image = Properties.Resources.if_Working_Tools_2_753919, Text = "Выполняется" });
-            //dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.running.ToString(), Image = Properties.Resources.if__40ui_2303145, Text = "Выполняется" });
-            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.running.ToString(), Image = Properties.Resources.execute, Text = "Выполняется" });
-            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.paused.ToString(), Image = Properties.Resources.if_Pause_657901, Text = "В паузе" });
-            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.aborted.ToString(), Image = Properties.Resources.if_cancel_43747, Text = "Отменена" });
-            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.error.ToString(), Image = Properties.Resources.if_Error_132716, Text = "Ошибка" });
-            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.warning.ToString(), Image = Properties.Resources.if_Warning_132616, Text = "Завер. с предупреждением" });
-            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.complated.ToString(), Image = Properties.Resources.if_tick_circle_12510, Text = "Завершена" });
-            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.exception.ToString(), Image = Properties.Resources.if_exclamation_diamond_frame_26309, Text = "Исключение" });
+            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.initial.ToString(), Image = Properties.Resources.if_application_task_45823, Text = FrwUtilsRes.Initial });
+            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.waiting.ToString(), Image = Properties.Resources.if_msn_busy_4054, Text = FrwUtilsRes.Waiting });
+            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.concurrent.ToString(), Image = Properties.Resources.if_Cancel_85238, Text = FrwUtilsRes.Concurrent });
+            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.running.ToString(), Image = Properties.Resources.execute, Text = FrwUtilsRes.Running });
+            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.paused.ToString(), Image = Properties.Resources.if_Pause_657901, Text = FrwUtilsRes.Paused });
+            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.aborted.ToString(), Image = Properties.Resources.if_cancel_43747, Text = FrwUtilsRes.Aborted });
+            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.error.ToString(), Image = Properties.Resources.if_Error_132716, Text = FrwUtilsRes.Error });
+            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.warning.ToString(), Image = Properties.Resources.if_Warning_132616, Text = FrwUtilsRes.Completed_with_Warning });
+            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.complated.ToString(), Image = Properties.Resources.if_tick_circle_12510, Text = FrwUtilsRes.Complated_with_OK });
+            dict.Items.Add(new JDictItem() { Key = RunningJobStageEnum.exception.ToString(), Image = Properties.Resources.if_exclamation_diamond_frame_26309, Text = FrwUtilsRes.Exception });
 
             dict = new JDictionary() { Id = DictNames.JobConcurrentType };
             dictionaries.Add(dict);
-            dict.Items.Add(new JDictItem() { Key = JobConcurrentTypeEnum.Allow.ToString(), Text = "Разрешено" });
-            dict.Items.Add(new JDictItem() { Key = JobConcurrentTypeEnum.Wait.ToString(), Text = "Ожидать" });
-            dict.Items.Add(new JDictItem() { Key = JobConcurrentTypeEnum.Cancel.ToString(), Text = "Отменить" });
+            dict.Items.Add(new JDictItem() { Key = JobConcurrentTypeEnum.Allow.ToString(), Text = FrwUtilsRes.Allow });
+            dict.Items.Add(new JDictItem() { Key = JobConcurrentTypeEnum.Wait.ToString(), Text = FrwUtilsRes.Wait });
+            dict.Items.Add(new JDictItem() { Key = JobConcurrentTypeEnum.Cancel.ToString(), Text = FrwUtilsRes.Cancel });
 
             dict = new JDictionary() { Id = DictNames.SecLevel };
             dictionaries.Add(dict);
-            dict.Items.Add(new JDictItem() { Key = ((int)SecLevelEnum.Low).ToString(), Text = "Low" });//yellow
-            dict.Items.Add(new JDictItem() { Key = ((int)SecLevelEnum.Middle).ToString(), Text = "Middle" });//green
-            dict.Items.Add(new JDictItem() { Key = ((int)SecLevelEnum.High).ToString(), Text = "High" });//blue
+            dict.Items.Add(new JDictItem() { Key = ((int)SecLevelEnum.Low).ToString(), Text = FrwUtilsRes.Low });//yellow
+            dict.Items.Add(new JDictItem() { Key = ((int)SecLevelEnum.Middle).ToString(), Text = FrwUtilsRes.Middle });//green
+            dict.Items.Add(new JDictItem() { Key = ((int)SecLevelEnum.High).ToString(), Text = FrwUtilsRes.High });//blue
 
         }
 

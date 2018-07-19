@@ -114,7 +114,9 @@ namespace FrwSoftware
     {
         internal static string LookupResource(Type resourceManagerProvider, string resourceKey)
         {
-            foreach (PropertyInfo staticProperty in resourceManagerProvider.GetProperties(BindingFlags.Static | BindingFlags.NonPublic))
+        
+            //foreach (PropertyInfo staticProperty in resourceManagerProvider.GetProperties(BindingFlags.Static | BindingFlags.NonPublic)) - do not working on public Resources
+            foreach (PropertyInfo staticProperty in resourceManagerProvider.GetProperties())
             {
                 if (staticProperty.PropertyType == typeof(System.Resources.ResourceManager))
                 {

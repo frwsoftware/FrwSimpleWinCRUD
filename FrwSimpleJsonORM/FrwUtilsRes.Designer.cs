@@ -22,7 +22,7 @@ namespace FrwSoftware {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class FrwUtilsRes {
+    public class FrwUtilsRes {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace FrwSoftware {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("FrwSoftware.FrwUtilsRes", typeof(FrwUtilsRes).Assembly);
@@ -51,7 +51,7 @@ namespace FrwSoftware {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,9 +61,27 @@ namespace FrwSoftware {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Aborted.
+        /// </summary>
+        public static string Aborted {
+            get {
+                return ResourceManager.GetString("Aborted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow.
+        /// </summary>
+        public static string Allow {
+            get {
+                return ResourceManager.GetString("Allow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Identifier.
         /// </summary>
-        internal static string Attribute_Identifier {
+        public static string Attribute_Identifier {
             get {
                 return ResourceManager.GetString("Attribute_Identifier", resourceCulture);
             }
@@ -72,7 +90,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Layout widgets screen.
         /// </summary>
-        internal static string Attribute_Layout_Of_Screen_Widgets {
+        public static string Attribute_Layout_Of_Screen_Widgets {
             get {
                 return ResourceManager.GetString("Attribute_Layout_Of_Screen_Widgets", resourceCulture);
             }
@@ -81,7 +99,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
-        internal static string Attribute_Name {
+        public static string Attribute_Name {
             get {
                 return ResourceManager.GetString("Attribute_Name", resourceCulture);
             }
@@ -90,16 +108,52 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Xml.
         /// </summary>
-        internal static string Attribute_Xml {
+        public static string Attribute_Xml {
             get {
                 return ResourceManager.GetString("Attribute_Xml", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string Cancel {
+            get {
+                return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Complated with OK.
+        /// </summary>
+        public static string Complated_with_OK {
+            get {
+                return ResourceManager.GetString("Complated_with_OK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Completed with Warning.
+        /// </summary>
+        public static string Completed_with_Warning {
+            get {
+                return ResourceManager.GetString("Completed_with_Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Concurrent.
+        /// </summary>
+        public static string Concurrent {
+            get {
+                return ResourceManager.GetString("Concurrent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Total.
         /// </summary>
-        internal static string Dm_Total {
+        public static string Dm_Total {
             get {
                 return ResourceManager.GetString("Dm_Total", resourceCulture);
             }
@@ -108,16 +162,52 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Used in entity.
         /// </summary>
-        internal static string Dm_UsedInEntity {
+        public static string Dm_UsedInEntity {
             get {
                 return ResourceManager.GetString("Dm_UsedInEntity", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string Error {
+            get {
+                return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exception.
+        /// </summary>
+        public static string Exception {
+            get {
+                return ResourceManager.GetString("Exception", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to High.
+        /// </summary>
+        public static string High {
+            get {
+                return ResourceManager.GetString("High", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Initial.
+        /// </summary>
+        public static string Initial {
+            get {
+                return ResourceManager.GetString("Initial", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Country.
         /// </summary>
-        internal static string JCountry_Country {
+        public static string JCountry_Country {
             get {
                 return ResourceManager.GetString("JCountry_Country", resourceCulture);
             }
@@ -126,7 +216,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Flag.
         /// </summary>
-        internal static string JCountry_Flag {
+        public static string JCountry_Flag {
             get {
                 return ResourceManager.GetString("JCountry_Flag", resourceCulture);
             }
@@ -135,7 +225,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Identifier.
         /// </summary>
-        internal static string JCountry_Identifier {
+        public static string JCountry_Identifier {
             get {
                 return ResourceManager.GetString("JCountry_Identifier", resourceCulture);
             }
@@ -144,7 +234,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
-        internal static string JCountry_Name {
+        public static string JCountry_Name {
             get {
                 return ResourceManager.GetString("JCountry_Name", resourceCulture);
             }
@@ -153,7 +243,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Job.
         /// </summary>
-        internal static string JJobType {
+        public static string JJobType {
             get {
                 return ResourceManager.GetString("JJobType", resourceCulture);
             }
@@ -162,7 +252,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Cocurrent type .
         /// </summary>
-        internal static string JJobType_ConcurrentType {
+        public static string JJobType_ConcurrentType {
             get {
                 return ResourceManager.GetString("JJobType_ConcurrentType", resourceCulture);
             }
@@ -171,7 +261,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Is cancelable.
         /// </summary>
-        internal static string JJobType_IsCancelable {
+        public static string JJobType_IsCancelable {
             get {
                 return ResourceManager.GetString("JJobType_IsCancelable", resourceCulture);
             }
@@ -180,7 +270,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Identifier.
         /// </summary>
-        internal static string JJobType_JJobTypeId {
+        public static string JJobType_JJobTypeId {
             get {
                 return ResourceManager.GetString("JJobType_JJobTypeId", resourceCulture);
             }
@@ -189,7 +279,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Last batch run date.
         /// </summary>
-        internal static string JJobType_JobBatchLastRunDate {
+        public static string JJobType_JobBatchLastRunDate {
             get {
                 return ResourceManager.GetString("JJobType_JobBatchLastRunDate", resourceCulture);
             }
@@ -198,7 +288,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Progress %.
         /// </summary>
-        internal static string JJobType_JobBatchProgress {
+        public static string JJobType_JobBatchProgress {
             get {
                 return ResourceManager.GetString("JJobType_JobBatchProgress", resourceCulture);
             }
@@ -207,7 +297,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Queried jobs count.
         /// </summary>
-        internal static string JJobType_JobBatchQueueCount {
+        public static string JJobType_JobBatchQueueCount {
             get {
                 return ResourceManager.GetString("JJobType_JobBatchQueueCount", resourceCulture);
             }
@@ -216,7 +306,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Running jobs count.
         /// </summary>
-        internal static string JJobType_JobBatchRunningCount {
+        public static string JJobType_JobBatchRunningCount {
             get {
                 return ResourceManager.GetString("JJobType_JobBatchRunningCount", resourceCulture);
             }
@@ -225,7 +315,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Batch stage.
         /// </summary>
-        internal static string JJobType_JobBatchStage {
+        public static string JJobType_JobBatchStage {
             get {
                 return ResourceManager.GetString("JJobType_JobBatchStage", resourceCulture);
             }
@@ -234,7 +324,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Last job run date.
         /// </summary>
-        internal static string JJobType_LastRunDate {
+        public static string JJobType_LastRunDate {
             get {
                 return ResourceManager.GetString("JJobType_LastRunDate", resourceCulture);
             }
@@ -243,7 +333,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Last stage of job run.
         /// </summary>
-        internal static string JJobType_LastStage {
+        public static string JJobType_LastStage {
             get {
                 return ResourceManager.GetString("JJobType_LastStage", resourceCulture);
             }
@@ -252,7 +342,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Maximum threads.
         /// </summary>
-        internal static string JJobType_MaxThreadCount {
+        public static string JJobType_MaxThreadCount {
             get {
                 return ResourceManager.GetString("JJobType_MaxThreadCount", resourceCulture);
             }
@@ -261,7 +351,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
-        internal static string JJobType_Name {
+        public static string JJobType_Name {
             get {
                 return ResourceManager.GetString("JJobType_Name", resourceCulture);
             }
@@ -270,7 +360,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Notification.
         /// </summary>
-        internal static string JNotification {
+        public static string JNotification {
             get {
                 return ResourceManager.GetString("JNotification", resourceCulture);
             }
@@ -279,16 +369,16 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Created date.
         /// </summary>
-        internal static string JNotification_CreatedDate {
+        public static string JNotification_CreatedDate {
             get {
                 return ResourceManager.GetString("JNotification_CreatedDate", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Описание.
+        ///   Looks up a localized string similar to Description.
         /// </summary>
-        internal static string JNotification_Description {
+        public static string JNotification_Description {
             get {
                 return ResourceManager.GetString("JNotification_Description", resourceCulture);
             }
@@ -297,7 +387,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Archived.
         /// </summary>
-        internal static string JNotification_IsArchive {
+        public static string JNotification_IsArchive {
             get {
                 return ResourceManager.GetString("JNotification_IsArchive", resourceCulture);
             }
@@ -306,7 +396,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Identifier.
         /// </summary>
-        internal static string JNotification_JNotificationId {
+        public static string JNotification_JNotificationId {
             get {
                 return ResourceManager.GetString("JNotification_JNotificationId", resourceCulture);
             }
@@ -315,7 +405,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Type.
         /// </summary>
-        internal static string JNotification_NotificationType {
+        public static string JNotification_NotificationType {
             get {
                 return ResourceManager.GetString("JNotification_NotificationType", resourceCulture);
             }
@@ -324,7 +414,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Source identifier.
         /// </summary>
-        internal static string JNotification_SrcId {
+        public static string JNotification_SrcId {
             get {
                 return ResourceManager.GetString("JNotification_SrcId", resourceCulture);
             }
@@ -333,7 +423,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Source.
         /// </summary>
-        internal static string JNotification_SrcType {
+        public static string JNotification_SrcType {
             get {
                 return ResourceManager.GetString("JNotification_SrcType", resourceCulture);
             }
@@ -342,7 +432,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
-        internal static string JNotification_Title {
+        public static string JNotification_Title {
             get {
                 return ResourceManager.GetString("JNotification_Title", resourceCulture);
             }
@@ -351,7 +441,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Job batch.
         /// </summary>
-        internal static string Job_batch {
+        public static string Job_batch {
             get {
                 return ResourceManager.GetString("Job_batch", resourceCulture);
             }
@@ -360,7 +450,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Job batch canceled.
         /// </summary>
-        internal static string Job_batch_canceled {
+        public static string Job_batch_canceled {
             get {
                 return ResourceManager.GetString("Job_batch_canceled", resourceCulture);
             }
@@ -369,7 +459,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Job batch completed.
         /// </summary>
-        internal static string Job_batch_completed {
+        public static string Job_batch_completed {
             get {
                 return ResourceManager.GetString("Job_batch_completed", resourceCulture);
             }
@@ -378,7 +468,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Preferences.
         /// </summary>
-        internal static string JPreferences {
+        public static string JPreferences {
             get {
                 return ResourceManager.GetString("JPreferences", resourceCulture);
             }
@@ -387,7 +477,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Identifier.
         /// </summary>
-        internal static string JPreferences_Identifier {
+        public static string JPreferences_Identifier {
             get {
                 return ResourceManager.GetString("JPreferences_Identifier", resourceCulture);
             }
@@ -396,7 +486,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Preferences Name.
         /// </summary>
-        internal static string JPreferences_Name {
+        public static string JPreferences_Name {
             get {
                 return ResourceManager.GetString("JPreferences_Name", resourceCulture);
             }
@@ -405,7 +495,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Job type.
         /// </summary>
-        internal static string JRunningJob {
+        public static string JRunningJob {
             get {
                 return ResourceManager.GetString("JRunningJob", resourceCulture);
             }
@@ -414,7 +504,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Created date.
         /// </summary>
-        internal static string JRunningJob_CreateDate {
+        public static string JRunningJob_CreateDate {
             get {
                 return ResourceManager.GetString("JRunningJob_CreateDate", resourceCulture);
             }
@@ -423,7 +513,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Type.
         /// </summary>
-        internal static string JRunningJob_JJobType {
+        public static string JRunningJob_JJobType {
             get {
                 return ResourceManager.GetString("JRunningJob_JJobType", resourceCulture);
             }
@@ -432,7 +522,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Identifier.
         /// </summary>
-        internal static string JRunningJob_JRunningJobId {
+        public static string JRunningJob_JRunningJobId {
             get {
                 return ResourceManager.GetString("JRunningJob_JRunningJobId", resourceCulture);
             }
@@ -441,7 +531,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
-        internal static string JRunningJob_Name {
+        public static string JRunningJob_Name {
             get {
                 return ResourceManager.GetString("JRunningJob_Name", resourceCulture);
             }
@@ -450,7 +540,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Progress%.
         /// </summary>
-        internal static string JRunningJob_Progress {
+        public static string JRunningJob_Progress {
             get {
                 return ResourceManager.GetString("JRunningJob_Progress", resourceCulture);
             }
@@ -459,7 +549,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Stage.
         /// </summary>
-        internal static string JRunningJob_Stage {
+        public static string JRunningJob_Stage {
             get {
                 return ResourceManager.GetString("JRunningJob_Stage", resourceCulture);
             }
@@ -468,7 +558,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to User Agent.
         /// </summary>
-        internal static string JUserAgent {
+        public static string JUserAgent {
             get {
                 return ResourceManager.GetString("JUserAgent", resourceCulture);
             }
@@ -477,7 +567,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Alias.
         /// </summary>
-        internal static string JUserAgent_Alias {
+        public static string JUserAgent_Alias {
             get {
                 return ResourceManager.GetString("JUserAgent_Alias", resourceCulture);
             }
@@ -486,7 +576,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Data.
         /// </summary>
-        internal static string JUserAgent_Data {
+        public static string JUserAgent_Data {
             get {
                 return ResourceManager.GetString("JUserAgent_Data", resourceCulture);
             }
@@ -495,7 +585,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Identifier.
         /// </summary>
-        internal static string JUserAgent_JUserAgentId {
+        public static string JUserAgent_JUserAgentId {
             get {
                 return ResourceManager.GetString("JUserAgent_JUserAgentId", resourceCulture);
             }
@@ -504,7 +594,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
-        internal static string JUserAgent_Name {
+        public static string JUserAgent_Name {
             get {
                 return ResourceManager.GetString("JUserAgent_Name", resourceCulture);
             }
@@ -513,25 +603,97 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to An error occurred while the program was running.
         /// </summary>
-        internal static string Log_Error_In_Work {
+        public static string Log_Error_In_Work {
             get {
                 return ResourceManager.GetString("Log_Error_In_Work", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Low.
+        /// </summary>
+        public static string Low {
+            get {
+                return ResourceManager.GetString("Low", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Middle.
+        /// </summary>
+        public static string Middle {
+            get {
+                return ResourceManager.GetString("Middle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No.
         /// </summary>
-        internal static string No {
+        public static string No {
             get {
                 return ResourceManager.GetString("No", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Paused.
+        /// </summary>
+        public static string Paused {
+            get {
+                return ResourceManager.GetString("Paused", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Running.
+        /// </summary>
+        public static string Running {
+            get {
+                return ResourceManager.GetString("Running", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Task.
+        /// </summary>
+        public static string Task {
+            get {
+                return ResourceManager.GetString("Task", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wait.
+        /// </summary>
+        public static string Wait {
+            get {
+                return ResourceManager.GetString("Wait", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waiting.
+        /// </summary>
+        public static string Waiting {
+            get {
+                return ResourceManager.GetString("Waiting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning.
+        /// </summary>
+        public static string Warning {
+            get {
+                return ResourceManager.GetString("Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Yes.
         /// </summary>
-        internal static string Yes {
+        public static string Yes {
             get {
                 return ResourceManager.GetString("Yes", resourceCulture);
             }
