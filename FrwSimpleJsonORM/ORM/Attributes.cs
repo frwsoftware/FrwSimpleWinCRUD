@@ -142,6 +142,7 @@ namespace FrwSoftware
         }
         public bool CustomLoad { get; set; }
         public string ImageName { get; set; }
+        public Type Resource { get; set; }
     }
 
     [AttributeUsage(AttributeTargets.Property)]

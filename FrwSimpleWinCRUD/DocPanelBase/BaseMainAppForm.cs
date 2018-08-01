@@ -89,7 +89,6 @@ namespace FrwSoftware
 
             this.Load += BaseMainAppForm_Load;
             this.FormClosing += BaseMainAppForm_FormClosing;
-            this.FormClosing += BaseMainAppForm_FormClosing1;
 
             JSetting s = FrwConfig.Instance.GetProperty(FrwSimpleWinCRUDConfig.APPLICATION_FONT);
             
@@ -256,15 +255,13 @@ namespace FrwSoftware
                     //CloseContent(content);
                 }
 
+                if (!(BaseApplicationContext.IsContextMode == false && AppManager.Instance.GetMainContainer() == this))//do not unregister main form in notray app
+                    AppManager.Instance.UnRegisterDocPanelContainer(this);
             }
             catch (Exception ex)
             {
                 Log.ShowError(ex);
             }
-        }
-        private void BaseMainAppForm_FormClosing1(object sender, FormClosingEventArgs e)
-        {
-            AppManager.Instance.UnRegisterDocPanelContainer(this);
         }
         private void Content_FormClosed(object sender, FormClosedEventArgs e)
         {
@@ -648,6 +645,7 @@ namespace FrwSoftware
                 {
                     try
                     {
+                        FrwConfig.Instance.SetPropertyValue(BaseApplicationContext.SETTING_showMainFormOnStartup, false);
                         Hide();
                     }
                     catch (Exception ex)

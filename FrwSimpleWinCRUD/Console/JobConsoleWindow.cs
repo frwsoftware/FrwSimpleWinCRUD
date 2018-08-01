@@ -40,7 +40,7 @@ namespace FrwSoftware
         }
         public void ProcessView()
         {
-            if (RunningJob != null) SetNewCaption("Консоль - " + RunningJob.Name);
+            if (RunningJob != null) SetNewCaption(FrwCRUDRes.Console + " - "+ RunningJob.Name);
         }
         #endregion
 

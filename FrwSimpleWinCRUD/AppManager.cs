@@ -390,7 +390,6 @@ namespace FrwSoftware
                     (c as Form).Activate();
                     if ((c as Form).WindowState == FormWindowState.Minimized)
                         (c as Form).WindowState = FormWindowState.Normal;
-
                 }
             }
         }
@@ -534,6 +533,12 @@ namespace FrwSoftware
             object mainForm = docContentContainers.Count > 0 ? docContentContainers[0] : null;
             if (mainForm == null)
             {
+                //in case: 1) context mode - all forms closed in previous session 
+                //2) config file lost
+                if (BaseApplicationContext.IsContextMode == true)
+                    BaseMainAppForm.CreateWindowNotClosable = true;
+                else
+                    BaseMainAppForm.CreateWindowNotClosable = false;
                 mainForm = Activator.CreateInstance(MainAppFormType);
             }
             return (Form)mainForm;
@@ -895,8 +900,8 @@ namespace FrwSoftware
             JOneToMany oneToManyAttr = AttrHelper.GetAttribute<JOneToMany>(sourceObjectType, aspectName);
             JManyToMany manyToManyAttr = AttrHelper.GetAttribute<JManyToMany>(sourceObjectType, aspectName);
             JDictProp dictAttr = AttrHelper.GetAttribute<JDictProp>(sourceObjectType, aspectName);
-
-
+            //todo readonly mode in dialogs 
+            JReadOnly readOnlyAttr = AttrHelper.GetAttribute<JReadOnly>(sourceObjectType, aspectName);
             complated = false;
             if (oneToOneAttr != null || manyToOneAttr != null)
             {
@@ -906,15 +911,25 @@ namespace FrwSoftware
                 DialogResult res = listDialog.ShowDialog(owner);
                 if (res == DialogResult.OK && listDialog.SelectedObjects != null && listDialog.SelectedObjects.Count > 0)
                 {
-                    IList newObjects = listDialog.SelectedObjects;
-                    object value = newObjects[0];
-                    AttrHelper.SetPropertyValue(rowObject, aspectName, value);
-                    complated = true;
+                    if (readOnlyAttr != null) MessageBox.Show(null, FrwCRUDRes.This_field_is_readonly,
+                                         FrwCRUDRes.WARNING, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    else
+                    {
+                        IList newObjects = listDialog.SelectedObjects;
+                        object value = newObjects[0];
+                        AttrHelper.SetPropertyValue(rowObject, aspectName, value);
+                        complated = true;
+                    }
                 }
                 else if (res == DialogResult.Abort)
                 {
-                    AttrHelper.SetPropertyValue(rowObject, aspectName, null);
-                    complated = true;
+                    if (readOnlyAttr != null) MessageBox.Show(null, FrwCRUDRes.This_field_is_readonly,
+                                         FrwCRUDRes.WARNING, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    else
+                    {
+                        AttrHelper.SetPropertyValue(rowObject, aspectName, null);
+                        complated = true;
+                    }
                 }
             }
             else if (dictAttr != null)
@@ -935,36 +950,41 @@ namespace FrwSoftware
                     DialogResult res = listDialog.ShowDialog(owner);
                     if (res == DialogResult.OK)
                     {
-                        IList newObjects = listDialog.SourceObjects;//SourceObjects
-
-                        if (AttrHelper.IsGenericListTypeOf(typeof(int), p.PropertyType))
-                        {
-                            List<int> listkeys = new List<int>();
-                            foreach (var newObject in newObjects)
-                            {
-                                listkeys.Add(int.Parse(((JDictItem)newObject).Key));
-                            }
-                            AttrHelper.SetPropertyValue(rowObject, aspectName, listkeys);
-                        }
-                        else if (AttrHelper.IsGenericListTypeOf(typeof(long), p.PropertyType))
-                        {
-                            List<long> listkeys = new List<long>();
-                            foreach (var newObject in newObjects)
-                            {
-                                listkeys.Add(long.Parse(((JDictItem)newObject).Key));
-                            }
-                            AttrHelper.SetPropertyValue(rowObject, aspectName, listkeys);
-                        }
+                        if (readOnlyAttr != null) MessageBox.Show(null, FrwCRUDRes.This_field_is_readonly,
+                                             FrwCRUDRes.WARNING, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         else
                         {
-                            List<string> listkeys = new List<string>();
-                            foreach (var newObject in newObjects)
+                            IList newObjects = listDialog.SourceObjects;//SourceObjects
+
+                            if (AttrHelper.IsGenericListTypeOf(typeof(int), p.PropertyType))
                             {
-                                listkeys.Add(((JDictItem)newObject).Key);
+                                List<int> listkeys = new List<int>();
+                                foreach (var newObject in newObjects)
+                                {
+                                    listkeys.Add(int.Parse(((JDictItem)newObject).Key));
+                                }
+                                AttrHelper.SetPropertyValue(rowObject, aspectName, listkeys);
                             }
-                            AttrHelper.SetPropertyValue(rowObject, aspectName, listkeys);
+                            else if (AttrHelper.IsGenericListTypeOf(typeof(long), p.PropertyType))
+                            {
+                                List<long> listkeys = new List<long>();
+                                foreach (var newObject in newObjects)
+                                {
+                                    listkeys.Add(long.Parse(((JDictItem)newObject).Key));
+                                }
+                                AttrHelper.SetPropertyValue(rowObject, aspectName, listkeys);
+                            }
+                            else
+                            {
+                                List<string> listkeys = new List<string>();
+                                foreach (var newObject in newObjects)
+                                {
+                                    listkeys.Add(((JDictItem)newObject).Key);
+                                }
+                                AttrHelper.SetPropertyValue(rowObject, aspectName, listkeys);
+                            }
+                            complated = true;
                         }
-                        complated = true;
                     }
                 }
                 else
@@ -973,19 +993,25 @@ namespace FrwSoftware
                     DialogResult res = listDialog.ShowDialog(owner);
                     if (res == DialogResult.OK && listDialog.SelectedObjects != null)
                     {
-                        IList newObjects = listDialog.SelectedObjects;
-                        if (newObjects.Count > 0)
+                        if (readOnlyAttr != null) MessageBox.Show(null, FrwCRUDRes.This_field_is_readonly,
+                                             FrwCRUDRes.WARNING, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                        else
                         {
-                            JDictItem d = (JDictItem)newObjects[0];
-                            if (p.PropertyType == typeof(int))
-                                AttrHelper.SetPropertyValue(rowObject, aspectName, int.Parse(d.Key));
-                            else if (p.PropertyType == typeof(long))
-                                AttrHelper.SetPropertyValue(rowObject, aspectName, long.Parse(d.Key));
-                            else
-                                AttrHelper.SetPropertyValue(rowObject, aspectName, d.Key);
+                            IList newObjects = listDialog.SelectedObjects;
+                            if (newObjects.Count > 0)
+                            {
+                                JDictItem d = (JDictItem)newObjects[0];
+                                if (p.PropertyType == typeof(int))
+                                    AttrHelper.SetPropertyValue(rowObject, aspectName, int.Parse(d.Key));
+                                else if (p.PropertyType == typeof(long))
+                                    AttrHelper.SetPropertyValue(rowObject, aspectName, long.Parse(d.Key));
+                                else
+                                    AttrHelper.SetPropertyValue(rowObject, aspectName, d.Key);
+                            }
+                            else AttrHelper.SetPropertyValue(rowObject, aspectName, null);
+                            complated = true;
                         }
-                        else AttrHelper.SetPropertyValue(rowObject, aspectName, null);
-                        complated = true;
                     }
                 }
             }
@@ -1005,17 +1031,22 @@ namespace FrwSoftware
                 DialogResult res = listDialog.ShowDialog(owner);
                 if (res == DialogResult.OK && listDialog.SourceObjects != null)
                 {
-                    IList newList = listDialog.SourceObjects;
-                    IList newListToSave = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(AttrHelper.GetGenericListArgType(pType)));
-                    if (newList != null)
+                    if (readOnlyAttr != null) MessageBox.Show(null, FrwCRUDRes.This_field_is_readonly,
+                                         FrwCRUDRes.WARNING, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    else
                     {
-                        foreach (var l in newList)
+                        IList newList = listDialog.SourceObjects;
+                        IList newListToSave = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(AttrHelper.GetGenericListArgType(pType)));
+                        if (newList != null)
                         {
-                            newListToSave.Add(l);
+                            foreach (var l in newList)
+                            {
+                                newListToSave.Add(l);
+                            }
                         }
+                        AttrHelper.SetPropertyValue(rowObject, aspectName, newListToSave);
+                        complated = true;
                     }
-                    AttrHelper.SetPropertyValue(rowObject, aspectName, newListToSave);
-                    complated = true;
                 }
             }
             else if (manyToManyAttr != null)
@@ -1034,17 +1065,22 @@ namespace FrwSoftware
                 DialogResult res = listDialog.ShowDialog(owner);
                 if (res == DialogResult.OK && listDialog.SourceObjects != null)
                 {
-                    IList newList = listDialog.SourceObjects;
-                    IList newListToSave = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(AttrHelper.GetGenericListArgType(pType)));
-                    if (newList != null)
+                    if (readOnlyAttr != null) MessageBox.Show(null, FrwCRUDRes.This_field_is_readonly,
+                                         FrwCRUDRes.WARNING, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    else
                     {
-                        foreach (var l in newList)
+                        IList newList = listDialog.SourceObjects;
+                        IList newListToSave = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(AttrHelper.GetGenericListArgType(pType)));
+                        if (newList != null)
                         {
-                            newListToSave.Add(l);
+                            foreach (var l in newList)
+                            {
+                                newListToSave.Add(l);
+                            }
                         }
+                        AttrHelper.SetPropertyValue(rowObject, aspectName, newListToSave);
+                        complated = true;
                     }
-                    AttrHelper.SetPropertyValue(rowObject, aspectName, newListToSave);
-                    complated = true;
                 }
             }
             else if (pType == typeof(JAttachment) || AttrHelper.IsGenericListTypeOf(pType, typeof(JAttachment)))
@@ -1070,8 +1106,13 @@ namespace FrwSoftware
                 DialogResult res = dialog.ShowDialog(owner);
                 if (res == DialogResult.OK)
                 {
-                    AttrHelper.SetPropertyValue(rowObject, aspectName, dialog.SourceObjects);
-                    complated = true;
+                    if (readOnlyAttr != null) MessageBox.Show(null, FrwCRUDRes.This_field_is_readonly,
+                                         FrwCRUDRes.WARNING, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    else
+                    {
+                        AttrHelper.SetPropertyValue(rowObject, aspectName, dialog.SourceObjects);
+                        complated = true;
+                    }
                 }
             }
             else if (AttrHelper.GetAttribute<JText>(sourceObjectType, aspectName) != null)
@@ -1082,9 +1123,14 @@ namespace FrwSoftware
                 DialogResult res = dialog.ShowDialog(owner);
                 if (res == DialogResult.OK)
                 {
-                    s = dialog.EditedText;
-                    AttrHelper.SetPropertyValue(rowObject, aspectName, s);
-                    complated = true;
+                    if (readOnlyAttr != null) MessageBox.Show(null, FrwCRUDRes.This_field_is_readonly,
+                                         FrwCRUDRes.WARNING, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    else
+                    {
+                        s = dialog.EditedText;
+                        AttrHelper.SetPropertyValue(rowObject, aspectName, s);
+                        complated = true;
+                    }
                 }
             }
             else if (pType == typeof(DateTime) || pType == typeof(DateTimeOffset) || pType == typeof(DateTime?) || pType == typeof(DateTimeOffset?))
@@ -1096,32 +1142,37 @@ namespace FrwSoftware
                 DialogResult res = dialog.ShowDialog(owner);
                 if (res == DialogResult.OK)
                 {
-                    if (pType == typeof(DateTime) || pType == typeof(DateTime?))
+                    if (readOnlyAttr != null) MessageBox.Show(null, FrwCRUDRes.This_field_is_readonly,
+                                         FrwCRUDRes.WARNING, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    else
                     {
-                        if (dialog.IsDateTimeNull)
+                        if (pType == typeof(DateTime) || pType == typeof(DateTime?))
                         {
-                            if (pType == typeof(DateTime)) AttrHelper.SetPropertyValue(rowObject, aspectName, DateTime.MinValue);
-                            else if (pType == typeof(DateTime?)) AttrHelper.SetPropertyValue(rowObject, aspectName, null);
+                            if (dialog.IsDateTimeNull)
+                            {
+                                if (pType == typeof(DateTime)) AttrHelper.SetPropertyValue(rowObject, aspectName, DateTime.MinValue);
+                                else if (pType == typeof(DateTime?)) AttrHelper.SetPropertyValue(rowObject, aspectName, null);
+                            }
+                            else
+                            {
+                                AttrHelper.SetPropertyValue(rowObject, aspectName, dialog.Date);
+                            }
                         }
-                        else
+                        else if (pType == typeof(DateTimeOffset) || pType == typeof(DateTimeOffset?))
                         {
-                            AttrHelper.SetPropertyValue(rowObject, aspectName, dialog.Date);
+                            if (dialog.IsDateTimeNull)
+                            {
+                                if (pType == typeof(DateTimeOffset)) AttrHelper.SetPropertyValue(rowObject, aspectName, DateTimeOffset.MinValue);
+                                else if (pType == typeof(DateTimeOffset?)) AttrHelper.SetPropertyValue(rowObject, aspectName, null);
+                            }
+                            else
+                            {
+                                DateTimeOffset d = (DateTimeOffset)dialog.Date;
+                                AttrHelper.SetPropertyValue(rowObject, aspectName, d);
+                            }
                         }
+                        complated = true;
                     }
-                    else if (pType == typeof(DateTimeOffset) || pType == typeof(DateTimeOffset?))
-                    {
-                        if (dialog.IsDateTimeNull)
-                        {
-                            if (pType == typeof(DateTimeOffset)) AttrHelper.SetPropertyValue(rowObject, aspectName, DateTimeOffset.MinValue);
-                            else if (pType == typeof(DateTimeOffset?)) AttrHelper.SetPropertyValue(rowObject, aspectName, null);
-                        }
-                        else
-                        {
-                            DateTimeOffset d = (DateTimeOffset)dialog.Date;
-                            AttrHelper.SetPropertyValue(rowObject, aspectName, d);
-                        }
-                    }
-                    complated = true;
                 }//cancel
             }
 

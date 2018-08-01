@@ -615,4 +615,16 @@
   <data name="Active" xml:space="preserve">
     <value>Актив.</value>
   </data>
+  <data name="__Childs_" xml:space="preserve">
+    <value>( дочерн.)</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Создать</value>
+  </data>
+  <data name="Set_NULL" xml:space="preserve">
+    <value>Обнулить</value>
+  </data>
+  <data name="This_field_is_readonly" xml:space="preserve">
+    <value>Это поле нельзя редактировать</value>
+  </data>
 </root>

@@ -40,7 +40,12 @@ namespace FrwSoftware
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);
                     MainAppUtils.CheckForSingleInstance();
-                    Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("en");
+
+                    //for testing, remove this lines in real app
+                    var culture = new CultureInfo("en-US");
+                    CultureInfo.DefaultThreadCurrentCulture = culture;
+                    CultureInfo.DefaultThreadCurrentUICulture = culture;
+
                     log = Log.GetLogger();
                     MainAppUtils.InitAppPaths();
                     AppManager.Instance.MainAppFormType = typeof(FrwTemplateMainForm);

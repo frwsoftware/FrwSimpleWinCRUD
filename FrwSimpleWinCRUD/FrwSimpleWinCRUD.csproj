@@ -407,7 +407,7 @@
       <DependentUpon>FrwtDocContent.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrwCRUDRes.ru.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>FrwCRUDRes.ru.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -472,7 +472,7 @@
       <DependentUpon>AppSettingsWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrwCRUDRes.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>FrwCRUDRes.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -600,6 +600,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Images\btn_view.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\save.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

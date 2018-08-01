@@ -229,7 +229,7 @@
             this.toolStripButtonAttachConsole.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonAttachConsole.Name = "toolStripButtonAttachConsole";
             this.toolStripButtonAttachConsole.Size = new System.Drawing.Size(24, 24);
-            this.toolStripButtonAttachConsole.Text = "Привязать консоль";
+            this.toolStripButtonAttachConsole.Text = "Attach system console to this window";
             this.toolStripButtonAttachConsole.Click += new System.EventHandler(this.toolStripButtonAttachConsole_Click);
             // 
             // timerUpdateUI

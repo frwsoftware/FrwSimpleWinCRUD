@@ -75,7 +75,7 @@
             this.setNullButton.Name = "setNullButton";
             this.setNullButton.Size = new System.Drawing.Size(119, 29);
             this.setNullButton.TabIndex = 6;
-            this.setNullButton.Text = "Set NULL";
+            this.setNullButton.Text = global::FrwSoftware.FrwCRUDRes.Set_NULL;
             this.setNullButton.UseVisualStyleBackColor = true;
             this.setNullButton.Visible = false;
             this.setNullButton.Click += new System.EventHandler(this.setNullButton_Click);

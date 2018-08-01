@@ -32,6 +32,8 @@ namespace FrwSoftware
     /// </remarks>
     public class BaseApplicationContext : ApplicationContext
     {
+        public static string SETTING_showMainFormOnStartup = "MainApp.showMainFormOnStartup";
+
         public string IconFileName { get; set; }
         public string DefaultTooltip  { get; set; }
         protected static  int BalloonTimeout = 3000; // preferred timeout (msecs) though .NET enforces 10-sec minimum
@@ -42,7 +44,14 @@ namespace FrwSoftware
 
         //
         protected System.ComponentModel.IContainer components;	// a list of components to dispose when the context is disposed
-        protected NotifyIcon notifyIcon;                            // the icon that sits in the system tray
+        static protected NotifyIcon notifyIcon;                            // the icon that sits in the system tray
+
+        static public NotifyIcon NotifyIcon {
+            get
+            {
+                return notifyIcon;
+            }
+        }
 
         /// <summary>
         /// This class should be created and passed into Application.Run( ... )
@@ -69,7 +78,7 @@ namespace FrwSoftware
 
             JSetting setting = FrwConfig.Instance.CreatePropertyIfNotExist(new JSetting()
             {
-                Name = "MainApp.showMainFormOnStartup",
+                Name = SETTING_showMainFormOnStartup,
                 Description = FrwCRUDRes.BaseApplicationContext_Show_Main_Window_OnStartup,
                 Value = true,
                 IsUser = true
@@ -125,7 +134,6 @@ namespace FrwSoftware
             notifyIcon.Text = toolTipText.Length >= MaxTooltipLength ?
                 toolTipText.Substring(0, MaxTooltipLength - 3) + "..." : toolTipText;
         }
-
         private void ContextMenuStrip_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
             e.Cancel = false;
@@ -138,6 +146,7 @@ namespace FrwSoftware
             {
                 try
                 {
+                    FrwConfig.Instance.SetPropertyValue(SETTING_showMainFormOnStartup, true);
                     CreateOrShowDetailsForm(true);
                 }
                 catch (Exception ex)

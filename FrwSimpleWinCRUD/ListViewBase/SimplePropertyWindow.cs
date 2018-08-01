@@ -139,6 +139,7 @@ namespace FrwSoftware
                         }
                         if (isCustomEdit)
                         {
+                            //not only for edit
                             props.EditorTypeName = typeof(CustomPropertyEditor).ToString();
                         }
 

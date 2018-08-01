@@ -163,6 +163,7 @@ namespace FrwSoftware
         private static FrwConfig instance;
 
         public bool DevelopMode { get; set; }
+        public bool ExpertMode { get; set; }
         /// <summary>
         ///Global directory. 
         //In the simplest case, the global directory is the same as the program's start directory.

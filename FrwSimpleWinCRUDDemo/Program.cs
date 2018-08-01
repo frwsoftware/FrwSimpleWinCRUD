@@ -47,7 +47,12 @@ namespace FrwSoftware
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);
                     if (!MainAppUtils.CheckForSingleInstance()) return;
-                    Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("en");
+                    
+                    //for testing, remove this lines in real app
+                    var culture = new CultureInfo("en-US");
+                    CultureInfo.DefaultThreadCurrentCulture = culture;
+                    CultureInfo.DefaultThreadCurrentUICulture = culture;
+
                     log = Log.GetLogger();
                     AppManager.Instance = new DemoAppManager();
                     MainAppUtils.InitAppPaths();

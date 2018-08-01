@@ -22,7 +22,7 @@ namespace FrwSoftware {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class FrwCRUDRes {
+    public class FrwCRUDRes {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace FrwSoftware {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("FrwSoftware.FrwCRUDRes", typeof(FrwCRUDRes).Assembly);
@@ -51,7 +51,7 @@ namespace FrwSoftware {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,9 +61,18 @@ namespace FrwSoftware {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ( Childs).
+        /// </summary>
+        public static string @__Childs_ {
+            get {
+                return ResourceManager.GetString("__Childs_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to About.
         /// </summary>
-        internal static string About {
+        public static string About {
             get {
                 return ResourceManager.GetString("About", resourceCulture);
             }
@@ -72,7 +81,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Active.
         /// </summary>
-        internal static string Active {
+        public static string Active {
             get {
                 return ResourceManager.GetString("Active", resourceCulture);
             }
@@ -81,7 +90,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Active document window.
         /// </summary>
-        internal static string ActiveDocumentWindow {
+        public static string ActiveDocumentWindow {
             get {
                 return ResourceManager.GetString("ActiveDocumentWindow", resourceCulture);
             }
@@ -90,7 +99,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Add.
         /// </summary>
-        internal static string Add {
+        public static string Add {
             get {
                 return ResourceManager.GetString("Add", resourceCulture);
             }
@@ -99,7 +108,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to All documents.
         /// </summary>
-        internal static string AllDocuments {
+        public static string AllDocuments {
             get {
                 return ResourceManager.GetString("AllDocuments", resourceCulture);
             }
@@ -108,7 +117,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to All documents expect active.
         /// </summary>
-        internal static string AllDocumentsExpectActive {
+        public static string AllDocumentsExpectActive {
             get {
                 return ResourceManager.GetString("AllDocumentsExpectActive", resourceCulture);
             }
@@ -117,7 +126,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to All windows.
         /// </summary>
-        internal static string AllWindows {
+        public static string AllWindows {
             get {
                 return ResourceManager.GetString("AllWindows", resourceCulture);
             }
@@ -126,7 +135,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Application allready running!.
         /// </summary>
-        internal static string Application_Allready_Running {
+        public static string Application_Allready_Running {
             get {
                 return ResourceManager.GetString("Application_Allready_Running", resourceCulture);
             }
@@ -135,7 +144,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to The local database directory was not found by the path:.
         /// </summary>
-        internal static string Application_Folder_Not_Found {
+        public static string Application_Folder_Not_Found {
             get {
                 return ResourceManager.GetString("Application_Folder_Not_Found", resourceCulture);
             }
@@ -144,7 +153,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Application Font.
         /// </summary>
-        internal static string Application_Font {
+        public static string Application_Font {
             get {
                 return ResourceManager.GetString("Application_Font", resourceCulture);
             }
@@ -153,7 +162,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Application settings.
         /// </summary>
-        internal static string Application_settings {
+        public static string Application_settings {
             get {
                 return ResourceManager.GetString("Application_settings", resourceCulture);
             }
@@ -162,7 +171,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Application settings.
         /// </summary>
-        internal static string AppSettingsWindow_Title {
+        public static string AppSettingsWindow_Title {
             get {
                 return ResourceManager.GetString("AppSettingsWindow_Title", resourceCulture);
             }
@@ -171,7 +180,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Exit application.
         /// </summary>
-        internal static string BaseApplicationContext_Exit {
+        public static string BaseApplicationContext_Exit {
             get {
                 return ResourceManager.GetString("BaseApplicationContext_Exit", resourceCulture);
             }
@@ -180,7 +189,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Notification!.
         /// </summary>
-        internal static string BaseApplicationContext_Notification {
+        public static string BaseApplicationContext_Notification {
             get {
                 return ResourceManager.GetString("BaseApplicationContext_Notification", resourceCulture);
             }
@@ -189,7 +198,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Show main window on application startup.
         /// </summary>
-        internal static string BaseApplicationContext_Show_Main_Window_OnStartup {
+        public static string BaseApplicationContext_Show_Main_Window_OnStartup {
             get {
                 return ResourceManager.GetString("BaseApplicationContext_Show_Main_Window_OnStartup", resourceCulture);
             }
@@ -198,7 +207,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Show main application window.
         /// </summary>
-        internal static string BaseApplicationContext_ShowMainWindow {
+        public static string BaseApplicationContext_ShowMainWindow {
             get {
                 return ResourceManager.GetString("BaseApplicationContext_ShowMainWindow", resourceCulture);
             }
@@ -207,7 +216,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Dependencies report.
         /// </summary>
-        internal static string BaseListWindow_DependenciesReport {
+        public static string BaseListWindow_DependenciesReport {
             get {
                 return ResourceManager.GetString("BaseListWindow_DependenciesReport", resourceCulture);
             }
@@ -216,7 +225,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Close window.
         /// </summary>
-        internal static string BaseMainAppForm_CloseContainerWindow {
+        public static string BaseMainAppForm_CloseContainerWindow {
             get {
                 return ResourceManager.GetString("BaseMainAppForm_CloseContainerWindow", resourceCulture);
             }
@@ -225,7 +234,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Hide main application window.
         /// </summary>
-        internal static string BaseMainAppForm_HideMainApplicationWindow {
+        public static string BaseMainAppForm_HideMainApplicationWindow {
             get {
                 return ResourceManager.GetString("BaseMainAppForm_HideMainApplicationWindow", resourceCulture);
             }
@@ -234,7 +243,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Open new container window.
         /// </summary>
-        internal static string BaseMainAppForm_OpenNewContainerWindow {
+        public static string BaseMainAppForm_OpenNewContainerWindow {
             get {
                 return ResourceManager.GetString("BaseMainAppForm_OpenNewContainerWindow", resourceCulture);
             }
@@ -243,7 +252,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
-        internal static string Cancel {
+        public static string Cancel {
             get {
                 return ResourceManager.GetString("Cancel", resourceCulture);
             }
@@ -252,7 +261,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Choise.
         /// </summary>
-        internal static string Choise {
+        public static string Choise {
             get {
                 return ResourceManager.GetString("Choise", resourceCulture);
             }
@@ -261,7 +270,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Clear.
         /// </summary>
-        internal static string Clear {
+        public static string Clear {
             get {
                 return ResourceManager.GetString("Clear", resourceCulture);
             }
@@ -270,7 +279,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Close....
         /// </summary>
-        internal static string Close {
+        public static string Close {
             get {
                 return ResourceManager.GetString("Close", resourceCulture);
             }
@@ -279,7 +288,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Close application.
         /// </summary>
-        internal static string CloseApplication {
+        public static string CloseApplication {
             get {
                 return ResourceManager.GetString("CloseApplication", resourceCulture);
             }
@@ -288,7 +297,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Common settings.
         /// </summary>
-        internal static string Common_settings {
+        public static string Common_settings {
             get {
                 return ResourceManager.GetString("Common_settings", resourceCulture);
             }
@@ -297,16 +306,25 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Console.
         /// </summary>
-        internal static string Console {
+        public static string Console {
             get {
                 return ResourceManager.GetString("Console", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create.
+        /// </summary>
+        public static string Create {
+            get {
+                return ResourceManager.GetString("Create", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
-        internal static string Delete {
+        public static string Delete {
             get {
                 return ResourceManager.GetString("Delete", resourceCulture);
             }
@@ -315,7 +333,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Dictionaries.
         /// </summary>
-        internal static string Dictionaries {
+        public static string Dictionaries {
             get {
                 return ResourceManager.GetString("Dictionaries", resourceCulture);
             }
@@ -324,7 +342,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to DPI Awareness Support for Windows Fonts.
         /// </summary>
-        internal static string DPI_Awareness_Support_for_Windows_Fonts {
+        public static string DPI_Awareness_Support_for_Windows_Fonts {
             get {
                 return ResourceManager.GetString("DPI_Awareness_Support_for_Windows_Fonts", resourceCulture);
             }
@@ -333,7 +351,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to DPI Awareness Support for Windows Fonts (&gt;= Windows 8). Application restart required..
         /// </summary>
-        internal static string DPI_Awareness_Support_for_Windows_Fonts_____Windows_8___Application_restart_required_ {
+        public static string DPI_Awareness_Support_for_Windows_Fonts_____Windows_8___Application_restart_required_ {
             get {
                 return ResourceManager.GetString("DPI_Awareness_Support_for_Windows_Fonts_____Windows_8___Application_restart_requi" +
                         "red_", resourceCulture);
@@ -343,7 +361,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to copied.
         /// </summary>
-        internal static string Drag_Copied {
+        public static string Drag_Copied {
             get {
                 return ResourceManager.GetString("Drag_Copied", resourceCulture);
             }
@@ -352,7 +370,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Copy.
         /// </summary>
-        internal static string Drag_Copy {
+        public static string Drag_Copy {
             get {
                 return ResourceManager.GetString("Drag_Copy", resourceCulture);
             }
@@ -361,7 +379,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Move.
         /// </summary>
-        internal static string Drag_Move {
+        public static string Drag_Move {
             get {
                 return ResourceManager.GetString("Drag_Move", resourceCulture);
             }
@@ -370,7 +388,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Record successfully.
         /// </summary>
-        internal static string Drag_Record_Successfully {
+        public static string Drag_Record_Successfully {
             get {
                 return ResourceManager.GetString("Drag_Record_Successfully", resourceCulture);
             }
@@ -379,7 +397,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to moved.
         /// </summary>
-        internal static string Drage_Moved {
+        public static string Drage_Moved {
             get {
                 return ResourceManager.GetString("Drage_Moved", resourceCulture);
             }
@@ -388,7 +406,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Enable floating.
         /// </summary>
-        internal static string EnableFloating {
+        public static string EnableFloating {
             get {
                 return ResourceManager.GetString("EnableFloating", resourceCulture);
             }
@@ -397,7 +415,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Error and notification console.
         /// </summary>
-        internal static string Error_and_notification_console {
+        public static string Error_and_notification_console {
             get {
                 return ResourceManager.GetString("Error_and_notification_console", resourceCulture);
             }
@@ -406,7 +424,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to File.
         /// </summary>
-        internal static string File {
+        public static string File {
             get {
                 return ResourceManager.GetString("File", resourceCulture);
             }
@@ -415,7 +433,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Help.
         /// </summary>
-        internal static string Help {
+        public static string Help {
             get {
                 return ResourceManager.GetString("Help", resourceCulture);
             }
@@ -424,7 +442,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Job &quot;.
         /// </summary>
-        internal static string Job__ {
+        public static string Job__ {
             get {
                 return ResourceManager.GetString("Job__", resourceCulture);
             }
@@ -433,7 +451,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Job batch &quot;.
         /// </summary>
-        internal static string Job_batch__ {
+        public static string Job_batch__ {
             get {
                 return ResourceManager.GetString("Job_batch__", resourceCulture);
             }
@@ -442,7 +460,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Jobs and notifications.
         /// </summary>
-        internal static string Jobs_and_notifications {
+        public static string Jobs_and_notifications {
             get {
                 return ResourceManager.GetString("Jobs_and_notifications", resourceCulture);
             }
@@ -451,7 +469,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Kill job batch thread.
         /// </summary>
-        internal static string Kill_job_batch_thread {
+        public static string Kill_job_batch_thread {
             get {
                 return ResourceManager.GetString("Kill_job_batch_thread", resourceCulture);
             }
@@ -460,7 +478,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Kill job thread.
         /// </summary>
-        internal static string Kill_job_thread {
+        public static string Kill_job_thread {
             get {
                 return ResourceManager.GetString("Kill_job_thread", resourceCulture);
             }
@@ -469,7 +487,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Layout.
         /// </summary>
-        internal static string Layout {
+        public static string Layout {
             get {
                 return ResourceManager.GetString("Layout", resourceCulture);
             }
@@ -478,7 +496,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to list.
         /// </summary>
-        internal static string List {
+        public static string List {
             get {
                 return ResourceManager.GetString("List", resourceCulture);
             }
@@ -487,7 +505,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Add chilld record.
         /// </summary>
-        internal static string List_Add_Child_Record {
+        public static string List_Add_Child_Record {
             get {
                 return ResourceManager.GetString("List_Add_Child_Record", resourceCulture);
             }
@@ -496,7 +514,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Add record.
         /// </summary>
-        internal static string List_Add_Record {
+        public static string List_Add_Record {
             get {
                 return ResourceManager.GetString("List_Add_Record", resourceCulture);
             }
@@ -505,7 +523,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Add new toplevel record.
         /// </summary>
-        internal static string List_Add_TopLevel_Record {
+        public static string List_Add_TopLevel_Record {
             get {
                 return ResourceManager.GetString("List_Add_TopLevel_Record", resourceCulture);
             }
@@ -514,7 +532,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Can not delete because there are child records.
         /// </summary>
-        internal static string List_Can_Not_Delete_Children {
+        public static string List_Can_Not_Delete_Children {
             get {
                 return ResourceManager.GetString("List_Can_Not_Delete_Children", resourceCulture);
             }
@@ -523,7 +541,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to List columns.
         /// </summary>
-        internal static string List_Columns {
+        public static string List_Columns {
             get {
                 return ResourceManager.GetString("List_Columns", resourceCulture);
             }
@@ -532,7 +550,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Copy.
         /// </summary>
-        internal static string List_Copy {
+        public static string List_Copy {
             get {
                 return ResourceManager.GetString("List_Copy", resourceCulture);
             }
@@ -541,7 +559,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Copy record to Clipboard.
         /// </summary>
-        internal static string List_Copy_To_Clipboard {
+        public static string List_Copy_To_Clipboard {
             get {
                 return ResourceManager.GetString("List_Copy_To_Clipboard", resourceCulture);
             }
@@ -550,7 +568,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Copy to buffer in OLV format.
         /// </summary>
-        internal static string List_Copy_To_Clipboard_OLV {
+        public static string List_Copy_To_Clipboard_OLV {
             get {
                 return ResourceManager.GetString("List_Copy_To_Clipboard_OLV", resourceCulture);
             }
@@ -559,7 +577,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Add new record.
         /// </summary>
-        internal static string List_Create_New_Record {
+        public static string List_Create_New_Record {
             get {
                 return ResourceManager.GetString("List_Create_New_Record", resourceCulture);
             }
@@ -568,7 +586,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Cut.
         /// </summary>
-        internal static string List_Cut {
+        public static string List_Cut {
             get {
                 return ResourceManager.GetString("List_Cut", resourceCulture);
             }
@@ -577,7 +595,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Delete all records. If you agree with this - click &quot;Yes&quot;.
         /// </summary>
-        internal static string List_Delete_All_records_Confirmation {
+        public static string List_Delete_All_records_Confirmation {
             get {
                 return ResourceManager.GetString("List_Delete_All_records_Confirmation", resourceCulture);
             }
@@ -586,7 +604,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Delete the entry. If you agree with this - click &quot;Yes&quot;.
         /// </summary>
-        internal static string List_Delete_Record_Confirmation {
+        public static string List_Delete_Record_Confirmation {
             get {
                 return ResourceManager.GetString("List_Delete_Record_Confirmation", resourceCulture);
             }
@@ -595,7 +613,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Details record info.
         /// </summary>
-        internal static string List_Details_Info {
+        public static string List_Details_Info {
             get {
                 return ResourceManager.GetString("List_Details_Info", resourceCulture);
             }
@@ -604,7 +622,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Edit field.
         /// </summary>
-        internal static string List_Edit_Field {
+        public static string List_Edit_Field {
             get {
                 return ResourceManager.GetString("List_Edit_Field", resourceCulture);
             }
@@ -613,7 +631,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Edit record.
         /// </summary>
-        internal static string List_Edit_Record {
+        public static string List_Edit_Record {
             get {
                 return ResourceManager.GetString("List_Edit_Record", resourceCulture);
             }
@@ -622,7 +640,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to No records.
         /// </summary>
-        internal static string List_No_Records {
+        public static string List_No_Records {
             get {
                 return ResourceManager.GetString("List_No_Records", resourceCulture);
             }
@@ -631,7 +649,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to No selected records.
         /// </summary>
-        internal static string List_No_Selected_Records {
+        public static string List_No_Selected_Records {
             get {
                 return ResourceManager.GetString("List_No_Selected_Records", resourceCulture);
             }
@@ -640,7 +658,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Open property windows in a modal dialog.
         /// </summary>
-        internal static string List_Open_In_Dialog {
+        public static string List_Open_In_Dialog {
             get {
                 return ResourceManager.GetString("List_Open_In_Dialog", resourceCulture);
             }
@@ -649,7 +667,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Paste from internal application clipboard.
         /// </summary>
-        internal static string List_Paste_From_Buffer {
+        public static string List_Paste_From_Buffer {
             get {
                 return ResourceManager.GetString("List_Paste_From_Buffer", resourceCulture);
             }
@@ -658,7 +676,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Paste from Windowsl clipboard.
         /// </summary>
-        internal static string List_Paste_From_Windows_Buffer {
+        public static string List_Paste_From_Windows_Buffer {
             get {
                 return ResourceManager.GetString("List_Paste_From_Windows_Buffer", resourceCulture);
             }
@@ -667,7 +685,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Refresh list.
         /// </summary>
-        internal static string List_Refresh_List {
+        public static string List_Refresh_List {
             get {
                 return ResourceManager.GetString("List_Refresh_List", resourceCulture);
             }
@@ -676,7 +694,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Remove all records.
         /// </summary>
-        internal static string List_Remove_All_Records {
+        public static string List_Remove_All_Records {
             get {
                 return ResourceManager.GetString("List_Remove_All_Records", resourceCulture);
             }
@@ -685,7 +703,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Remove record.
         /// </summary>
-        internal static string List_Remove_Record {
+        public static string List_Remove_Record {
             get {
                 return ResourceManager.GetString("List_Remove_Record", resourceCulture);
             }
@@ -694,7 +712,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
-        internal static string List_Save_List {
+        public static string List_Save_List {
             get {
                 return ResourceManager.GetString("List_Save_List", resourceCulture);
             }
@@ -703,7 +721,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to There are more than one record.
         /// </summary>
-        internal static string List_Selected_More_Than_On_record {
+        public static string List_Selected_More_Than_On_record {
             get {
                 return ResourceManager.GetString("List_Selected_More_Than_On_record", resourceCulture);
             }
@@ -712,7 +730,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to List settings.
         /// </summary>
-        internal static string List_Settings {
+        public static string List_Settings {
             get {
                 return ResourceManager.GetString("List_Settings", resourceCulture);
             }
@@ -721,7 +739,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to View fileld.
         /// </summary>
-        internal static string List_View_Field {
+        public static string List_View_Field {
             get {
                 return ResourceManager.GetString("List_View_Field", resourceCulture);
             }
@@ -730,7 +748,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to View record.
         /// </summary>
-        internal static string List_View_Of_Record {
+        public static string List_View_Of_Record {
             get {
                 return ResourceManager.GetString("List_View_Of_Record", resourceCulture);
             }
@@ -739,7 +757,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Auto calc. height.
         /// </summary>
-        internal static string ListSettingDialogcs_AutoCalcHeight {
+        public static string ListSettingDialogcs_AutoCalcHeight {
             get {
                 return ResourceManager.GetString("ListSettingDialogcs_AutoCalcHeight", resourceCulture);
             }
@@ -748,7 +766,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Border.
         /// </summary>
-        internal static string ListSettingDialogcs_Border {
+        public static string ListSettingDialogcs_Border {
             get {
                 return ResourceManager.GetString("ListSettingDialogcs_Border", resourceCulture);
             }
@@ -757,7 +775,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Details.
         /// </summary>
-        internal static string ListSettingDialogcs_Details {
+        public static string ListSettingDialogcs_Details {
             get {
                 return ResourceManager.GetString("ListSettingDialogcs_Details", resourceCulture);
             }
@@ -766,7 +784,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Double Click.
         /// </summary>
-        internal static string ListSettingDialogcs_DoubleClick {
+        public static string ListSettingDialogcs_DoubleClick {
             get {
                 return ResourceManager.GetString("ListSettingDialogcs_DoubleClick", resourceCulture);
             }
@@ -775,7 +793,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Editable:.
         /// </summary>
-        internal static string ListSettingDialogcs_Editable {
+        public static string ListSettingDialogcs_Editable {
             get {
                 return ResourceManager.GetString("ListSettingDialogcs_Editable", resourceCulture);
             }
@@ -784,7 +802,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to F2 Only.
         /// </summary>
-        internal static string ListSettingDialogcs_F2Only {
+        public static string ListSettingDialogcs_F2Only {
             get {
                 return ResourceManager.GetString("ListSettingDialogcs_F2Only", resourceCulture);
             }
@@ -793,7 +811,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to &amp;Groups.
         /// </summary>
-        internal static string ListSettingDialogcs_Groups {
+        public static string ListSettingDialogcs_Groups {
             get {
                 return ResourceManager.GetString("ListSettingDialogcs_Groups", resourceCulture);
             }
@@ -802,7 +820,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Hot Item:.
         /// </summary>
-        internal static string ListSettingDialogcs_HotItem {
+        public static string ListSettingDialogcs_HotItem {
             get {
                 return ResourceManager.GetString("ListSettingDialogcs_HotItem", resourceCulture);
             }
@@ -811,7 +829,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Large Icon.
         /// </summary>
-        internal static string ListSettingDialogcs_LargeIcon {
+        public static string ListSettingDialogcs_LargeIcon {
             get {
                 return ResourceManager.GetString("ListSettingDialogcs_LargeIcon", resourceCulture);
             }
@@ -820,7 +838,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Lightbox.
         /// </summary>
-        internal static string ListSettingDialogcs_Lightbox {
+        public static string ListSettingDialogcs_Lightbox {
             get {
                 return ResourceManager.GetString("ListSettingDialogcs_Lightbox", resourceCulture);
             }
@@ -829,7 +847,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to List.
         /// </summary>
-        internal static string ListSettingDialogcs_List {
+        public static string ListSettingDialogcs_List {
             get {
                 return ResourceManager.GetString("ListSettingDialogcs_List", resourceCulture);
             }
@@ -838,7 +856,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to List settings.
         /// </summary>
-        internal static string ListSettingDialogcs_ListSettings {
+        public static string ListSettingDialogcs_ListSettings {
             get {
                 return ResourceManager.GetString("ListSettingDialogcs_ListSettings", resourceCulture);
             }
@@ -847,7 +865,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to ListView&apos;s cannot show groups when in List view..
         /// </summary>
-        internal static string ListSettingDialogcs_ListViewSCannotShowGroupsWhenInListView {
+        public static string ListSettingDialogcs_ListViewSCannotShowGroupsWhenInListView {
             get {
                 return ResourceManager.GetString("ListSettingDialogcs_ListViewSCannotShowGroupsWhenInListView", resourceCulture);
             }
@@ -856,7 +874,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Microsoft says that Tile view can&apos;t have checkboxes, so CheckBoxes have been turned off on this list..
         /// </summary>
-        internal static string ListSettingDialogcs_MicrosoftSaysThatTileViewCanTHaveCheckboxesSoCheckBoxesHaveBeenTurnedOffOnThisList {
+        public static string ListSettingDialogcs_MicrosoftSaysThatTileViewCanTHaveCheckboxesSoCheckBoxesHaveBeenTurnedOffOnThisList {
             get {
                 return ResourceManager.GetString("ListSettingDialogcs_MicrosoftSaysThatTileViewCanTHaveCheckboxesSoCheckBoxesHaveBe" +
                         "enTurnedOffOnThisList", resourceCulture);
@@ -866,7 +884,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to No.
         /// </summary>
-        internal static string ListSettingDialogcs_No {
+        public static string ListSettingDialogcs_No {
             get {
                 return ResourceManager.GetString("ListSettingDialogcs_No", resourceCulture);
             }
@@ -875,7 +893,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to None.
         /// </summary>
-        internal static string ListSettingDialogcs_None {
+        public static string ListSettingDialogcs_None {
             get {
                 return ResourceManager.GetString("ListSettingDialogcs_None", resourceCulture);
             }
@@ -884,7 +902,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Row &amp;Height:.
         /// </summary>
-        internal static string ListSettingDialogcs_RowHeight {
+        public static string ListSettingDialogcs_RowHeight {
             get {
                 return ResourceManager.GetString("ListSettingDialogcs_RowHeight", resourceCulture);
             }
@@ -893,7 +911,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Single Click.
         /// </summary>
-        internal static string ListSettingDialogcs_SingleClick {
+        public static string ListSettingDialogcs_SingleClick {
             get {
                 return ResourceManager.GetString("ListSettingDialogcs_SingleClick", resourceCulture);
             }
@@ -902,7 +920,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Small Icon.
         /// </summary>
-        internal static string ListSettingDialogcs_SmallIcon {
+        public static string ListSettingDialogcs_SmallIcon {
             get {
                 return ResourceManager.GetString("ListSettingDialogcs_SmallIcon", resourceCulture);
             }
@@ -911,7 +929,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Sorry, Microsoft says that virtual lists can&apos;t use Tile view..
         /// </summary>
-        internal static string ListSettingDialogcs_SorryMicrosoftSaysThatVirtualListsCanTUseTileView {
+        public static string ListSettingDialogcs_SorryMicrosoftSaysThatVirtualListsCanTUseTileView {
             get {
                 return ResourceManager.GetString("ListSettingDialogcs_SorryMicrosoftSaysThatVirtualListsCanTUseTileView", resourceCulture);
             }
@@ -920,7 +938,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Text Color.
         /// </summary>
-        internal static string ListSettingDialogcs_TextColor {
+        public static string ListSettingDialogcs_TextColor {
             get {
                 return ResourceManager.GetString("ListSettingDialogcs_TextColor", resourceCulture);
             }
@@ -929,7 +947,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Title.
         /// </summary>
-        internal static string ListSettingDialogcs_Tile {
+        public static string ListSettingDialogcs_Tile {
             get {
                 return ResourceManager.GetString("ListSettingDialogcs_Tile", resourceCulture);
             }
@@ -938,7 +956,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Translucent.
         /// </summary>
-        internal static string ListSettingDialogcs_Translucent {
+        public static string ListSettingDialogcs_Translucent {
             get {
                 return ResourceManager.GetString("ListSettingDialogcs_Translucent", resourceCulture);
             }
@@ -947,7 +965,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to View:.
         /// </summary>
-        internal static string ListSettingDialogcs_View {
+        public static string ListSettingDialogcs_View {
             get {
                 return ResourceManager.GetString("ListSettingDialogcs_View", resourceCulture);
             }
@@ -956,7 +974,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Refresh list.
         /// </summary>
-        internal static string Lisе_Refresh_List {
+        public static string Lisе_Refresh_List {
             get {
                 return ResourceManager.GetString("Lisе_Refresh_List", resourceCulture);
             }
@@ -965,7 +983,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Load configuration.
         /// </summary>
-        internal static string LoadConfiguration {
+        public static string LoadConfiguration {
             get {
                 return ResourceManager.GetString("LoadConfiguration", resourceCulture);
             }
@@ -974,7 +992,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Main window.
         /// </summary>
-        internal static string Main_Window {
+        public static string Main_Window {
             get {
                 return ResourceManager.GetString("Main_Window", resourceCulture);
             }
@@ -983,7 +1001,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to View.
         /// </summary>
-        internal static string Menu_View {
+        public static string Menu_View {
             get {
                 return ResourceManager.GetString("Menu_View", resourceCulture);
             }
@@ -992,7 +1010,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to This drag&amp;drop is not possible. The source or destination does not allow this operation..
         /// </summary>
-        internal static string Move_Not_Allowed_1 {
+        public static string Move_Not_Allowed_1 {
             get {
                 return ResourceManager.GetString("Move_Not_Allowed_1", resourceCulture);
             }
@@ -1001,7 +1019,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to This drag&amp;drop is not possible. You can only transfer to the area of a specific line in the list..
         /// </summary>
-        internal static string Move_Not_Allowed_2 {
+        public static string Move_Not_Allowed_2 {
             get {
                 return ResourceManager.GetString("Move_Not_Allowed_2", resourceCulture);
             }
@@ -1010,7 +1028,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to The operation is impossible. Insufficient access rights..
         /// </summary>
-        internal static string NO_RIGHTS {
+        public static string NO_RIGHTS {
             get {
                 return ResourceManager.GetString("NO_RIGHTS", resourceCulture);
             }
@@ -1019,7 +1037,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Not.
         /// </summary>
-        internal static string Not_present {
+        public static string Not_present {
             get {
                 return ResourceManager.GetString("Not_present", resourceCulture);
             }
@@ -1028,7 +1046,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Notifications and events.
         /// </summary>
-        internal static string Notifications_and_events {
+        public static string Notifications_and_events {
             get {
                 return ResourceManager.GetString("Notifications_and_events", resourceCulture);
             }
@@ -1037,7 +1055,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to No item found to display.
         /// </summary>
-        internal static string Object_For_View_Not_Found {
+        public static string Object_For_View_Not_Found {
             get {
                 return ResourceManager.GetString("Object_For_View_Not_Found", resourceCulture);
             }
@@ -1046,7 +1064,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Ok.
         /// </summary>
-        internal static string OK {
+        public static string OK {
             get {
                 return ResourceManager.GetString("OK", resourceCulture);
             }
@@ -1055,7 +1073,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Yes.
         /// </summary>
-        internal static string Present {
+        public static string Present {
             get {
                 return ResourceManager.GetString("Present", resourceCulture);
             }
@@ -1064,7 +1082,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Record can not be empty.
         /// </summary>
-        internal static string Record_Can_Not_Be_Empty {
+        public static string Record_Can_Not_Be_Empty {
             get {
                 return ResourceManager.GetString("Record_Can_Not_Be_Empty", resourceCulture);
             }
@@ -1073,16 +1091,26 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Remove.
         /// </summary>
-        internal static string Remove {
+        public static string Remove {
             get {
                 return ResourceManager.GetString("Remove", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap save {
+            get {
+                object obj = ResourceManager.GetObject("save", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save all entities data.
         /// </summary>
-        internal static string Save_all_entities_data {
+        public static string Save_all_entities_data {
             get {
                 return ResourceManager.GetString("Save_all_entities_data", resourceCulture);
             }
@@ -1091,7 +1119,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Save configuration.
         /// </summary>
-        internal static string SaveConfiguration {
+        public static string SaveConfiguration {
             get {
                 return ResourceManager.GetString("SaveConfiguration", resourceCulture);
             }
@@ -1100,16 +1128,25 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Select field insert to.
         /// </summary>
-        internal static string SelectFieldToPaste {
+        public static string SelectFieldToPaste {
             get {
                 return ResourceManager.GetString("SelectFieldToPaste", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Set NULL.
+        /// </summary>
+        public static string Set_NULL {
+            get {
+                return ResourceManager.GetString("Set_NULL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show job batch console.
         /// </summary>
-        internal static string Show_job_batch_console {
+        public static string Show_job_batch_console {
             get {
                 return ResourceManager.GetString("Show_job_batch_console", resourceCulture);
             }
@@ -1118,7 +1155,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Show job console.
         /// </summary>
-        internal static string Show_job_console {
+        public static string Show_job_console {
             get {
                 return ResourceManager.GetString("Show_job_console", resourceCulture);
             }
@@ -1127,7 +1164,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Show documents icons.
         /// </summary>
-        internal static string ShowDocumentsIcons {
+        public static string ShowDocumentsIcons {
             get {
                 return ResourceManager.GetString("ShowDocumentsIcons", resourceCulture);
             }
@@ -1136,7 +1173,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Add file copy.
         /// </summary>
-        internal static string SimpleAttachmentsDialog_AddFileCopy {
+        public static string SimpleAttachmentsDialog_AddFileCopy {
             get {
                 return ResourceManager.GetString("SimpleAttachmentsDialog_AddFileCopy", resourceCulture);
             }
@@ -1145,7 +1182,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Add folder reference.
         /// </summary>
-        internal static string SimpleAttachmentsDialog_AddFolderRef {
+        public static string SimpleAttachmentsDialog_AddFolderRef {
             get {
                 return ResourceManager.GetString("SimpleAttachmentsDialog_AddFolderRef", resourceCulture);
             }
@@ -1154,7 +1191,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Add file reference.
         /// </summary>
-        internal static string SimpleAttachmentsDialog_AddRef {
+        public static string SimpleAttachmentsDialog_AddRef {
             get {
                 return ResourceManager.GetString("SimpleAttachmentsDialog_AddRef", resourceCulture);
             }
@@ -1163,7 +1200,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Add URL.
         /// </summary>
-        internal static string SimpleAttachmentsDialog_AddUrl {
+        public static string SimpleAttachmentsDialog_AddUrl {
             get {
                 return ResourceManager.GetString("SimpleAttachmentsDialog_AddUrl", resourceCulture);
             }
@@ -1172,7 +1209,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Attacments.
         /// </summary>
-        internal static string SimpleAttachmentsDialog_Attachments {
+        public static string SimpleAttachmentsDialog_Attachments {
             get {
                 return ResourceManager.GetString("SimpleAttachmentsDialog_Attachments", resourceCulture);
             }
@@ -1181,7 +1218,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Creation date.
         /// </summary>
-        internal static string SimpleAttachmentsDialog_CreationDate {
+        public static string SimpleAttachmentsDialog_CreationDate {
             get {
                 return ResourceManager.GetString("SimpleAttachmentsDialog_CreationDate", resourceCulture);
             }
@@ -1190,7 +1227,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Type of file.
         /// </summary>
-        internal static string SimpleAttachmentsDialog_FileType {
+        public static string SimpleAttachmentsDialog_FileType {
             get {
                 return ResourceManager.GetString("SimpleAttachmentsDialog_FileType", resourceCulture);
             }
@@ -1199,7 +1236,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Modification date.
         /// </summary>
-        internal static string SimpleAttachmentsDialog_ModificationDate {
+        public static string SimpleAttachmentsDialog_ModificationDate {
             get {
                 return ResourceManager.GetString("SimpleAttachmentsDialog_ModificationDate", resourceCulture);
             }
@@ -1208,7 +1245,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Open file.
         /// </summary>
-        internal static string SimpleAttachmentsDialog_OpenFile {
+        public static string SimpleAttachmentsDialog_OpenFile {
             get {
                 return ResourceManager.GetString("SimpleAttachmentsDialog_OpenFile", resourceCulture);
             }
@@ -1217,7 +1254,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Open folder.
         /// </summary>
-        internal static string SimpleAttachmentsDialog_OpenFolder {
+        public static string SimpleAttachmentsDialog_OpenFolder {
             get {
                 return ResourceManager.GetString("SimpleAttachmentsDialog_OpenFolder", resourceCulture);
             }
@@ -1226,7 +1263,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Path.
         /// </summary>
-        internal static string SimpleAttachmentsDialog_Path {
+        public static string SimpleAttachmentsDialog_Path {
             get {
                 return ResourceManager.GetString("SimpleAttachmentsDialog_Path", resourceCulture);
             }
@@ -1235,7 +1272,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Size.
         /// </summary>
-        internal static string SimpleAttachmentsDialog_Size {
+        public static string SimpleAttachmentsDialog_Size {
             get {
                 return ResourceManager.GetString("SimpleAttachmentsDialog_Size", resourceCulture);
             }
@@ -1244,7 +1281,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Clear time.
         /// </summary>
-        internal static string SimpleDateTimeDialog_ClearTime {
+        public static string SimpleDateTimeDialog_ClearTime {
             get {
                 return ResourceManager.GetString("SimpleDateTimeDialog_ClearTime", resourceCulture);
             }
@@ -1253,7 +1290,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Date and time.
         /// </summary>
-        internal static string SimpleDateTimeDialog_Date_And_Time {
+        public static string SimpleDateTimeDialog_Date_And_Time {
             get {
                 return ResourceManager.GetString("SimpleDateTimeDialog_Date_And_Time", resourceCulture);
             }
@@ -1262,7 +1299,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Dictionary.
         /// </summary>
-        internal static string SimpleDictListDialog_Dict {
+        public static string SimpleDictListDialog_Dict {
             get {
                 return ResourceManager.GetString("SimpleDictListDialog_Dict", resourceCulture);
             }
@@ -1271,7 +1308,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Image.
         /// </summary>
-        internal static string SimpleDictListDialog_Image {
+        public static string SimpleDictListDialog_Image {
             get {
                 return ResourceManager.GetString("SimpleDictListDialog_Image", resourceCulture);
             }
@@ -1280,7 +1317,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
-        internal static string SimpleDictListDialog_Name {
+        public static string SimpleDictListDialog_Name {
             get {
                 return ResourceManager.GetString("SimpleDictListDialog_Name", resourceCulture);
             }
@@ -1289,7 +1326,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Image.
         /// </summary>
-        internal static string SimpleJDictItemDialog_Image {
+        public static string SimpleJDictItemDialog_Image {
             get {
                 return ResourceManager.GetString("SimpleJDictItemDialog_Image", resourceCulture);
             }
@@ -1298,7 +1335,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Key.
         /// </summary>
-        internal static string SimpleJDictItemDialog_Key {
+        public static string SimpleJDictItemDialog_Key {
             get {
                 return ResourceManager.GetString("SimpleJDictItemDialog_Key", resourceCulture);
             }
@@ -1307,7 +1344,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Text.
         /// </summary>
-        internal static string SimpleJDictItemDialog_Text {
+        public static string SimpleJDictItemDialog_Text {
             get {
                 return ResourceManager.GetString("SimpleJDictItemDialog_Text", resourceCulture);
             }
@@ -1316,7 +1353,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Dictionary record.
         /// </summary>
-        internal static string SimpleJDictItemDialog_Title {
+        public static string SimpleJDictItemDialog_Title {
             get {
                 return ResourceManager.GetString("SimpleJDictItemDialog_Title", resourceCulture);
             }
@@ -1325,7 +1362,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to List.
         /// </summary>
-        internal static string SimpleListDialog_Title {
+        public static string SimpleListDialog_Title {
             get {
                 return ResourceManager.GetString("SimpleListDialog_Title", resourceCulture);
             }
@@ -1334,7 +1371,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Image.
         /// </summary>
-        internal static string SimpleMultivalueDictFieldItemListDialog_Image {
+        public static string SimpleMultivalueDictFieldItemListDialog_Image {
             get {
                 return ResourceManager.GetString("SimpleMultivalueDictFieldItemListDialog_Image", resourceCulture);
             }
@@ -1343,7 +1380,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
-        internal static string SimpleMultivalueDictFieldItemListDialog_Name {
+        public static string SimpleMultivalueDictFieldItemListDialog_Name {
             get {
                 return ResourceManager.GetString("SimpleMultivalueDictFieldItemListDialog_Name", resourceCulture);
             }
@@ -1352,7 +1389,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Selection list of dictionary.
         /// </summary>
-        internal static string SimpleMultivalueDictFieldItemListDialog_Title {
+        public static string SimpleMultivalueDictFieldItemListDialog_Title {
             get {
                 return ResourceManager.GetString("SimpleMultivalueDictFieldItemListDialog_Title", resourceCulture);
             }
@@ -1361,7 +1398,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Id.
         /// </summary>
-        internal static string SimpleMultivalueFieldItemListDialog_Id {
+        public static string SimpleMultivalueFieldItemListDialog_Id {
             get {
                 return ResourceManager.GetString("SimpleMultivalueFieldItemListDialog_Id", resourceCulture);
             }
@@ -1370,7 +1407,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
-        internal static string SimpleMultivalueFieldItemListDialog_Name {
+        public static string SimpleMultivalueFieldItemListDialog_Name {
             get {
                 return ResourceManager.GetString("SimpleMultivalueFieldItemListDialog_Name", resourceCulture);
             }
@@ -1379,7 +1416,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Selection list.
         /// </summary>
-        internal static string SimpleMultivalueFieldItemListDialog_Title {
+        public static string SimpleMultivalueFieldItemListDialog_Title {
             get {
                 return ResourceManager.GetString("SimpleMultivalueFieldItemListDialog_Title", resourceCulture);
             }
@@ -1388,7 +1425,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Property Dialog.
         /// </summary>
-        internal static string SimplePropertyDialog_Title {
+        public static string SimplePropertyDialog_Title {
             get {
                 return ResourceManager.GetString("SimplePropertyDialog_Title", resourceCulture);
             }
@@ -1397,7 +1434,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Attribute: .
         /// </summary>
-        internal static string SimplePropertyWindow_Attribute {
+        public static string SimplePropertyWindow_Attribute {
             get {
                 return ResourceManager.GetString("SimplePropertyWindow_Attribute", resourceCulture);
             }
@@ -1406,7 +1443,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to  - properies.
         /// </summary>
-        internal static string SimplePropertyWindow_Props {
+        public static string SimplePropertyWindow_Props {
             get {
                 return ResourceManager.GetString("SimplePropertyWindow_Props", resourceCulture);
             }
@@ -1415,7 +1452,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Record properties.
         /// </summary>
-        internal static string SimplePropertyWindow_Title {
+        public static string SimplePropertyWindow_Title {
             get {
                 return ResourceManager.GetString("SimplePropertyWindow_Title", resourceCulture);
             }
@@ -1424,7 +1461,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Enter text.
         /// </summary>
-        internal static string SimpleTextDialog_EnterText {
+        public static string SimpleTextDialog_EnterText {
             get {
                 return ResourceManager.GetString("SimpleTextDialog_EnterText", resourceCulture);
             }
@@ -1433,7 +1470,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Text.
         /// </summary>
-        internal static string SimpleTextEditDialog_Title {
+        public static string SimpleTextEditDialog_Title {
             get {
                 return ResourceManager.GetString("SimpleTextEditDialog_Title", resourceCulture);
             }
@@ -1442,7 +1479,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Statusbar.
         /// </summary>
-        internal static string Statusbar {
+        public static string Statusbar {
             get {
                 return ResourceManager.GetString("Statusbar", resourceCulture);
             }
@@ -1451,16 +1488,25 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to There are new notifications and events.
         /// </summary>
-        internal static string There_are_new_notifications_and_events {
+        public static string There_are_new_notifications_and_events {
             get {
                 return ResourceManager.GetString("There_are_new_notifications_and_events", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This field is readonly.
+        /// </summary>
+        public static string This_field_is_readonly {
+            get {
+                return ResourceManager.GetString("This_field_is_readonly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Toolbar.
         /// </summary>
-        internal static string Toolbar {
+        public static string Toolbar {
             get {
                 return ResourceManager.GetString("Toolbar", resourceCulture);
             }
@@ -1469,7 +1515,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Tools.
         /// </summary>
-        internal static string Tools {
+        public static string Tools {
             get {
                 return ResourceManager.GetString("Tools", resourceCulture);
             }
@@ -1478,7 +1524,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Loading.
         /// </summary>
-        internal static string TreeList_Loading {
+        public static string TreeList_Loading {
             get {
                 return ResourceManager.GetString("TreeList_Loading", resourceCulture);
             }
@@ -1487,7 +1533,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Try to cancel job.
         /// </summary>
-        internal static string Try_to_cancel_job {
+        public static string Try_to_cancel_job {
             get {
                 return ResourceManager.GetString("Try_to_cancel_job", resourceCulture);
             }
@@ -1496,7 +1542,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Try to cancel job batch.
         /// </summary>
-        internal static string Try_to_cancel_job_batch {
+        public static string Try_to_cancel_job_batch {
             get {
                 return ResourceManager.GetString("Try_to_cancel_job_batch", resourceCulture);
             }
@@ -1505,7 +1551,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Update current configuration.
         /// </summary>
-        internal static string UpdateCurrentConfiguration {
+        public static string UpdateCurrentConfiguration {
             get {
                 return ResourceManager.GetString("UpdateCurrentConfiguration", resourceCulture);
             }
@@ -1514,7 +1560,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to View.
         /// </summary>
-        internal static string View {
+        public static string View {
             get {
                 return ResourceManager.GetString("View", resourceCulture);
             }
@@ -1523,7 +1569,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Warning.
         /// </summary>
-        internal static string WARNING {
+        public static string WARNING {
             get {
                 return ResourceManager.GetString("WARNING", resourceCulture);
             }
@@ -1532,7 +1578,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Widget&apos;s configuration.
         /// </summary>
-        internal static string WidgetSConfiguration {
+        public static string WidgetSConfiguration {
             get {
                 return ResourceManager.GetString("WidgetSConfiguration", resourceCulture);
             }
@@ -1541,7 +1587,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Window.
         /// </summary>
-        internal static string Window {
+        public static string Window {
             get {
                 return ResourceManager.GetString("Window", resourceCulture);
             }
@@ -1550,7 +1596,7 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Wrong operation.
         /// </summary>
-        internal static string Wrong_Operation {
+        public static string Wrong_Operation {
             get {
                 return ResourceManager.GetString("Wrong_Operation", resourceCulture);
             }

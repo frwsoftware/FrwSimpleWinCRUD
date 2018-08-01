@@ -56,10 +56,6 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FrwSoftware.FrwSimpleJsonORM, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FrwSoftware.FrwSimpleJsonORM.1.2.2\lib\net452\FrwSoftware.FrwSimpleJsonORM.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="FrwSoftware.FrwSimpleWinCRUD, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\FrwSoftware.FrwSimpleWinCRUD.1.2.2\lib\net452\FrwSoftware.FrwSimpleWinCRUD.dll</HintPath>
       <Private>True</Private>
@@ -192,7 +188,12 @@
     </Content>
     <Content Include="simplewincrud.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\FrwSimpleJsonORM\FrwSimpleJsonORM.csproj">
+      <Project>{0A396F66-2B49-4FC6-80E3-2158B9BCC481}</Project>
+      <Name>FrwSimpleJsonORM</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

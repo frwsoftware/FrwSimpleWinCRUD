@@ -268,10 +268,13 @@ namespace FrwSoftware
                     if (treeControl.ImageList == null) treeControl.ImageList = new ImageList();
                     if (!treeControl.ImageList.Images.ContainsKey(entityAttr.ImageName))
                     {
-                        Image smallImage = (Image)Properties.Resources.ResourceManager.GetObject(entityAttr.ImageName);
+                        Image smallImage = null;
+                        if (smallImage == null && entityAttr.Resource != null)
+                            smallImage = TypeHelper.LookupImageResource(entityAttr.Resource, entityAttr.ImageName);
+                        if (smallImage == null)
+                            smallImage = (Image)Properties.Resources.ResourceManager.GetObject(entityAttr.ImageName);
                         //if not found in current assembly do advanced search 
                         if (smallImage == null) smallImage = TypeHelper.FindImageInAllDiskStorages(entityAttr.ImageName);
-                        if (smallImage == null) smallImage = TypeHelper.FindImageInAllAssemblyResources(entityAttr.ImageName);
                         if (smallImage != null)
                         {
                             treeControl.ImageList.Images.Add(entityAttr.ImageName, smallImage);

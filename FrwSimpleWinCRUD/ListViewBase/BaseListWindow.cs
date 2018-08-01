@@ -478,7 +478,7 @@ namespace FrwSoftware
             //TreeNode selectedNode = selectedListItem as TreeNode;
             ToolStripMenuItem menuItem = new ToolStripMenuItem();
             string addedTypeDescr = (addedRefInfo != null)? addedRefInfo.GetRelDescription() : ModelHelper.GetEntityJDescriptionOrName(addedType);
-            menuItem.Text = "Создать " + addedTypeDescr;
+            menuItem.Text = FrwCRUDRes.Create + " " + addedTypeDescr;
             menuItem.Enabled = rights.CanAdd;
             menuItem.Click += (s, em) =>
             {
@@ -527,7 +527,7 @@ namespace FrwSoftware
                 //if (rels.Count > 0)
                 {
                     menuItem = new ToolStripMenuItem();
-                    menuItem.Text = FrwCRUDRes.List_Create_New_Record + "( Childs)";
+                    menuItem.Text = FrwCRUDRes.List_Create_New_Record + FrwCRUDRes.__Childs_;
                     menuItem.Image = Properties.Resources.AllPics_05;
                     menuItem.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
                     menuItem.ImageScaling = ToolStripItemImageScaling.None;
@@ -961,53 +961,55 @@ namespace FrwSoftware
                     }
                 };
                 menuItemList.Add(menuItem);
+                if (FrwConfig.Instance.ExpertMode == true)
+                {
+                    menuItem = new ToolStripMenuItem();
+                    menuItem.Text = FrwCRUDRes.List_Cut;// 
+                    menuItem.Enabled = CanCopyOrCutSelectedObjects(selectedForCopyPaste, true);
+                    menuItem.Click += (s, em) =>
+                    {
+                        try
+                        {
 
-                menuItem = new ToolStripMenuItem();
-                menuItem.Text = FrwCRUDRes.List_Cut;// запись(и) в буфер обмена";
-                menuItem.Enabled = CanCopyOrCutSelectedObjects( selectedForCopyPaste, true);
-                menuItem.Click += (s, em) =>
-                {
-                    try
+                            CopySelectedObjectToClipBoard(selectedForCopyPaste, true);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.ShowError(ex);
+                        }
+                    };
+                    menuItemList.Add(menuItem);
+                    menuItem = new ToolStripMenuItem();
+                    menuItem.Text = FrwCRUDRes.List_Paste_From_Buffer;// Windows";
+                    menuItem.Enabled = CanPasteObjectFromAppClipboard(GetSelectedListItem());
+                    menuItem.Click += (s, em) =>
                     {
-                        
-                        CopySelectedObjectToClipBoard( selectedForCopyPaste, true);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.ShowError(ex);
-                    }
-                };
-                menuItemList.Add(menuItem);
-                menuItem = new ToolStripMenuItem();
-                menuItem.Text = FrwCRUDRes.List_Paste_From_Buffer;// Windows";
-                menuItem.Enabled = CanPasteObjectFromAppClipboard(GetSelectedListItem());
-                menuItem.Click += (s, em) =>
-                {
-                    try
-                    {
-                        PasteSelectedObjectsFromAppClipBoard(GetSelectedListItem());
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.ShowError(ex);
-                    }
-                };
-                menuItemList.Add(menuItem);
+                        try
+                        {
+                            PasteSelectedObjectsFromAppClipBoard(GetSelectedListItem());
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.ShowError(ex);
+                        }
+                    };
+                    menuItemList.Add(menuItem);
 
-                menuItem = new ToolStripMenuItem();
-                menuItem.Text = FrwCRUDRes.List_Paste_From_Windows_Buffer;
-                menuItem.Enabled = CanPasteObjectFromWindowsClipboard(GetSelectedListItem());
-                menuItem.Click += (s, em) =>
-                {
-                    try
+                    menuItem = new ToolStripMenuItem();
+                    menuItem.Text = FrwCRUDRes.List_Paste_From_Windows_Buffer;
+                    menuItem.Enabled = CanPasteObjectFromWindowsClipboard(GetSelectedListItem());
+                    menuItem.Click += (s, em) =>
                     {
-                        PasteSelectedObjectsFromWindowsClipBoard(GetSelectedListItem());
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.ShowError(ex);
-                    }
-                };
+                        try
+                        {
+                            PasteSelectedObjectsFromWindowsClipBoard(GetSelectedListItem());
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.ShowError(ex);
+                        }
+                    };
+                }
                 menuItemList.Add(menuItem);
                 if (!(selectedObject is string))
                 {
@@ -1022,10 +1024,23 @@ namespace FrwSoftware
                     menuItemList.Add(menuItem);
                 }
                 IList<WebEntryInfoWrap> webEntryInfos = WebEntryInfo.GetWebEntryInfosFromObject(selectedObject);
-                foreach (var w in webEntryInfos)
+                if (webEntryInfos.Count > 0)
                 {
-                    //todo name of field
-                    menuItemList.AddRange(AppManager.Instance.CreateOpenInBrowserContextMenu(w.WebEntryInfo, this.ContentContainer, selectedObject));
+                    menuItemList.Add(new ToolStripSeparator());
+                    foreach (var w in webEntryInfos)
+                    {
+                        if (webEntryInfos.Count > 1)
+                        {
+                            menuItem = new ToolStripMenuItem();
+                            menuItem.Text = ModelHelper.GetPropertyJDescriptionOrName(w.Property);
+                            menuItemList.Add(menuItem);
+                            menuItem.DropDownItems.AddRange(AppManager.Instance.CreateOpenInBrowserContextMenu(w.WebEntryInfo, this.ContentContainer, selectedObject).ToArray<ToolStripItem>());
+                        }
+                        else
+                        {
+                            menuItemList.AddRange(AppManager.Instance.CreateOpenInBrowserContextMenu(w.WebEntryInfo, this.ContentContainer, selectedObject));
+                        }
+                    }
                 }
                 //todo
                 //menuItemList.AddRange(AppManager.Instance.CreateGetPasswordContextMenu(newPassword =>

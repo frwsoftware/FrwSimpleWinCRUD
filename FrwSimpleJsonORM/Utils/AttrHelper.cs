@@ -114,9 +114,17 @@ namespace FrwSoftware
         }
         public static IEnumerable<PropertyInfo> GetProperties(Type attrTYpe, Type t)
         {
-            var props = t.GetProperties().Where(
-                 prop => Attribute.IsDefined(prop, attrTYpe));
-            return props;
+            try
+            {
+                var props = t.GetProperties().Where(
+                     prop => Attribute.IsDefined(prop, attrTYpe));
+                return props;
+            }
+            catch(Exception e)
+            {
+                int i = 1;
+                return null;
+            }
         }
         public static MethodInfo GetMethod(Type attrTYpe, Type t)
         {

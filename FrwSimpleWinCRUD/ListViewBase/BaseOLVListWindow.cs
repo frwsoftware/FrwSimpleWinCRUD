@@ -393,7 +393,7 @@ namespace FrwSoftware
                     if (value == null) return null;
                     JDictItem item = Dm.Instance.GetDictText(dictAttr.Id, value.ToString());
                     if (item == null) return null;
-                    Image smallImage = AddImageToImageList(this.listView, item.Image, item.ImageName);
+                    Image smallImage = AddImageToImageList(this.listView, item.Image, null);
                     if (smallImage != null && item.Image == null) item.Image = smallImage;
                     return smallImage;
                 };
@@ -552,6 +552,14 @@ namespace FrwSoftware
                 OLVColumn column = e.Column;
                 object rowObject = e.RowObject;
                 //object value = e.Value;
+                JReadOnly readOnlyAttr = AttrHelper.GetAttribute<JReadOnly>(SourceObjectType, column.AspectName);
+                if (readOnlyAttr != null )
+                {
+                    DialogResult res = MessageBox.Show(null, FrwCRUDRes.This_field_is_readonly,
+                                     FrwCRUDRes.WARNING, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    e.Cancel = true;
+                    return;
+                }
                 if (AppManager.Instance.IsCustomEditProperty(SourceObjectType, column.AspectName))
                 {
                     if (AttrHelper.GetAttribute<JText>(SourceObjectType, column.AspectName) != null)
@@ -847,7 +855,7 @@ namespace FrwSoftware
                     Image smallImage = (Image)Properties.Resources.ResourceManager.GetObject(imageName);
                     //if not found in current assembly do advanced search 
                     if (smallImage == null) smallImage = TypeHelper.FindImageInAllDiskStorages(imageName);
-                    if (smallImage == null) smallImage = TypeHelper.FindImageInAllAssemblyResources(imageName);
+                    //if (smallImage == null) smallImage = TypeHelper.FindImageInAllAssemblyResources(imageName);
                     if (smallImage != null)
                     {
                         listView.SmallImageList.Images.Add(imageName, smallImage);
@@ -1013,23 +1021,26 @@ namespace FrwSoftware
             menuItemList.Add(new ToolStripSeparator());
 
             ToolStripMenuItem menuItem = new ToolStripMenuItem();
-            menuItem.Text = FrwCRUDRes.List_Copy_To_Clipboard_OLV;
-            menuItem.Image = Properties.Resources.AllPics_15;
-            menuItem.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
-            menuItem.ImageScaling = ToolStripItemImageScaling.None;
-            menuItem.Click += (s, em) =>
+            if (FrwConfig.Instance.ExpertMode == true)
             {
-                try
+                menuItem.Text = FrwCRUDRes.List_Copy_To_Clipboard_OLV;
+                menuItem.Image = Properties.Resources.AllPics_15;
+                menuItem.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
+                menuItem.ImageScaling = ToolStripItemImageScaling.None;
+                menuItem.Click += (s, em) =>
                 {
-                    GetSelectedForCopyPaste(); 
-                    listView.CopySelectionToClipboard();
-                }
-                catch (Exception ex)
-                {
-                    Log.ShowError(ex);
-                }
-            };
-            menuItemList.Add(menuItem);
+                    try
+                    {
+                        GetSelectedForCopyPaste();
+                        listView.CopySelectionToClipboard();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.ShowError(ex);
+                    }
+                };
+                menuItemList.Add(menuItem);
+            }
         }
 
 

@@ -36,6 +36,5 @@ namespace FrwSoftware
             }
         }
         public Image Image { get; set; }
-        public string ImageName { get; set; }
     }
 }

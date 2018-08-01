@@ -67,76 +67,22 @@ namespace FrwSoftware
             }
             return myType;
         }
-        /// <summary>
-        ///    FindImageInAllAssemblyResources("add"); 
-        ///    FindImageInAllAssemblyResources("add.png");
-        ///    FindImageInAllAssemblyResources("sendToBack.bmp");
-        ///
-        /// </summary>
-        /// <param name="imageName"></param>
-        /// <returns></returns>
-        static public Image FindImageInAllAssemblyResources(string imageName)
+        static public Image LookupImageResource(Type resourceManagerProvider, string resourceKey)
         {
-            string imageFileName = null;
-            string imageTitle = null;
-            int indexDot = imageName.IndexOf(".");
-            if (indexDot > 0)//-1
-            {
-                imageFileName = imageName;
-                imageTitle = imageName.Substring(0, indexDot);
-            }
-            else imageTitle = imageName;
 
-            Image image = null;
-            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var a in assemblies)
+            //foreach (PropertyInfo staticProperty in resourceManagerProvider.GetProperties(BindingFlags.Static | BindingFlags.NonPublic)) - do not working on public Resources
+            foreach (PropertyInfo staticProperty in resourceManagerProvider.GetProperties())
             {
-                if (a.IsDynamic == false)
+                if (staticProperty.PropertyType == typeof(System.Resources.ResourceManager))
                 {
-                    string[] ress = a.GetManifestResourceNames();
-                    string resourceName = null;
-                    if (imageFileName != null)
-                    {
-                        foreach (string res in ress)
-                        {
-                            if (res.EndsWith(imageFileName))
-                            {
-                                image = new Bitmap(a.GetManifestResourceStream(res));
-                                return image;
-                            }
-                        }
-                    }
-                    if (resourceName == null)
-                    {
-                        string resourceNameEnd = ".Properties.Resources.resources";
-                        foreach (string res in ress)
-                        {
-                            if (res.EndsWith(resourceNameEnd))
-                            {
-                                resourceName = res.Substring(0, res.Length - 10);
-                                break;
-                            }
-                        }
-                    }
-                    if (resourceName != null)
-                    {
-
-                        var rm = new ResourceManager(resourceName, a);
-                        if (rm != null)
-                        {
-
-                            image = (Image)rm.GetObject(imageTitle);
-                            if (image != null)
-                            {
-                                break;
-                            }
-                        }
-                    }
+                    System.Resources.ResourceManager resourceManager = (System.Resources.ResourceManager)staticProperty.GetValue(null, null);
+                    return (Image)resourceManager.GetObject(resourceKey);
                 }
             }
-            return image;
-        }
 
+            return null;
+        }
+  
         static public Image FindImageInAllDiskStorages(string imageName)
         {
             FileInfo fi = new FileInfo(Path.Combine(FrwConfig.Instance.GlobalDir, imageName));

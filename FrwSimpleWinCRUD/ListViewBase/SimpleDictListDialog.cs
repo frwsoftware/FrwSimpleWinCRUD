@@ -96,7 +96,7 @@ namespace FrwSoftware
             {
                 JDictItem item = (JDictItem)x;
 
-                Image smallImage = BaseOLVListWindow.AddImageToImageList(this.listView, item.Image, item.ImageName);
+                Image smallImage = BaseOLVListWindow.AddImageToImageList(this.listView, item.Image, null);
                 if (smallImage != null) item.Image = smallImage;
                 return smallImage;
             };
