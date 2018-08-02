@@ -56,6 +56,9 @@
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.WindowsAPICodePack-Core.1.1.0.2\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
       <Private>True</Private>
@@ -80,6 +83,7 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -154,6 +158,65 @@
     </Compile>
     <Compile Include="DocPanelBase\AdvancedMainAppForm.Designer.cs">
       <DependentUpon>AdvancedMainAppForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HTMLEditorControl\Classes\HtmlEditorEvents.cs" />
+    <Compile Include="HTMLEditorControl\Classes\HtmlEnumerations.cs" />
+    <Compile Include="HTMLEditorControl\Classes\HtmlFontProperty.cs" />
+    <Compile Include="HTMLEditorControl\Classes\HtmlTableProperty.cs" />
+    <Compile Include="HTMLEditorControl\Classes\IOleCommandTarget.cs" />
+    <Compile Include="HTMLEditorControl\Forms\EditHtmlForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HTMLEditorControl\Forms\EditHtmlForm.Designer.cs">
+      <DependentUpon>EditHtmlForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HTMLEditorControl\Forms\EnterHrefForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HTMLEditorControl\Forms\EnterHrefForm.Designer.cs">
+      <DependentUpon>EnterHrefForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HTMLEditorControl\Forms\EnterImageForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HTMLEditorControl\Forms\EnterImageForm.Designer.cs">
+      <DependentUpon>EnterImageForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HTMLEditorControl\Forms\FindReplaceForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HTMLEditorControl\Forms\FindReplaceForm.Designer.cs">
+      <DependentUpon>FindReplaceForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HTMLEditorControl\Forms\FontAttributeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HTMLEditorControl\Forms\FontAttributeForm.Designer.cs">
+      <DependentUpon>FontAttributeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HTMLEditorControl\Forms\TablePropertyForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HTMLEditorControl\Forms\TablePropertyForm.Designer.cs">
+      <DependentUpon>TablePropertyForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HTMLEditorControl\HtmlEditorControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="HTMLEditorControl\HtmlEditorControl.Designer.cs">
+      <DependentUpon>HtmlEditorControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HTMLEditorControl\SimpleHtmlTextEditDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HTMLEditorControl\SimpleHtmlTextEditDialog.Designer.cs">
+      <DependentUpon>SimpleHtmlTextEditDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HTMLEditorControl\TextEditorControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="HTMLEditorControl\TextEditorControl.Designer.cs">
+      <DependentUpon>TextEditorControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Job\AbortableBackgroundWorker.cs">
       <SubType>Component</SubType>
@@ -411,6 +474,42 @@
       <LastGenOutput>FrwCRUDRes.ru.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="HTMLEditorControl\Forms\EditHtmlForm.resx">
+      <DependentUpon>EditHtmlForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HTMLEditorControl\Forms\EnterHrefForm.resx">
+      <DependentUpon>EnterHrefForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HTMLEditorControl\Forms\EnterImageForm.resx">
+      <DependentUpon>EnterImageForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HTMLEditorControl\Forms\FindReplaceForm.resx">
+      <DependentUpon>FindReplaceForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HTMLEditorControl\Forms\FontAttributeForm.resx">
+      <DependentUpon>FontAttributeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HTMLEditorControl\Forms\TablePropertyForm.resx">
+      <DependentUpon>TablePropertyForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HTMLEditorControl\HtmlEditorControl.resx">
+      <DependentUpon>HtmlEditorControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HTMLEditorControl\HtmlEditorControl.ru.resx">
+      <DependentUpon>HtmlEditorControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HTMLEditorControl\SimpleHtmlTextEditDialog.resx">
+      <DependentUpon>SimpleHtmlTextEditDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HTMLEditorControl\SimpleHtmlTextEditDialog.ru.resx">
+      <DependentUpon>SimpleHtmlTextEditDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HTMLEditorControl\TextEditorControl.resx">
+      <DependentUpon>TextEditorControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HTMLEditorControl\TextEditorControl.ru.resx">
+      <DependentUpon>TextEditorControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ListViewBase\BaseDialogForm.resx">
       <DependentUpon>BaseDialogForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -603,6 +702,102 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Images\save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\if_html_5415.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolbarBold.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolbarCopy.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolBarCut.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolbarDelete.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolbarFileOpen.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolbarFileSave.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolbarFind.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolbarFontColor.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolbarFontDown.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolbarFontNormal.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolbarFontStyle.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolbarFontUp.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolbarImage.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolbarItalic.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolbarJustifyCenter.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolbarJustifyLeft.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolbarJustifyRight.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolbarLine.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolbarListOrdered.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolbarListUnordered.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolbarPaste.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolbarPrint.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolbarProperties.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolbarRedo.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolbarTabInsert.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolbarTable.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolbarTabRemove.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolbarUnderline.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolbarUndo.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ToolbarWebLink.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\if_files-folders-18_808637.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

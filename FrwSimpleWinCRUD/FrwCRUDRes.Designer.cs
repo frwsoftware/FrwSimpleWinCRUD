@@ -1080,6 +1080,26 @@ namespace FrwSoftware {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Press &apos;Yes&apos; to convert html text to plain text and edit it with plain text editor (all HTML formating will be lost) or press &apos;No&apos; to still edit html text.
+        /// </summary>
+        public static string Press__Yes__to_convert_html_text_to_plain_text_and_edit_it_with_plain_text_editor__all_HTML_formating_will_be_lost__or_press__No__to_still_edit_html_text {
+            get {
+                return ResourceManager.GetString("Press__Yes__to_convert_html_text_to_plain_text_and_edit_it_with_plain_text_editor" +
+                        "__all_HTML_formating_will_be_lost__or_press__No__to_still_edit_html_text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Press &apos;Yes&apos; to convert plain text to html and edit it with html editor or press &apos;No&apos; to still edit plain text.
+        /// </summary>
+        public static string Press__Yes__to_convert_plain_text_to_html_and_edit_it_with_html_editor_or_press__No__to_still_edit_plain_text {
+            get {
+                return ResourceManager.GetString("Press__Yes__to_convert_plain_text_to_html_and_edit_it_with_html_editor_or_press__" +
+                        "No__to_still_edit_plain_text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Record can not be empty.
         /// </summary>
         public static string Record_Can_Not_Be_Empty {

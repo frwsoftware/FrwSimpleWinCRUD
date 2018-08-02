@@ -572,11 +572,17 @@ namespace FrwSoftware
                         b.Click += (s1, e1) =>
                         {
                             bool complated = false;
-                            object newValue = AppManager.Instance.ProcessEditCustomPropertyValueAndSave(rowObject, column.AspectName, out complated, this);
+                            e.NewValue = AppManager.Instance.ProcessEditCustomPropertyValueAndSave(rowObject, column.AspectName, out complated, this);
                             if (complated)
                             {
                                 RefreshObject(rowObject);
-                                b.Text = newValue as string;
+                                b.Text = e.NewValue as string;
+                            }
+                            else
+                            {
+                                RefreshObject(rowObject);
+                                //it is necessary to use even if not complated
+                                b.Text = e.NewValue as string;
                             }
                             b.Dispose();
                         };

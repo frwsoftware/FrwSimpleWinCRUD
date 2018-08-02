@@ -728,7 +728,11 @@ namespace FrwSoftware
             {
                 object newValue = EditCustomPropertyValue(rowObject, aspectName, out complated, owner);
                 Dm.Instance.SaveObject(rowObject);
-                return newValue;
+                if (complated)
+                {
+                    return newValue;
+                }
+                else return oldValue;
             }
             catch (JValidationException ex)
             {
@@ -1118,7 +1122,8 @@ namespace FrwSoftware
             else if (AttrHelper.GetAttribute<JText>(sourceObjectType, aspectName) != null)
             {
                 string s = AttrHelper.GetPropertyValue(rowObject, aspectName) as string;
-                SimpleTextEditDialog dialog = new SimpleTextEditDialog();
+                //SimpleTextEditDialog dialog = new SimpleTextEditDialog();
+                SimpleHtmlTextEditDialog dialog = new SimpleHtmlTextEditDialog();
                 dialog.EditedText = s;
                 DialogResult res = dialog.ShowDialog(owner);
                 if (res == DialogResult.OK)
