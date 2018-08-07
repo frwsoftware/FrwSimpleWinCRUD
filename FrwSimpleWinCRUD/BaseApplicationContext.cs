@@ -98,9 +98,14 @@ namespace FrwSoftware
             notificationTimer.Enabled = true;
             Log.EventLogEvent += Log_EventLogEvent;
             AppManager.Instance.NotificationEvent += Instance_NotificationEvent;
+            AppManager.Instance.RequestForExitEvent += Instance_RequestForExitEvent;
 
         }
 
+        private void Instance_RequestForExitEvent(object sender, EventArgs e)
+        {
+            ExitApplication();
+        }
 
         private void Instance_NotificationEvent(object sender, NotificationEventArgs e)
         {
@@ -162,10 +167,7 @@ namespace FrwSoftware
             {
                 try
                 {
-                    long tstart = DateTime.Now.Ticks;
-                    ExitThread();
-                    long tend = DateTime.Now.Ticks;
-                    Log.ProcessDebug("Application tread anded whith time:  " + (tend - tstart) / 10000 + " ms. ");
+                    ExitApplication();
                 }
                 catch (Exception ex)
                 {
@@ -174,7 +176,13 @@ namespace FrwSoftware
             };
             notifyIcon.ContextMenuStrip.Items.Add(menuItem);
         }
-        
+        private void ExitApplication()
+        {
+            long tstart = DateTime.Now.Ticks;
+            ExitThread();
+            long tend = DateTime.Now.Ticks;
+            Log.ProcessDebug("Application tread ended whith time:  " + (tend - tstart) / 10000 + " ms. ");
+        }
 
         private void CreateOrShowDetailsForm(bool visible)
         {

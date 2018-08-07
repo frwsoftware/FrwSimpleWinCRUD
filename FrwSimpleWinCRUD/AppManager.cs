@@ -29,6 +29,7 @@ namespace FrwSoftware
         public string Message { get; set; }
     }
     public delegate void NotificationEventHandler(object sender, NotificationEventArgs e);
+    public delegate void RequestForExitEventHandler(object sender, EventArgs e);
 
     public class DocContentRegistredEventArgs : EventArgs
     {
@@ -43,6 +44,7 @@ namespace FrwSoftware
 
     public class AppManager
     {
+        public event RequestForExitEventHandler RequestForExitEvent;
         public event NotificationEventHandler NotificationEvent;
 
         public AppManager()
@@ -1205,6 +1207,13 @@ namespace FrwSoftware
             if (NotificationEvent != null)
             {
                 NotificationEvent(null, e);
+            }
+        }
+        public void ExitApplication()
+        {
+            if (RequestForExitEvent != null)
+            {
+                RequestForExitEvent(null, new EventArgs());
             }
         }
         virtual public List<ToolStripItem> CreateOpenInBrowserContextMenu(WebEntryInfo webEntryInfo, IContentContainer contentContainer, object selectedObject, string webEntityInfoPropertyName = null)

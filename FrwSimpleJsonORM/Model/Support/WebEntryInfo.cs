@@ -77,6 +77,8 @@ namespace FrwSoftware
 
     public class WebEntryInfo
     {
+  
+
         public WebEntryInfo()
         {
             RecоmmendedViewType = ViewType.NONE;

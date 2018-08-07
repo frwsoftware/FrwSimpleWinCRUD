@@ -654,6 +654,20 @@ namespace FrwSoftware
                     }
                 };
                 menuItemFile.DropDownItems.Add(menuItem);
+
+                menuItem = new ToolStripMenuItem(FrwCRUDRes.CloseApplication);
+                menuItem.Click += (s, em) =>
+                {
+                    try
+                    {
+                        AppManager.Instance.ExitApplication();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.ShowError(ex);
+                    }
+                };
+                menuItemFile.DropDownItems.Add(menuItem);
             }
             else
             {
