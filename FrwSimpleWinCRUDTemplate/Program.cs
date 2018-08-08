@@ -49,7 +49,7 @@ namespace FrwSoftware
                     log = Log.GetLogger();
                     MainAppUtils.InitAppPaths();
                     AppManager.Instance.MainAppFormType = typeof(FrwTemplateMainForm);
-                    form = AppManager.Instance.LoadDocPanelContainersState();
+                    form = AppManager.Instance.LoadDocPanelContainersState(true);
                     form.FormClosing += Form_FormClosing;
                     form.FormClosed += Form_FormClosed;
 
@@ -80,8 +80,7 @@ namespace FrwSoftware
         }
         private static void Form_FormClosing(object sender, FormClosingEventArgs e)
         {
-            AppManager.Instance.SaveDocPanelContainersState();
-            AppManager.Instance.CloseAllDocPanelContainers((Form)sender);
+            AppManager.Instance.SaveAndClose((Form)sender);
         }
 
         private static void Form_FormClosed(object sender, FormClosedEventArgs e)
