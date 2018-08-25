@@ -609,9 +609,17 @@ namespace FrwSoftware
             groupItem.DropDownItems.Add(menuItem);
 
             menuItem = new ToolStripMenuItem(FrwCRUDRes.UpdateCurrentConfiguration);
+            menuItem.Name = "UpdateCurrentConfiguration";
+            menuItem.Enabled = (AppManager.Instance.CurrentLayout != null);
             menuItem.Click += (s, em) =>
             {
                 AppManager.Instance.SaveLayout(AppManager.Instance.CurrentLayout);
+            };
+
+            groupItem.DropDownOpening += (s, em) =>
+            {
+                var mc = groupItem.DropDownItems["UpdateCurrentConfiguration"];
+                if (mc != null) mc.Enabled = (AppManager.Instance.CurrentLayout != null);
             };
             groupItem.DropDownItems.Add(menuItem);
             CreateMainMenuItemForEntityType(groupItem, typeof(JDocPanelLayout));
