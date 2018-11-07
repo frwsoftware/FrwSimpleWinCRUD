@@ -13,38 +13,21 @@
  **********************************************************************************/
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace FrwSoftware
 {
-    public partial class SimpleHtmlTextEditDialog : BaseDialogForm
+    public class JHelp
     {
-        public string EditedText
+        [JNameProperty]
+        public string Path { get; set; }
+
+        static public JHelp MakeFromJAttachment(JAttachment attachment, object sourceObject)
         {
-            get {
-               return this.textEditorControl.EditedText;
-            }
-            set
-            {
-               this.textEditorControl.EditedText = value;
-            }
+            return new JHelp() { Path = Dm.Instance.GetRealPath(attachment.Path, sourceObject)};
         }
 
-        public SimpleHtmlTextEditDialog()
-        {
-            InitializeComponent();
-            
-        }
-
-        private void okButton_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

@@ -26,7 +26,7 @@ namespace FrwSoftware
     {
         static private readonly List<Process> runningProcessesList = new List<Process>();
 
-        public static void OpenFile(string fileName)
+        public static void OpenFile(string fileName, string arguments = null)
         {
             Process prc = null;
 
@@ -39,7 +39,8 @@ namespace FrwSoftware
                         UseShellExecute = true,//When you use the operating system shell to start processes, you can start any document (which is any registered file type associated with an executable that has a default open action) and perform operations on the file, such as printing, by using the Process object. When UseShellExecute is false, you can start only executables by using the Process object.
                         RedirectStandardOutput = false,
                         //Verb = "open",  //The action to take with the file that the process opens. The default is an empty string (""), which signifies no action. Examples of verbs are "Edit", "Open", "OpenAsReadOnly", "Print", and "Printto".
-                        FileName = fileName
+                        FileName = fileName,
+                        Arguments = arguments
                     }
                 };
                 prc.Start();

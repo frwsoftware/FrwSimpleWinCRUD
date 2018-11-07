@@ -29,8 +29,8 @@ namespace FrwSoftware
 {
     public partial class SimpleAttachmentsDialog : BaseDialogForm
     {
-        public string CommonStoragePath { get; set;}
-        public string StoragePrefixPath { get; set; }
+
+        public object SourceObject { get; set; }
 
         private List<JAttachment> sourceObjects;
         public List<JAttachment> SourceObjects {
@@ -76,7 +76,7 @@ namespace FrwSoftware
                if (e.Column.Text == FrwCRUDRes.SimpleAttachmentsDialog_Path)
                {
                    JAttachment item = (JAttachment)e.Model;
-                   string path = GetRealPath(item.Path);
+                   string path = Dm.Instance.GetRealPath(item.Path, SourceObject);
                    FileSystemInfo x = GetFileSystemInfo(path);
                    if (x != null)
                    {
@@ -101,7 +101,7 @@ namespace FrwSoftware
                 if (item.Path != null && item.Path.StartsWith(Dm.STORAGE_PREFIX))
                 {
 
-                    string path = GetRealPath(item.Path);
+                    string path = Dm.Instance.GetRealPath(item.Path, SourceObject); 
                     FileSystemInfo x = GetFileSystemInfo(path);
                     if (x == null) return null;
                     return x.Name;
@@ -116,7 +116,7 @@ namespace FrwSoftware
                 try
                 {
                     JAttachment item = (JAttachment)x;
-                    string path = GetRealPath(item.Path);
+                    string path = Dm.Instance.GetRealPath(item.Path, SourceObject);
                     FileSystemInfo fi = GetFileSystemInfo(path);
                     if (fi == null) return null;
                     return helper.GetImageIndex((fi).FullName);
@@ -137,7 +137,7 @@ namespace FrwSoftware
             column.Width = 80;
             column.AspectGetter = delegate (object xx) {
                 JAttachment item = (JAttachment)xx;
-                string path = GetRealPath(item.Path);
+                string path = Dm.Instance.GetRealPath(item.Path, SourceObject);
                 FileSystemInfo x = GetFileSystemInfo(path);
                 if (x == null) return null;
 
@@ -169,7 +169,7 @@ namespace FrwSoftware
             column.Width = 130;
             column.AspectGetter = delegate (object xx) {
                 JAttachment item = (JAttachment)xx;
-                string path = GetRealPath(item.Path);
+                string path = Dm.Instance.GetRealPath(item.Path, SourceObject);
                 FileSystemInfo x = GetFileSystemInfo(path);
                 if (x == null) return null;
                 return x.CreationTime;
@@ -183,7 +183,7 @@ namespace FrwSoftware
             column.Width = 130;
             column.AspectGetter = delegate (object xx) {
                 JAttachment item = (JAttachment)xx;
-                string path = GetRealPath(item.Path);
+                string path = Dm.Instance.GetRealPath(item.Path, SourceObject);
                 FileSystemInfo x = GetFileSystemInfo(path);
                 if (x == null) return null;
                 return x.LastWriteTime;
@@ -197,7 +197,7 @@ namespace FrwSoftware
             column.Width = 130;
             column.AspectGetter = delegate (object xx) {
                 JAttachment item = (JAttachment)xx;
-                string path = GetRealPath(item.Path);
+                string path = Dm.Instance.GetRealPath(item.Path, SourceObject);
                 FileSystemInfo x = GetFileSystemInfo(path);
                 if (x == null) return null;
 
@@ -213,7 +213,7 @@ namespace FrwSoftware
             JAttachment item = (JAttachment)e.Model;
             if (item.Path != null && item.Path.StartsWith(Dm.STORAGE_PREFIX))
             {
-                string path = GetRealPath(item.Path);
+                string path = Dm.Instance.GetRealPath(item.Path, SourceObject);
                 FileSystemInfo x = GetFileSystemInfo(path);
                 if (x != null)
                 {
@@ -300,7 +300,7 @@ namespace FrwSoftware
                     foreach (var f in dlg.FileNames)
                     {
                         //copy file 
-                        string objectStorageDir = Path.Combine(CommonStoragePath, StoragePrefixPath);
+                        string objectStorageDir = Dm.Instance.GetStorageFullPathForObject(SourceObject);
                         string fileName = (new FileInfo(f)).Name;
                         string random = DataUtils.genKey(null);
                         string newDiskDir = Path.Combine(objectStorageDir, random);
@@ -424,15 +424,7 @@ namespace FrwSoftware
             openFileOrFolder(true);
         }
 
-        private string GetRealPath(string path)
-        {
-            if (path != null && path.StartsWith(Dm.STORAGE_PREFIX))
-            {
-                path = path.Substring(Dm.STORAGE_PREFIX.Length);
-                path = Path.Combine(Path.Combine(CommonStoragePath, StoragePrefixPath), path);
-            }
-            return path;
-        }
+  
 
         private void openFileOrFolder(bool openAsFolder)
         {
@@ -444,7 +436,7 @@ namespace FrwSoftware
                 {
                     JAttachment selectedObject = null;
                     if (listView.SelectedIndex > -1) selectedObject = listView.GetItem(listView.SelectedIndex).RowObject as JAttachment;
-                    string path = GetRealPath(selectedObject.Path);
+                    string path = Dm.Instance.GetRealPath(selectedObject.Path, SourceObject);
                     if (openAsFolder)
                     {
                         if (Directory.Exists(path) == false)

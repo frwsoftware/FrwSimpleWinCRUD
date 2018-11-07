@@ -166,7 +166,7 @@ namespace FrwSoftware
             //listView.VirtualMode = true; Should not be set for normal lists (this field is only for the Fast list and it is set internally.) When using the wizard, it is necessary to monitor whether it was installed.)
             if (isTreeList) listView = new TreeListView();
             else listView = new ObjectListView();
-           
+
             listView.Cursor = Cursors.Default;
             listView.Dock = DockStyle.Fill;
             listView.Name = "listView";
@@ -179,11 +179,11 @@ namespace FrwSoftware
             listView.IsSimpleDragSource = true;// drag drop
             listView.IsSimpleDropSink = true;//drag drop
             listView.UseCompatibleStateImageBehavior = false;
-            listView.View = View.Details; 
+            listView.View = View.Details;
 
             listView.UseFiltering = true;//can filter 
             listView.UseFilterIndicator = true;
-            listView.AllowColumnReorder = true; 
+            listView.AllowColumnReorder = true;
             listView.TriStateCheckBoxes = false;//todo If you want the user to be able to give check boxes the Indeterminate value, you should set the ObjectListView.TriStateCheckBoxes property to true.
             listView.TintSortColumn = true;//If you set TintSortColumn property to true, the sort column will be automatically tinted. The color of the tinting is controlled by the SelectedColumnTint property.
             listView.ShowItemToolTips = true;
@@ -280,7 +280,7 @@ namespace FrwSoftware
             {
                 Console.WriteLine(SourceObjectType.Name + " ModelDropped " + e.TargetModel);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.ShowError(ex);
             }
@@ -333,9 +333,9 @@ namespace FrwSoftware
             {
                 Console.WriteLine(SourceObjectType.Name + " Dropped " + e.DataObject);
                 bool cut = (e.Effect == DragDropEffects.Move);
-                bool res = PasteSelectedObjectsFromIDataObject(e.DropTargetItem != null ? e.DropTargetItem.RowObject: null, e.DataObject as IDataObject, cut);
+                bool res = PasteSelectedObjectsFromIDataObject(e.DropTargetItem != null ? e.DropTargetItem.RowObject : null, e.DataObject as IDataObject, cut);
                 if (res) MessageBox.Show(FrwCRUDRes.Drag_Record_Successfully + (cut ? FrwCRUDRes.Drage_Moved : FrwCRUDRes.Drag_Copied));
-             }
+            }
             catch (Exception ex)
             {
                 Log.ShowError(ex);
@@ -440,7 +440,10 @@ namespace FrwSoftware
                     {
                         Image smallImage = null;
                         if (AttrHelper.GetAttribute<JText>(sourceObjectType, column.AspectName) != null)
-                            smallImage = (Image)Properties.Resources.book_open;
+                        {
+                            if (string.IsNullOrEmpty(v as string) == false)
+                                smallImage = (Image)Properties.Resources.book_open;
+                        }
                         else if (pType == typeof(JAttachment) || AttrHelper.IsGenericListTypeOf(pType, typeof(JAttachment)))
                             smallImage = (Image)Properties.Resources.attachment;
                         return smallImage;
@@ -553,7 +556,7 @@ namespace FrwSoftware
                 object rowObject = e.RowObject;
                 //object value = e.Value;
                 JReadOnly readOnlyAttr = AttrHelper.GetAttribute<JReadOnly>(SourceObjectType, column.AspectName);
-                if (readOnlyAttr != null )
+                if (readOnlyAttr != null)
                 {
                     DialogResult res = MessageBox.Show(null, FrwCRUDRes.This_field_is_readonly,
                                      FrwCRUDRes.WARNING, MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -562,43 +565,44 @@ namespace FrwSoftware
                 }
                 if (AppManager.Instance.IsCustomEditProperty(SourceObjectType, column.AspectName))
                 {
-                    if (AttrHelper.GetAttribute<JText>(SourceObjectType, column.AspectName) != null)
-                    {
-                        // it is necessary to use a complex scheme, otherwise it cycles through the MouseUp event
-                        Button b = new Button();
-                        b.Image = Properties.Resources.book_open;
-                        b.Bounds = e.CellBounds;
-                        b.Font = ((ObjectListView)sender).Font;
-                        b.Click += (s1, e1) =>
+                    /* This code was needed to provide a call for heavy dialogue (HTML editing) from a list cell. So far, we manage without him.
+                        if (AttrHelper.GetAttribute<JText>(SourceObjectType, column.AspectName) != null)
                         {
-                            bool complated = false;
-                            e.NewValue = AppManager.Instance.ProcessEditCustomPropertyValueAndSave(rowObject, column.AspectName, out complated, this);
-                            if (complated)
+                            // it is necessary to use a complex scheme, otherwise it cycles through the MouseUp event
+                            Button b = new Button();
+                            b.Image = Properties.Resources.book_open;
+                            b.Bounds = e.CellBounds;
+                            b.Font = ((ObjectListView)sender).Font;
+                            b.Click += (s1, e1) =>
                             {
-                                RefreshObject(rowObject);
-                                b.Text = e.NewValue as string;
-                            }
-                            else
-                            {
-                                RefreshObject(rowObject);
-                                //it is necessary to use even if not complated
-                                b.Text = e.NewValue as string;
-                            }
-                            b.Dispose();
-                        };
-                        e.Control = b;
-                        e.Cancel = false;
-                    }
-                    else
-                    {
-                        bool complated = false;
-                        e.NewValue = AppManager.Instance.ProcessEditCustomPropertyValueAndSave(rowObject, column.AspectName, out complated, this);
-                        if (complated)
-                        {
-                            RefreshObject(rowObject);
+                                bool complated = false;
+                                e.NewValue = AppManager.Instance.ProcessEditCustomPropertyValueAndSave(rowObject, column.AspectName, out complated, this);
+                                if (complated)
+                                {
+                                    RefreshObject(rowObject);
+                                    b.Text = e.NewValue as string;
+                                }
+                                else
+                                {
+                                    RefreshObject(rowObject);
+                                    //it is necessary to use even if not complated
+                                    b.Text = e.NewValue as string;
+                                }
+                                b.Dispose();
+                            };
+                            e.Control = b;
+                            e.Cancel = false;
                         }
-                        e.Cancel = true;
+                        else
+                        {*/
+                    bool complated = false;
+                    e.NewValue = AppManager.Instance.ProcessEditCustomPropertyValueAndSave(rowObject, column.AspectName, out complated, this);
+                    if (complated)
+                    {
+                        RefreshObject(rowObject);
                     }
+                    e.Cancel = true;
+                    //}
                 }
                 else e.Cancel = false;
 
@@ -613,12 +617,14 @@ namespace FrwSoftware
         {
             OLVColumn column = e.Column;
             object rowObject = e.RowObject;
+            /*
             if (AttrHelper.GetAttribute<JText>(SourceObjectType, column.AspectName) != null)
             {
                 e.Cancel = true;
                 RefreshObject(rowObject);
                 //((ObjectListView)sender).RefreshItem(e.ListViewItem);
             }
+            */
             try
             {
                 Dm.Instance.SaveObject(e.RowObject);
@@ -844,7 +850,7 @@ namespace FrwSoftware
                 OLVListSettingDialog sett = new OLVListSettingDialog(listView, this);
                 sett.Show();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.ShowError(ex);
             }
@@ -962,48 +968,48 @@ namespace FrwSoftware
                         menuItemList.Add(menuItem);
                         menuItemList.Add(new ToolStripSeparator());
                         */
-                        /* todo
-                        if (AppManager.Instance.IsCustomEditProperty(SourceObjectType, aspectName))
-                        {
-                            object rowObject = e.Model;
-                            object v = AttrHelper.GetPropertyValue(rowObject, aspectName);
-                            if (v != null) {
-                                menuItem = new ToolStripMenuItem();
-                                menuItem.Text = FrwCRUDRes.List_View_Field;
-                                menuItem.Click += (s, em) =>
+                    /* todo
+                    if (AppManager.Instance.IsCustomEditProperty(SourceObjectType, aspectName))
+                    {
+                        object rowObject = e.Model;
+                        object v = AttrHelper.GetPropertyValue(rowObject, aspectName);
+                        if (v != null) {
+                            menuItem = new ToolStripMenuItem();
+                            menuItem.Text = FrwCRUDRes.List_View_Field;
+                            menuItem.Click += (s, em) =>
+                            {
+                                try
                                 {
-                                    try
+                                    Dm.Instance.ResolveRelation(rowObject, aspectName);
+                                    //IList rvs = (IList)AttrHelper.GetPropertyValue(rowObject, aspectName);
+                                    if (rvs != null && rvs.Count > 0)
                                     {
-                                        Dm.Instance.ResolveRelation(rowObject, aspectName);
-                                        //IList rvs = (IList)AttrHelper.GetPropertyValue(rowObject, aspectName);
-                                        if (rvs != null && rvs.Count > 0)
+                                        IPropertyProcessor propertyControl = null;
+                                        if (propertyDialog == null)
                                         {
-                                            IPropertyProcessor propertyControl = null;
-                                            if (propertyDialog == null)
-                                            {
-                                                propertyControl = (IPropertyProcessor)AppManager.Instance.CreateNewContentInstance(typeof(IPropertyProcessor), rvs[0].GetType(), null);
-                                                propertyDialog = new SimplePropertyDialog(propertyControl);
-                                            }
-                                            else propertyControl = propertyDialog.PropertyWindow;
-                                            propertyControl.ViewMode = ViewMode.View;
-                                            propertyControl.SourceObject = rvs[0];
-                                            propertyControl.ProcessView();
-                                            DialogResult res = propertyDialog.ShowDialog();
+                                            propertyControl = (IPropertyProcessor)AppManager.Instance.CreateNewContentInstance(typeof(IPropertyProcessor), rvs[0].GetType(), null);
+                                            propertyDialog = new SimplePropertyDialog(propertyControl);
                                         }
-                                        else
-                                        {
-                                            MessageBox.Show(FrwCRUDRes.Object_For_View_Not_Found);
-                                        }
+                                        else propertyControl = propertyDialog.PropertyWindow;
+                                        propertyControl.ViewMode = ViewMode.View;
+                                        propertyControl.SourceObject = rvs[0];
+                                        propertyControl.ProcessView();
+                                        DialogResult res = propertyDialog.ShowDialog();
                                     }
-                                    catch (Exception ex)
+                                    else
                                     {
-                                        Log.showError(ex);
+                                        MessageBox.Show(FrwCRUDRes.Object_For_View_Not_Found);
                                     }
-                                };
-                                menuItemList.Add(menuItem);
-                            }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Log.showError(ex);
+                                }
+                            };
+                            menuItemList.Add(menuItem);
                         }
-                        */
+                    }
+                    */
                     //}
                 }
                 MakeContextMenu(menuItemList, e.Item, selectedObject, aspectName);

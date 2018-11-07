@@ -149,10 +149,10 @@ namespace FrwSoftware
             this.saveDatabaseButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.saveDatabaseButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.saveDatabaseButton.Name = "saveDatabaseButton";
+            this.saveDatabaseButton.Image = Properties.Resources.save;
             this.saveDatabaseButton.Size = new System.Drawing.Size(23, 24);
             this.saveDatabaseButton.Text = FrwCRUDRes.Save_all_entities_data;
             this.saveDatabaseButton.Click += new System.EventHandler(this.saveDatabaseButton_Click);
-            //this.saveDatabaseButton.Image = Properties.Resources.download;
             // 
             // statusBar
             // 

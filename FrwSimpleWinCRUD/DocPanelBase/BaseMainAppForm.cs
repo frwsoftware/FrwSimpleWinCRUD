@@ -792,6 +792,24 @@ namespace FrwSoftware
                 }
             };
             menuItemView.DropDownItems.Add(menuItem);
+            menuItemView.DropDownItems.Add(menuItem);
+
+            menuItem = new ToolStripMenuItem(FrwCRUDRes.Window_Center_75);
+            menuItem.Click += (s, em) =>
+            {
+                try
+                {
+                    var form = this;
+                    form.WindowState = FormWindowState.Normal;
+                    form.Size = new Size((int)((double)Screen.PrimaryScreen.Bounds.Size.Width * 0.75), (int)((double)Screen.PrimaryScreen.Bounds.Size.Height * 0.75));
+                    form.Location = new Point((Screen.PrimaryScreen.Bounds.Size.Width / 2) - (form.Size.Width / 2), (Screen.PrimaryScreen.Bounds.Size.Height / 2) - (form.Size.Height / 2));
+                }
+                catch (Exception ex)
+                {
+                    Log.ShowError(ex);
+                }
+            };
+            menuItemView.DropDownItems.Add(menuItem);
         }
         #region saverestorestate
 

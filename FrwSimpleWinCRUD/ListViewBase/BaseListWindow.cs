@@ -792,7 +792,7 @@ namespace FrwSoftware
             }
         }
 
-   
+
 
 
         virtual protected void MakeContextMenu(List<ToolStripItem> menuItemList, object selectedListItem, object selectedObject, string aspectName)
@@ -922,24 +922,27 @@ namespace FrwSoftware
                     menuItemList.Add(menuItem);
                 }
 
-                menuItem = new ToolStripMenuItem();
-                menuItem.Text = FrwCRUDRes.List_Remove_All_Records;
-                menuItem.Image = Properties.Resources.AllPics_07;
-                menuItem.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
-                menuItem.ImageScaling = ToolStripItemImageScaling.None;
-                menuItem.Enabled = rights.CanDeleteAll;
-                menuItem.Click += (s, em) =>
+                if (SourceObjectType != null)//no in tree
                 {
-                    try
+                    menuItem = new ToolStripMenuItem();
+                    menuItem.Text = FrwCRUDRes.List_Remove_All_Records;
+                    menuItem.Image = Properties.Resources.AllPics_07;
+                    menuItem.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
+                    menuItem.ImageScaling = ToolStripItemImageScaling.None;
+                    menuItem.Enabled = rights.CanDeleteAll;
+                    menuItem.Click += (s, em) =>
                     {
-                        DeleteAllObjects();
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.ShowError(ex);
-                    }
-                };
-                menuItemList.Add(menuItem);
+                        try
+                        {
+                            DeleteAllObjects();
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.ShowError(ex);
+                        }
+                    };
+                    menuItemList.Add(menuItem);
+                }
 
                 menuItemList.Add(new ToolStripSeparator());
 
@@ -953,7 +956,7 @@ namespace FrwSoftware
                 {
                     try
                     {
-                        CopySelectedObjectToClipBoard( selectedForCopyPaste, false);
+                        CopySelectedObjectToClipBoard(selectedForCopyPaste, false);
                     }
                     catch (Exception ex)
                     {
@@ -1019,7 +1022,7 @@ namespace FrwSoftware
                     {
                         SimpleTextEditDialog dlg = new SimpleTextEditDialog();
                         dlg.EditedText = Dm.Instance.GetDependencyReport(selectedObject);//  JMailAccount.DependencyAnalysis(item);
-                    dlg.ShowDialog();
+                        dlg.ShowDialog();
                     };
                     menuItemList.Add(menuItem);
                 }
@@ -1042,14 +1045,59 @@ namespace FrwSoftware
                         }
                     }
                 }
+
+                PropertyInfo p = AttrHelper.GetPropertiesWithAttribute<JHelps>(selectedObject.GetType()).FirstOrDefault();
+                if (p != null && AttrHelper.IsGenericListTypeOf(p.PropertyType, typeof(JHelp)))
+                {
+                    List<JHelp> helps = AttrHelper.GetPropertyValue(selectedObject, p) as List<JHelp>;
+                    List<ToolStripItem> subMenuItems = new List<ToolStripItem>();
+                    foreach (var h in helps)
+                    {
+                        string filePath = FileUtils.FileUrlToFilePath(h.Path);
+                        JInfoHeader infoHeader = Dm.Instance.FindAll<JInfoHeader>().FirstOrDefault(c => c.Url == filePath);
+
+                        menuItem = new ToolStripMenuItem();
+                        menuItem.Text = (infoHeader != null) ? infoHeader.Name : h.Path;
+                        menuItem.Click += (s, em) =>
+                        {
+                            try
+                            {
+                                string url = h.Path;
+                                bool isFile = false;
+                                bool isUrl = false;
+                                FileUtils.IsFilePath(url, out isFile, out isUrl);
+                                string uri = isFile ? FileUtils.FilePathWithBookmarkToFileUrl(url) : url;
+
+                                if (FileUtils.IsHtmlFileWithBookmark(url) && AppLocator.ChromePath != null)
+                                    ProcessUtils.ExecuteProgram(AppLocator.ChromePath, uri);
+                                else
+                                    ProcessUtils.OpenFile(uri);
+                            }
+                            catch (Exception ex)
+                            {
+                                Log.ShowError(ex);
+                            }
+                        };
+                        subMenuItems.Add(menuItem);
+                    }
+
+                    menuItem = new ToolStripMenuItem();
+                    menuItem.Text = FrwCRUDRes.Help;
+                    menuItem.Image = Properties.Resources.help;
+                    menuItem.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
+                    menuItem.ImageScaling = ToolStripItemImageScaling.None;
+                    menuItemList.Add(menuItem);
+
+                    menuItem.DropDownItems.AddRange(subMenuItems.ToArray<ToolStripItem>());
+
+                }
                 //todo
                 //menuItemList.AddRange(AppManager.Instance.CreateGetPasswordContextMenu(newPassword =>
                 //{
-                  //  item.Password = newPassword;
+                //  item.Password = newPassword;
                 //}));
 
             }
-
         }
 
 

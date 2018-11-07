@@ -53,8 +53,17 @@ namespace FrwSoftware
         //fast
         static public bool CheckIsHtmlFull(string text)
         {
-            bool containsHTML = (text != HttpUtility.HtmlEncode(text));//System.Web
-            return containsHTML;
+
+            if (text == null) return false;
+            if (text.IndexOfAny(new char[] { '«', '»' }) > -1)// if present HttpUtility.HtmlEncode thinks that html 
+            {
+                return CheckIsHtmlAnySingleTags(text);
+            }
+            else
+            {
+                bool containsHTML = (text != HttpUtility.HtmlEncode(text));//System.Web
+                return containsHTML;
+            }
         }
         public static bool CheckIsHtmlSingleTags(string text, string tag)
         {
@@ -87,13 +96,18 @@ namespace FrwSoftware
             var text = html;
             //Decode html specific characters
             text = System.Net.WebUtility.HtmlDecode(text);
+
+
             //Remove tag whitespace/line breaks
             text = tagWhiteSpaceRegex.Replace(text, "><");
+            //frw replace <P> with NewLine
+            text = text.Replace("<p>", Environment.NewLine).Replace("<P>", Environment.NewLine).Replace("</p>", "").Replace("</P>", ""); 
             //Replace <br /> with line breaks
             text = lineBreakRegex.Replace(text, Environment.NewLine);
             //Strip formatting
             text = stripFormattingRegex.Replace(text, string.Empty);
-
+            //frw remove first NewLine
+            if (text.StartsWith(Environment.NewLine)) text = text.Substring(Environment.NewLine.Length);
             return text;
         }
 
@@ -117,6 +131,18 @@ namespace FrwSoftware
         static public IList<string> SpliteTextIntoParagraph(string text)
         {
             return text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        }
+        static public string CreateHtmlBRTextFromText(string text)
+        {
+            StringBuilder sb = new StringBuilder();
+            IList<string> strings = SpliteTextIntoParagraph(text);
+            foreach (var str in strings)
+            {
+                sb.Append(str);
+                sb.Append("<br/>");
+                sb.Append(Environment.NewLine);
+            }
+            return sb.ToString();
         }
         static public IList<HtmlNode> CreateHtmlParagraphsFromText(string text, HtmlDocument doc)
         {

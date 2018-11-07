@@ -76,10 +76,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\JCountry.cs" />
+    <Compile Include="Model\JInfoHeader.cs" />
     <Compile Include="Model\JJobType.cs" />
     <Compile Include="Model\JNotification.cs" />
     <Compile Include="Model\JRunningJob.cs" />
     <Compile Include="Model\JUserAgent.cs" />
+    <Compile Include="Model\Support\JHelp.cs" />
     <Compile Include="Model\Support\JBaseCategory.cs" />
     <Compile Include="Model\Support\WebEntryInfo.cs" />
     <Compile Include="Utils\AttrHelper.cs" />
@@ -195,6 +197,30 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Images\useraway.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\book_open.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\folder.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\file.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\html.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\html1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\header.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\header1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\catalog.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

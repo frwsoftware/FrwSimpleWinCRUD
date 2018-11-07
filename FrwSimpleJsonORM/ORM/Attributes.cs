@@ -154,6 +154,10 @@ namespace FrwSoftware
     {
     }
     [AttributeUsage(AttributeTargets.Property)]
+    public class JHelps : Attribute
+    {
+    }
+    [AttributeUsage(AttributeTargets.Property)]
     public class JText : Attribute
     {
     }

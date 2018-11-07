@@ -627,14 +627,17 @@
   <data name="This_field_is_readonly" xml:space="preserve">
     <value>This field is readonly</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="save" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Images\save.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Press__Yes__to_convert_plain_text_to_html_and_edit_it_with_html_editor_or_press__No__to_still_edit_plain_text" xml:space="preserve">
     <value>Press 'Yes' to convert plain text to html and edit it with html editor or press 'No' to still edit plain text</value>
   </data>
   <data name="Press__Yes__to_convert_html_text_to_plain_text_and_edit_it_with_plain_text_editor__all_HTML_formating_will_be_lost__or_press__No__to_still_edit_html_text" xml:space="preserve">
     <value>Press 'Yes' to convert html text to plain text and edit it with plain text editor (all HTML formating will be lost) or press 'No' to still edit html text</value>
+  </data>
+  <data name="Window_Center_75" xml:space="preserve">
+    <value>Center main window and set size 75% of screen</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="save" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Images\save.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

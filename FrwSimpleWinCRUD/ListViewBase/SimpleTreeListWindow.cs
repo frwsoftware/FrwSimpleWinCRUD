@@ -286,6 +286,19 @@ namespace FrwSoftware
               
             }
         }
+
+        protected void SetImageForNode(TreeNode node, Image image, string imageName)
+        {
+            if (treeControl.ImageList == null) treeControl.ImageList = new ImageList();
+            if (!treeControl.ImageList.Images.ContainsKey(imageName))
+            {
+                treeControl.ImageList.Images.Add(imageName, image);
+            }
+            node.ImageKey = imageName;
+            node.SelectedImageKey = imageName;
+        }
+
+
         /*
         override protected void MakeContextMenu(List<ToolStripItem> menuItemList, object selectedListItem, object selectedObject, string aspectName)
         {

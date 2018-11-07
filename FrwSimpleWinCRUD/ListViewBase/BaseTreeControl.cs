@@ -21,6 +21,30 @@ using System.Windows.Forms;
 
 namespace FrwSoftware
 {
+    public enum TreeSortEnum
+    {
+        NONE,
+        ASC,
+        DESC 
+    }
+    public class TreeComparer : IComparer<TreeNode>
+    {
+        TreeSortEnum sort = TreeSortEnum.NONE;
+        public TreeComparer(TreeSortEnum sort)
+        {
+            this.sort = sort;
+        }
+        public int Compare(TreeNode x, TreeNode y)
+        {
+            if (sort == TreeSortEnum.ASC)
+                return x.Text.CompareTo(y.Text);
+            else if (sort == TreeSortEnum.DESC)
+                return -1*x.Text.CompareTo(y.Text);
+            else 
+                return 0;
+        }
+    }
+
     public class TreeNodeSelectEventArgs : EventArgs
     {
         public object SelectedOblect { get; set; }
@@ -32,6 +56,7 @@ namespace FrwSoftware
     public delegate void TreeNodeSelectEventHandler(object sender, TreeNodeSelectEventArgs e);
    
     public delegate bool CanExpandGetterDelegate(TreeNode parentNode);
+    public delegate TreeSortEnum SortingMethodDelegate(TreeNode parentNode);
     public delegate IEnumerable ChildrenGetterDelegate(TreeNode parentNode);
     public delegate bool AfterEditTreeNodeLabelDelegate(object model, string labelText);
     public delegate void InitialCreateTreeNodeRootDelegate();
@@ -92,16 +117,28 @@ namespace FrwSoftware
             this.EndUpdate();
         }
 
+
         public void InitCreateRootNodes()
         {
             if (ChildrenGetter != null)
             {
                 IEnumerable oList = ChildrenGetter(null);
-                foreach(var o in oList)
+                List<TreeNode> nodes = new List<TreeNode>();
+                foreach (var o in oList)
                 {
                     TreeNode node = new TreeNode();
                     ComplateNode(node, o);
                     PostCreateNode(node);
+                    nodes.Add(node);
+                }
+                if (SortingMethod != null)
+                {
+                    TreeSortEnum sortingMethod = SortingMethod(null);
+                    if (sortingMethod != TreeSortEnum.NONE)
+                        nodes.Sort(new TreeComparer(sortingMethod));
+                }
+                foreach (var node in nodes)
+                {
                     Nodes.Add(node);
                 }
             }
@@ -151,6 +188,13 @@ namespace FrwSoftware
                     PostCreateNode(node);
                     nodes.Add(node);
                 }
+                if (SortingMethod != null)
+                {
+                    TreeSortEnum sortingMethod = SortingMethod(parentNode);
+                    if (sortingMethod != TreeSortEnum.NONE)
+                        nodes.Sort(new TreeComparer(sortingMethod));
+                }
+
                 foreach (var node in nodes)
                 {
                     parentNode.Nodes.Add(node);
@@ -180,6 +224,14 @@ namespace FrwSoftware
             set { canExpandGetter = value; }
         }
         private CanExpandGetterDelegate canExpandGetter;
+
+        public SortingMethodDelegate SortingMethod
+        {
+            get { return sortingMethod; }
+            set { sortingMethod = value; }
+        }
+        private SortingMethodDelegate sortingMethod;
+
 
         public AfterEditTreeNodeLabelDelegate AfterEditTreeNodeLabel
         {

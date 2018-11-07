@@ -77,7 +77,7 @@ namespace FrwSoftware
                               FrwCRUDRes.WARNING, MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                     if (res == DialogResult.Yes)
                     {
-                        this.htmlEditorControl.InnerHtml = this.simpleTextBox.Text;
+                        this.htmlEditorControl.InnerHtml = HtmlUtils.CreateHtmlBRTextFromText(this.simpleTextBox.Text);
                         this.htmlEditorControl.Visible = true;
                         this.simpleTextBox.Visible = false;
                         isHtml = true;
@@ -106,7 +106,7 @@ namespace FrwSoftware
                             this.simpleTextBox.Text = HtmlUtils.ConvertHtmlToPlainTextRegexp(this.htmlEditorControl.InnerHtml);
                             this.htmlEditorControl.Visible = false;
                             this.simpleTextBox.Visible = true;
-                            isHtml = true;
+                            isHtml = false;
                         }
                         else
                         {
@@ -118,14 +118,14 @@ namespace FrwSoftware
                         this.simpleTextBox.Text = this.htmlEditorControl.InnerHtml;
                         this.htmlEditorControl.Visible = false;
                         this.simpleTextBox.Visible = true;
-                        isHtml = true;
+                        isHtml = false;
                     }
                 }
                 else
                 {
                     this.htmlEditorControl.Visible = false;
                     this.simpleTextBox.Visible = true;
-                    isHtml = true;
+                    isHtml = false;
                 }
             }
         }

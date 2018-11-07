@@ -1614,6 +1614,15 @@ namespace FrwSoftware {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Center main window and set size 75% of screen.
+        /// </summary>
+        public static string Window_Center_75 {
+            get {
+                return ResourceManager.GetString("Window_Center_75", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Wrong operation.
         /// </summary>
         public static string Wrong_Operation {

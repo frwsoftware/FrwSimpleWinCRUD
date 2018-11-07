@@ -103,6 +103,7 @@
     <Compile Include="ApplicationConsoleWindow.Designer.cs">
       <DependentUpon>ApplicationConsoleWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="AppLocatorUtils.cs" />
     <Compile Include="BaseAboutDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -798,6 +799,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Images\if_files-folders-18_808637.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images\help.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

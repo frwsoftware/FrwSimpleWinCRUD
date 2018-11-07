@@ -46,6 +46,7 @@ namespace FrwSoftware
         public const string RunningJobStage = "RunningJobStage";
         public const string JobConcurrentType = "JobConcurrentType";
         public const string SecLevel = "SecLevel";
+        public const string InfoHeaderType = "InfoHeaderType";
     }
 
     public class SData
@@ -305,8 +306,24 @@ namespace FrwSoftware
             dict.Items.Add(new JDictItem() { Key = ((int)SecLevelEnum.Middle).ToString(), Text = FrwUtilsRes.Middle });//green
             dict.Items.Add(new JDictItem() { Key = ((int)SecLevelEnum.High).ToString(), Text = FrwUtilsRes.High });//blue
 
-        }
+            dict = new JDictionary() { Id = DictNames.InfoHeaderType };
+            dictionaries.Add(dict);
+            dict.Items.Add(new JDictItem() { Key = InfoHeaderEnum.C.ToString(), Image = Properties.Resources.catalog, Text = "Catalogue" });
+            dict.Items.Add(new JDictItem() { Key = InfoHeaderEnum.D.ToString(), Image = Properties.Resources.folder, Text = "Folder" });
+            dict.Items.Add(new JDictItem() { Key = InfoHeaderEnum.F.ToString(), Image = Properties.Resources.file, Text = "File" });
+            dict.Items.Add(new JDictItem() { Key = InfoHeaderEnum.H.ToString(), Image = Properties.Resources.header, Text = "Header" });
 
+
+        }
+        public string GetRealPath(string path, object rowObject)
+        {
+            if (path != null && path.StartsWith(Dm.STORAGE_PREFIX))
+            {
+                path = path.Substring(Dm.STORAGE_PREFIX.Length);
+                path = Path.Combine(Path.Combine(GetCommonStoragePath(), GetStoragePrefixForObject(rowObject)), path);
+            }
+            return path;
+        }
         virtual public void Destroy()
         {
             SaveAllEntitiesData(false);

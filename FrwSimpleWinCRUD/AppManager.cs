@@ -44,6 +44,15 @@ namespace FrwSoftware
 
     public class AppManager
     {
+        /*
+         * This dialogue is heavy. Therefore, when calling it from the list cell, looping occurs. 
+         * The intention is to create a dialogue in advance. 
+         * In general, it is impossible to do with a single dialog for the entire application. 
+         * But in our case, this dialogue has so far never been called up in several copies at the same time. 
+         * Therefore, in advance, we create a dialogue in this class.
+         */
+        SimpleHtmlTextEditDialog simpleHtmlTextEditDialog = new SimpleHtmlTextEditDialog();
+
         public event RequestForExitEventHandler RequestForExitEvent;
         public event NotificationEventHandler NotificationEvent;
 
@@ -678,7 +687,6 @@ namespace FrwSoftware
             else if (AttrHelper.GetAttribute<JImageName>(propInfo) != null) return true;
             else if (AttrHelper.GetAttribute<JImageRef>(propInfo) != null) return true;
             else if (pType == typeof(DateTime) || pType == typeof(DateTimeOffset) || pType == typeof(DateTime?) || pType == typeof(DateTimeOffset?)) return true;
-            //else if (pType == typeof(JTrfDetails)) return true;
             else if (AttrHelper.GetAttribute<JText>(propInfo) != null) return true;
             else if (pType == typeof(JAttachment)) return true;
             else if (AttrHelper.IsGenericListTypeOf(pType, typeof(JAttachment))) return true;
@@ -1105,8 +1113,7 @@ namespace FrwSoftware
                 }
                 SimpleAttachmentsDialog dialog = new SimpleAttachmentsDialog();
 
-                dialog.CommonStoragePath = Dm.Instance.GetCommonStoragePath();
-                dialog.StoragePrefixPath = Dm.Instance.GetStoragePrefixForObject(rowObject);
+                dialog.SourceObject = rowObject;
                 dialog.SourceObjects = attachments;//!!! after CommonStoragePath and StoragePrefixPath
                                                    //dialog.EditedText = s;
                 DialogResult res = dialog.ShowDialog(owner);
@@ -1125,16 +1132,15 @@ namespace FrwSoftware
             {
                 string s = AttrHelper.GetPropertyValue(rowObject, aspectName) as string;
                 //SimpleTextEditDialog dialog = new SimpleTextEditDialog();
-                SimpleHtmlTextEditDialog dialog = new SimpleHtmlTextEditDialog();
-                dialog.EditedText = s;
-                DialogResult res = dialog.ShowDialog(owner);
+                simpleHtmlTextEditDialog.EditedText = s;
+                DialogResult res = simpleHtmlTextEditDialog.ShowDialog(owner);
                 if (res == DialogResult.OK)
                 {
                     if (readOnlyAttr != null) MessageBox.Show(null, FrwCRUDRes.This_field_is_readonly,
                                          FrwCRUDRes.WARNING, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     else
                     {
-                        s = dialog.EditedText;
+                        s = simpleHtmlTextEditDialog.EditedText;
                         AttrHelper.SetPropertyValue(rowObject, aspectName, s);
                         complated = true;
                     }
