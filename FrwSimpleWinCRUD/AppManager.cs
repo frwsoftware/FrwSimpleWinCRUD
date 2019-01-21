@@ -164,13 +164,8 @@ namespace FrwSoftware
         virtual protected IListProcessor GetListWindowForType(Type type)
         {
             BaseListWindow w = null;
-            if (type == typeof(JJobType)) w = new JJobTypeListWindow();
-            else if (type == typeof(JRunningJob)) w = new JRunningJobListWindow();
-            else
-            {
-                w = new SimpleListWindow();
-                w.SourceObjectType = type;
-            }
+            w = new SimpleListWindow();
+            w.SourceObjectType = type;
             return w;
         }
         // the main function of creating a property form object 
@@ -181,6 +176,35 @@ namespace FrwSoftware
             w.SourceObjectType = type;
             return w;
         }
+
+        virtual public void MakeContextMenuBlock(Type type, List<ToolStripItem> menuItemList, object selectedObject, IContentContainer container)
+        {
+            if (selectedObject is JDocPanelLayout)//to base
+            {
+                JDocPanelLayout item = selectedObject as JDocPanelLayout;
+                JDocPanelLayoutUtils.MakeContextMenuBlock(menuItemList, item, container);
+            }
+            else if (selectedObject is JJobType)
+            {
+                menuItemList.Add(new ToolStripSeparator());
+                JJobType job = (JJobType)selectedObject;
+                if (job != null)
+                {
+                    JobManager.MakeContextMenuForRunningJobBatch(job, menuItemList, container);
+                }
+            }
+            else if (selectedObject is JRunningJob)
+            {
+                menuItemList.Add(new ToolStripSeparator());
+                JRunningJob job = (JRunningJob)selectedObject;
+                if (job != null)
+                {
+                    JobManager.MakeContextMenuForRunningJob(job, menuItemList, container);
+                }
+            }
+        }
+
+
         // is called after the window is created
         // Used to set custom event links between windows
         virtual protected void PostCreateContent(IContentContainer docPanelContainer, IContent c)
@@ -690,7 +714,7 @@ namespace FrwSoftware
             else if (AttrHelper.GetAttribute<JText>(propInfo) != null) return true;
             else if (pType == typeof(JAttachment)) return true;
             else if (AttrHelper.IsGenericListTypeOf(pType, typeof(JAttachment))) return true;
-            else if (AttrHelper.IsSameOrSubclass(typeof(IList), pType)) return true;//must be last check 
+            else if (AttrHelper.IsGenericList(pType)) return true;// AttrHelper.IsSameOrSubclass(typeof(IList), pType))//must be last check 
 
             else return false;
 
@@ -1187,6 +1211,27 @@ namespace FrwSoftware
                         complated = true;
                     }
                 }//cancel
+            }
+            else if (AttrHelper.IsGenericList(pType))// AttrHelper.IsSameOrSubclass(typeof(IList), pType))//must be last check 
+            {
+                //todo make clone 
+                Type argType = AttrHelper.GetGenericListArgType(pType);
+                IList s = AttrHelper.GetPropertyValue(rowObject, p) as IList;
+                SimpleGenericListFieldItemListDialog dialog = new SimpleGenericListFieldItemListDialog(argType);
+                dialog.SourceObjects = s;
+                //dialog.SourceObjects = attachments;//!!! after CommonStoragePath and StoragePrefixPath
+                                                   //dialog.EditedText = s;
+                DialogResult res = dialog.ShowDialog(owner);
+                if (res == DialogResult.OK)
+                {
+                    if (readOnlyAttr != null) MessageBox.Show(null, FrwCRUDRes.This_field_is_readonly,
+                                         FrwCRUDRes.WARNING, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    else
+                    {
+                        AttrHelper.SetPropertyValue(rowObject, aspectName, dialog.SourceObjects);
+                        complated = true;
+                    }
+                }
             }
 
             object newStrValue = null;

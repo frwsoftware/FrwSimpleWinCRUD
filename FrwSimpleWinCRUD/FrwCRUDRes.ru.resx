@@ -636,4 +636,7 @@
   <data name="Window_Center_75" xml:space="preserve">
     <value>Центрировать главное окно и установить размер 75%</value>
   </data>
+  <data name="List_CloneRecord" xml:space="preserve">
+    <value>Клонировать запись</value>
+  </data>
 </root>

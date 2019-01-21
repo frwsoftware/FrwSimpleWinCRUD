@@ -130,6 +130,16 @@ namespace FrwSoftware
                 if (selectedNode.IsExpanded == false) selectedNode.Expand();
             }
         }
+        override protected void CloneObject(object selectedListItem, object selectedObject,  IDictionary<string, object> extraParams)
+        {
+            object newObject = CloneObjectLocal(selectedObject,  extraParams);
+            if (newObject != null)
+            {
+                TreeNode selectedNode = selectedListItem as TreeNode;
+                TreeNode node = AddNodeTo(selectedNode, newObject);
+                if (selectedNode.IsExpanded == false) selectedNode.Expand();
+            }
+        }
 
         protected TreeNode AddNodeTo(TreeNode parent, object tagObject)
         {

@@ -152,6 +152,17 @@ namespace FrwSoftware
                 return listView.SelectedObjects;
             }
         }
+        override public IEnumerable Objects
+        {
+            get
+            {
+                return listView.Objects;
+            }
+            set
+            {
+                listView.SetObjects(value);
+            }
+        }
         // helper method creating a list and setting typical list parameters
         virtual protected void CreateObjectListView()
         {
@@ -383,7 +394,7 @@ namespace FrwSoftware
             JImageName imageNameAttr = AttrHelper.GetAttribute<JImageName>(SourceObjectType, column.AspectName);
             JImageRef imageRefAttr = AttrHelper.GetAttribute<JImageRef>(SourceObjectType, column.AspectName);
             JDictProp dictAttr = AttrHelper.GetAttribute<JDictProp>(SourceObjectType, column.AspectName);
-            if (dictAttr != null && dictAttr.DictPropertyStyle != DisplyPropertyStyle.TextOnly &&
+            if (dictAttr != null && dictAttr.DictPropertyStyle != DisplyPropertyStyle.TextOnly && dictAttr.DictPropertyStyle != DisplyPropertyStyle.ColoredTextOnly &&
                 dictAttr.AllowMultiValues == false) //todo
             {
                 column.ImageGetter = delegate (object x)
@@ -399,7 +410,7 @@ namespace FrwSoftware
                 };
                 return true;
             }
-            else if (imageNameAttr != null && imageNameAttr.DictPropertyStyle != DisplyPropertyStyle.TextOnly)
+            else if (imageNameAttr != null && imageNameAttr.DictPropertyStyle != DisplyPropertyStyle.TextOnly && imageNameAttr.DictPropertyStyle != DisplyPropertyStyle.ColoredTextOnly)
             {
                 column.ImageGetter = delegate (object x)
                 {
@@ -411,7 +422,7 @@ namespace FrwSoftware
                 };
                 return true;
             }
-            else if (imageRefAttr != null && imageRefAttr.DictPropertyStyle != DisplyPropertyStyle.TextOnly)
+            else if (imageRefAttr != null && imageRefAttr.DictPropertyStyle != DisplyPropertyStyle.TextOnly && imageRefAttr.DictPropertyStyle != DisplyPropertyStyle.ColoredTextOnly)
             {
                 column.ImageGetter = delegate (object x)
                 {
@@ -627,7 +638,10 @@ namespace FrwSoftware
             */
             try
             {
-                Dm.Instance.SaveObject(e.RowObject);
+                if (!(NoDmMode || AttrHelper.IsAttributeDefinedForType<JEntity>(SourceObjectType, true) == false))//todo valudation
+                {
+                    Dm.Instance.SaveObject(e.RowObject);
+                }
             }
             catch (JValidationException ex)
             {
@@ -683,7 +697,10 @@ namespace FrwSoftware
             {
                 try
                 {
-                    Dm.Instance.SaveObject(e.RowObject);
+                    if (!(NoDmMode || AttrHelper.IsAttributeDefinedForType<JEntity>(SourceObjectType, true) == false))//todo valudation
+                    {
+                        Dm.Instance.SaveObject(e.RowObject);
+                    }
                 }
                 catch (JValidationException ex)
                 {
@@ -709,8 +726,11 @@ namespace FrwSoftware
         {
             try
             {
-                Dm.Instance.SetEntityModified(SourceObjectType);
-                // todo it will be correct for all visible objects to call UpdateObjectInStorage (e.RowObject, null);
+                if (!(NoDmMode || AttrHelper.IsAttributeDefinedForType<JEntity>(SourceObjectType, true) == false))
+                {
+                    Dm.Instance.SetEntityModified(SourceObjectType);
+                    // todo it will be correct for all visible objects to call UpdateObjectInStorage (e.RowObject, null);
+                }
             }
             catch (Exception ex)
             {
@@ -904,6 +924,30 @@ namespace FrwSoftware
             }
             */
         }
+        override protected void CloneObject(object selectedListItem, object selectedObject,  IDictionary<string, object> extraParams)
+        {
+            object newObject = CloneObjectLocal(selectedObject,  extraParams);
+            /*
+            if (newObject != null)
+            {
+                // the standard listView method, when the filter is enabled, adds a record to the sources and rebuilds the list
+                // and at us record in the source is already added, therefore the duplication
+                // If we are filtering the list, there is no way to efficiently
+                // insert the objects, so just put them into our collection and rebuild.
+                if (listView.IsFiltering)
+                {
+                    //index = Math.Max(0, Math.Min(index, ourObjects.Count));
+                    //ourObjects.InsertRange(index, modelObjects);
+                    listView.BuildList(true);
+                }
+                else
+                {
+                    this.listView.AddObject(newObject);
+                }
+                this.listView.EnsureModelVisible(newObject); //? 
+            }
+            */
+        }
         override protected void DeleteObject(object selectedListItem, object[] selectedObjects)
         {
 
@@ -927,6 +971,34 @@ namespace FrwSoftware
                 if (DeleteAllObjectsLocal())
                     this.listView.ClearObjects();
             }
+        }
+
+        override public void RemoveSelectedItems()
+        {
+            //cheched
+            bool checkedPresent = false;
+            List<object> oToRemove = new List<object>();
+            foreach (var o in listView.Objects)
+            {
+                if (listView.IsChecked(o))
+                {
+                    checkedPresent = true;
+                    oToRemove.Add(o);
+
+                }
+            }
+            if (oToRemove.Count > 0)
+                this.listView.RemoveObjects(oToRemove);
+            //selected
+            if (!(listView.SelectedObjects != null && listView.SelectedObjects.Count > 0))
+            {
+                if (!checkedPresent)
+                {
+                    MessageBox.Show(FrwCRUDRes.List_No_Selected_Records);
+                }
+                return;
+            }
+            listView.RemoveObjects(listView.SelectedObjects);
         }
 
         private void listView_CellRightClick(object sender, BrightIdeasSoftware.CellRightClickEventArgs e)

@@ -40,6 +40,11 @@ namespace FrwSoftware
 
             return String.Format("{0} bytes", size);
         }
+        /// <summary>
+        /// deprecated 
+        /// </summary>
+        /// <param name="level"></param>
+        /// <returns></returns>
         public static Color GetColorBySecLevel(int level)
         {
             if (level == (int)SecLevelEnum.Low) return Color.Black;

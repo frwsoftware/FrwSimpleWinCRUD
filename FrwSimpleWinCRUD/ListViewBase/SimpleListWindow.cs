@@ -58,13 +58,14 @@ namespace FrwSoftware
                 }
                 if (AttrHelper.GetAttribute<JUrl>(propInfo) != null) column.Hyperlink = true;
                 column.Text = ModelHelper.GetPropertyJDescriptionOrName(propInfo);
-                if (headerImageAttr != null&& headerImageAttr.HeaderImageName != null)
+                if (headerImageAttr != null && headerImageAttr.HeaderImageName != null)
                 {
                     this.CreateColumHeaderImage(column, headerImageAttr.HeaderImageName);
                     column.ShowTextInHeader = false;
                 }
-                if ( AttrHelper.GetAttribute<JReadOnly>(SourceObjectType, column.AspectName) != null) column.IsEditable = false;
-                if (AppManager.Instance.IsCustomEditProperty(SourceObjectType, column.AspectName)){
+                if (AttrHelper.GetAttribute<JReadOnly>(SourceObjectType, column.AspectName) != null) column.IsEditable = false;
+                if (AppManager.Instance.IsCustomEditProperty(SourceObjectType, column.AspectName))
+                {
                     column.AspectGetter = delegate (Object rowObject)
                     {
                         try
@@ -85,7 +86,9 @@ namespace FrwSoftware
                     CreateImageGetterDelegate(column, SourceObjectType);
                 }
             }
-            if (ModelHelper.IsIsArchiveFieldPresent(SourceObjectType))
+
+            bool isIsArchiveFieldPresent = ModelHelper.IsIsArchiveFieldPresent(SourceObjectType);
+            if (isIsArchiveFieldPresent)
             {
                 isActiveCheckBox.Text = FrwCRUDRes.Active;
                 isActiveCheckBox.Checked = true;
@@ -97,8 +100,66 @@ namespace FrwSoftware
                     return (isActiveCheckBox.Checked ? !ModelHelper.GetIsArchiveValue(x) : true);
                 });
             }
-
+            if (isIsArchiveFieldPresent || ModelHelper.IsTextColoredFieldPresent(SourceObjectType) || ModelHelper.IsExpiredFieldPresent(SourceObjectType))
+            {
+                listView.UseCellFormatEvents = true;
+                listView.FormatCell += ListView_FormatCell;
+            }
         }
+        private void ListView_FormatCell(object sender, FormatCellEventArgs e)
+        {
+            object item = e.Model;
+            if (item != null)
+            {
+                PropertyInfo p = item.GetType().GetProperty("IsArchive");
+                if (p != null && p.PropertyType == typeof(bool) && (bool)(p.GetValue(item)) == true)
+                {
+                    e.SubItem.ForeColor = Color.Gray;
+                }
+                else
+                {
+
+                    if (e.Column.AspectName == null) return;
+                    Type pType = AttrHelper.GetPropertyType(SourceObjectType, e.Column.AspectName);
+                    PropertyInfo propInfo = SourceObjectType.GetProperty(e.Column.AspectName);
+                    JExpired expiredProp = AttrHelper.GetAttribute<JExpired>(propInfo);
+                    if (expiredProp != null)
+                    {
+                        object propValue = null;
+                        if (expiredProp.ExpiredProperty != null)
+                        {
+                            PropertyInfo propInfo1 = SourceObjectType.GetProperty(expiredProp.ExpiredProperty);
+                            if (propInfo1 != null) propValue = AttrHelper.GetPropertyValue(e.Model, propInfo1);
+                        }
+                        else
+                            propValue = AttrHelper.GetPropertyValue(e.Model, propInfo);
+                        if (propValue != null)
+                        {
+                            ModelHelper.ExpiredToColor(propValue.ToString(), e.SubItem.ForeColor);
+                        }
+                    }
+                    else
+                    {
+
+                        JDictProp dictProp = AttrHelper.GetAttribute<JDictProp>(propInfo);
+                        if (dictProp != null &&
+                            (dictProp.DictPropertyStyle == DisplyPropertyStyle.ColoredTextOnly || dictProp.DictPropertyStyle == DisplyPropertyStyle.ColoredTextAndImage))
+                        {
+                            object propValue = AttrHelper.GetPropertyValue(e.Model, propInfo);
+                            if (propValue != null)
+                            {
+                                JDictItem ditem = Dm.Instance.GetDictText(dictProp.Id, propValue.ToString());
+                                if (ditem != null && ditem.TextColor != null && ditem.TextColor != Color.Black)
+                                {
+                                    e.SubItem.ForeColor = ditem.TextColor;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         override protected void LoadUserSettings(IDictionary<string, object> userSettings)
         {
             base.LoadUserSettings(userSettings);
@@ -113,7 +174,10 @@ namespace FrwSoftware
 
         override protected void ReloadList()
         {
-            this.listView.SetObjects(Dm.Instance.FindAll(SourceObjectType));
+            if (!(NoDmMode || AttrHelper.IsAttributeDefinedForType<JEntity>(SourceObjectType, true) == false))
+            {
+                this.listView.SetObjects(Dm.Instance.FindAll(SourceObjectType));
+            }
         }
     }
 

@@ -59,10 +59,12 @@ namespace FrwSoftware
         public bool SaveChanges()
         {
             JValidationResult result = Dm.Instance.ValidateObject(tempSourceObject);
-            if (! result.isError)
-            { 
+            if (!result.isError)
+            {
                 Dm.Instance.CopyObjectProperties(tempSourceObject, sourceObject, CopyRestrictLevel.AllPropertiesNewLists);
-                Dm.Instance.SaveObject(sourceObject);
+                if (AttrHelper.IsAttributeDefinedForType<JEntity>(SourceObjectType, true)) { 
+                    Dm.Instance.SaveObject(sourceObject);
+                }
                 SetModified(false);
                 ChildObjectUpdateEventArgs ev = new ChildObjectUpdateEventArgs();
                 ev.UpdatedObject = sourceObject;

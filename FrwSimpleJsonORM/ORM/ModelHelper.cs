@@ -20,6 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Drawing;
 
 namespace FrwSoftware
 {
@@ -147,6 +148,21 @@ namespace FrwSoftware
             if (IsArchiveProp != null) return true;
             else return false;
         }
+        static public bool IsExpiredFieldPresent(Type t)
+        {
+            return AttrHelper.IsPropertiesWithAttributePresent<JExpired>(t);
+        }
+        static public bool IsTextColoredFieldPresent(Type t)
+        {
+            var pl = AttrHelper.GetPropertiesWithAttribute<JDictProp>(t);
+            foreach (var p in pl)
+            {
+                JDictProp d = AttrHelper.GetAttribute<JDictProp>(p);
+                if (d.DictPropertyStyle == DisplyPropertyStyle.ColoredTextOnly || d.DictPropertyStyle == DisplyPropertyStyle.ColoredTextAndImage)
+                    return true;
+            }
+            return false;
+        }
         static public bool GetIsArchiveValue(object o)
         {
             if (o == null) return false;
@@ -179,7 +195,16 @@ namespace FrwSoftware
             }
             return s;
         }
-
+        public static Color ExpiredToColor(string e, Color defautlColor)
+        {
+            Color color = defautlColor;
+            if (e != null)
+            {
+                if (e.Equals("YELLOW")) color = Color.RosyBrown; //Color.Yellow  - uncontrast; 
+                else if (e.Equals("RED")) color = Color.Red;
+            }
+            return color;
+        }
         static public bool IsContainsDict(IList<string> dictField, object testedItem)
         {
             if (dictField == null) return false;

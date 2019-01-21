@@ -52,6 +52,7 @@ namespace FrwSoftware
             DateTime time = DateTime.Now;
             if (jjobTypeId == null) throw new ArgumentException();
             JJobType jobType = (JJobType)Dm.Instance.Find(typeof(JJobType), jjobTypeId);
+            bool created = false;
             if (jobType == null)
             {
                 jobType = (JJobType)Dm.Instance.EmptyObject(typeof(JJobType), null);
@@ -70,7 +71,7 @@ namespace FrwSoftware
                    jobType.Name = jjobTypeId;
                 }
                 Dm.Instance.SaveObject(jobType);
-                jobType.JobBatchLog.Debug("Job type" + jobType.JJobTypeId + " created");
+                created = true;
             }
             if (jobType.JobBatchLog == null)
             {
@@ -83,6 +84,9 @@ namespace FrwSoftware
 
                 }
             }
+            if (created)  jobType.JobBatchLog.Debug("Job type" + jobType.JJobTypeId + " created new");
+            else jobType.JobBatchLog.Debug("Job type" + jobType.JJobTypeId + " found");
+
             JRunningJob job = null;
             job = (JRunningJob)Dm.Instance.EmptyObject(typeof(JRunningJob), null);
             job.Stage = RunningJobStageEnum.initial.ToString();

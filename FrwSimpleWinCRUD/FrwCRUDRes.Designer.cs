@@ -539,6 +539,15 @@ namespace FrwSoftware {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clone Record.
+        /// </summary>
+        public static string List_CloneRecord {
+            get {
+                return ResourceManager.GetString("List_CloneRecord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to List columns.
         /// </summary>
         public static string List_Columns {

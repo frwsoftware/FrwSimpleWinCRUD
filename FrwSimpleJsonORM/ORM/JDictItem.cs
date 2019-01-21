@@ -36,5 +36,6 @@ namespace FrwSoftware
             }
         }
         public Image Image { get; set; }
+        public Color TextColor { get; set; }
     }
 }

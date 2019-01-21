@@ -23,6 +23,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace FrwSoftware
 {
@@ -47,6 +48,8 @@ namespace FrwSoftware
         public const string JobConcurrentType = "JobConcurrentType";
         public const string SecLevel = "SecLevel";
         public const string InfoHeaderType = "InfoHeaderType";
+        public const string Protocol = "Protocol";
+
     }
 
     public class SData
@@ -115,7 +118,8 @@ namespace FrwSoftware
     {
         ForSave,// AllPropertiesManytoOnePK
         ForTemp,//AllPropertiesNewLists
-        ForExport//AllPropertiesAllRelPK
+        ForExport,//AllPropertiesAllRelPK
+        ForNew//AllPropertiesNewLists  and generate new pk and initial dates 
     }
 
     /// <summary>
@@ -302,9 +306,11 @@ namespace FrwSoftware
 
             dict = new JDictionary() { Id = DictNames.SecLevel };
             dictionaries.Add(dict);
-            dict.Items.Add(new JDictItem() { Key = ((int)SecLevelEnum.Low).ToString(), Text = FrwUtilsRes.Low });//yellow
-            dict.Items.Add(new JDictItem() { Key = ((int)SecLevelEnum.Middle).ToString(), Text = FrwUtilsRes.Middle });//green
-            dict.Items.Add(new JDictItem() { Key = ((int)SecLevelEnum.High).ToString(), Text = FrwUtilsRes.High });//blue
+            dict.Items.Add(new JDictItem() { Key = ((int)SecLevelEnum.Low).ToString(), Text = FrwUtilsRes.Low, TextColor = Color.Black});
+            dict.Items.Add(new JDictItem() { Key = ((int)SecLevelEnum.Middle).ToString(), Text = FrwUtilsRes.Middle, TextColor = Color.Blue });//green
+            dict.Items.Add(new JDictItem() { Key = ((int)SecLevelEnum.High).ToString(), Text = FrwUtilsRes.High, TextColor = Color.Green });//blue
+
+
 
             dict = new JDictionary() { Id = DictNames.InfoHeaderType };
             dictionaries.Add(dict);
@@ -313,6 +319,15 @@ namespace FrwSoftware
             dict.Items.Add(new JDictItem() { Key = InfoHeaderEnum.F.ToString(), Image = Properties.Resources.file, Text = "File" });
             dict.Items.Add(new JDictItem() { Key = InfoHeaderEnum.H.ToString(), Image = Properties.Resources.header, Text = "Header" });
 
+            dict = new JDictionary() { Id = DictNames.Protocol };
+            dictionaries.Add(dict);
+            dict.Items.Add(new JDictItem() { Key = ProtocolEnum.http.ToString() });
+            dict.Items.Add(new JDictItem() { Key = ProtocolEnum.https.ToString() });
+            dict.Items.Add(new JDictItem() { Key = ProtocolEnum.ftp.ToString() });
+            dict.Items.Add(new JDictItem() { Key = ProtocolEnum.sftp.ToString() });
+            dict.Items.Add(new JDictItem() { Key = ProtocolEnum.ssh.ToString() });
+            dict.Items.Add(new JDictItem() { Key = ProtocolEnum.rdp.ToString() });
+            dict.Items.Add(new JDictItem() { Key = ProtocolEnum.tcp.ToString() });
 
         }
         public string GetRealPath(string path, object rowObject)
@@ -440,7 +455,7 @@ namespace FrwSoftware
                     else if (manyToManyAttr != null)
                     {
                         if (oneToOneAttr != null || oneToManyAttr != null || manyToOneAttr != null)
-                            throw new Exception("Property can not be marked more than one ralation attribute. Property " +
+                            throw new Exception("Property can not be marked more than one relation attribute. Property " +
                                p.Name + " in enitty " + sourceEntityType);
 
                         Type foreinEntityType = AttrHelper.GetGenericListArgType(p.PropertyType);
@@ -467,6 +482,28 @@ namespace FrwSoftware
 
                         }
 
+                    }
+                    else if (AttrHelper.IsGenericList(p.PropertyType))
+                    {
+                        Type listArgType = AttrHelper.GetGenericListArgType(p.PropertyType);
+                        JEntity listArgTypeEntity = AttrHelper.GetClassAttribute<JEntity>(listArgType);
+                        if (listArgTypeEntity != null && listArgTypeEntity.CustomLoad == false)
+                        {
+                            throw new Exception("Property " + p.Name + " in enitty " + sourceEntityType + " is generic List without relation can not be marked by JEntity attribute");
+                        }
+                        if (listArgTypeEntity == null)
+                        {
+                            foreach (PropertyInfo p1 in listArgType.GetProperties())
+                            {
+                                if (AttrHelper.GetAttribute<JOneToOne>(p1) != null ||
+                                AttrHelper.GetAttribute<JManyToOne>(p1) != null ||
+                                AttrHelper.GetAttribute<JOneToMany>(p1) != null ||
+                                AttrHelper.GetAttribute<JManyToMany>(p1) != null)
+                                {
+                                    throw new Exception("Type of Property " + p.Name + " in enitty " + sourceEntityType + " whith is generic List without relation can not contains fields with relation attributes.");
+                                }
+                            }
+                        }
                     }
                 }
                 if (!pkFound) throw new Exception("Primary key property not found in enitty " + sourceEntityType);
@@ -610,7 +647,7 @@ namespace FrwSoftware
                 List<JAttachment> l = (List<JAttachment>)AttrHelper.GetPropertyValue(rowObject, propInfo);
                 return Dm.MakeStringFromObjectList(l, maxCount, maxLength, truncatedValueSufix, delimeter);
             }
-            else if (AttrHelper.IsSameOrSubclass(typeof(IList), pType))//must be last check 
+            else if (AttrHelper.IsGenericList(pType))// AttrHelper.IsSameOrSubclass(typeof(IList), pType))//must be last check 
             {
                 IList s = AttrHelper.GetPropertyValue(rowObject, propInfo) as IList;
                 return Dm.MakeStringFromObjectList(s, maxCount, maxLength, truncatedValueSufix, delimeter);
@@ -624,7 +661,7 @@ namespace FrwSoftware
         }
 
 
-        private static string MakeStringFromObjectList(IList list, int maxCount = Dm.TRUNCATED_VALUE_MAX_ITEM_COUNT, int maxLength = TRUNCATED_VALUE_MAX_STRING_LENGTH, TruncatedValueSufix truncatedValueSufix = TruncatedValueSufix.DotsAndShown, string delimeter = ", ")
+        protected static string MakeStringFromObjectList(IList list, int maxCount = Dm.TRUNCATED_VALUE_MAX_ITEM_COUNT, int maxLength = TRUNCATED_VALUE_MAX_STRING_LENGTH, TruncatedValueSufix truncatedValueSufix = TruncatedValueSufix.DotsAndShown, string delimeter = ", ")
         {
             if (list == null) return null;
             int totalCount = list.Count;
@@ -1259,6 +1296,50 @@ namespace FrwSoftware
         virtual public object EmptyObject(Type t, IDictionary<string, object> pars = null)
         {
             object o = Activator.CreateInstance(t);
+            GenerateAndSetNewPkAndDateForObject(o);
+            if (AttrHelper.IsAttributeDefinedForType<JEntity>(t, true))
+            {
+                ResolveToManyRelations(o);
+            }
+            if (pars != null)
+            {
+                foreach (var d in pars)
+                {
+                    object value = d.Value;
+                    IEnumerable<PropertyInfo> props = props = o.GetType().GetProperties();
+                    bool found = false;
+                    foreach (var p in props)
+                    {
+                        if (p.Name.Equals(d.Key))
+                        {
+                            JOneToMany oneToManyAttr = AttrHelper.GetAttribute<JOneToMany>(o.GetType(), p.Name);
+                            JManyToMany manyToManyAttr = AttrHelper.GetAttribute<JManyToMany>(o.GetType(), p.Name);
+                            JDictProp dictAttr = AttrHelper.GetAttribute<JDictProp>(o.GetType(), p.Name);
+                            if (oneToManyAttr != null || manyToManyAttr != null || (dictAttr != null && dictAttr.AllowMultiValues == true))
+                            {
+                                IList list = (IList)AttrHelper.GetPropertyValue(o, p.Name);
+                                if (AttrHelper.GetGenericListArgType(p.PropertyType).Equals(value.GetType()) == false)
+                                    throw new ArgumentException("Wrong type " + value.GetType() + " for field " + p.Name + " (field list type: " + AttrHelper.GetGenericListArgType(p.PropertyType) + ")");
+                                list.Add(value);
+                            }
+                            else
+                            {
+                                //todo lists 
+                                if (p.PropertyType.Equals(value.GetType()) == false)
+                                    throw new ArgumentException("Wrong type " + value.GetType() + " for field " + p.Name + " (field type: " + p.PropertyType + ")");
+                                p.SetValue(o, value);
+                            }
+                            found = true;
+                        }
+                    }
+                    if (!found) throw new ArgumentException("Wrong name of params " + d.Key + " - not found from properties of " + o.GetType().FullName);
+                }
+            }
+            return o;
+        }
+        private void GenerateAndSetNewPkAndDateForObject(object o)
+        {
+            Type t = o.GetType();
             PropertyInfo pPK = AttrHelper.GetProperty<JPrimaryKey>(t);
             if (pPK != null)
             {
@@ -1296,42 +1377,6 @@ namespace FrwSoftware
                 else if (p.PropertyType == typeof(DateTimeOffset))
                     p.SetValue(o, new DateTimeOffset(cur));
             }
-            ResolveToManyRelations(o);
-            if (pars != null)
-            {
-                foreach (var d in pars)
-                {
-                    object value = d.Value;
-                    props = o.GetType().GetProperties();
-                    bool found = false;
-                    foreach (var p in props)
-                    {
-                        if (p.Name.Equals(d.Key))
-                        {
-                            JOneToMany oneToManyAttr = AttrHelper.GetAttribute<JOneToMany>(o.GetType(), p.Name);
-                            JManyToMany manyToManyAttr = AttrHelper.GetAttribute<JManyToMany>(o.GetType(), p.Name);
-                            JDictProp dictAttr = AttrHelper.GetAttribute<JDictProp>(o.GetType(), p.Name);
-                            if (oneToManyAttr != null || manyToManyAttr != null || (dictAttr != null && dictAttr.AllowMultiValues == true))
-                            {
-                                IList list = (IList)AttrHelper.GetPropertyValue(o, p.Name);
-                                if (AttrHelper.GetGenericListArgType(p.PropertyType).Equals(value.GetType()) == false)
-                                    throw new ArgumentException("Wrong type " + value.GetType() + " for field " + p.Name + " (field list type: " + AttrHelper.GetGenericListArgType(p.PropertyType) + ")");
-                                list.Add(value);
-                            }
-                            else
-                            {
-                                //todo lists 
-                                if (p.PropertyType.Equals(value.GetType()) == false)
-                                    throw new ArgumentException("Wrong type " + value.GetType() + " for field " + p.Name + " (field type: " + p.PropertyType + ")");
-                                p.SetValue(o, value);
-                            }
-                            found = true;
-                        }
-                    }
-                    if (!found) throw new ArgumentException("Wrong name of params " + d.Key + " - not found from properties of " + o.GetType().FullName);
-                }
-            }
-            return o;
         }
         virtual public void DeleteAllObjects(Type t)
         {
@@ -1505,6 +1550,7 @@ namespace FrwSoftware
             List<RefEntityInfo> rels = new List<RefEntityInfo>();
             //Dictionary<Type, HashSet<object>> rels = new Dictionary<Type, HashSet<object>>();
             PropertyInfo pkProp = AttrHelper.GetProperty<JPrimaryKey>(sourceEntityType);
+            if (pkProp == null) return rels;
             object sourcePKValue = pkProp.GetValue(o);
             foreach (var entity in entities)
             {
@@ -2283,12 +2329,17 @@ namespace FrwSoftware
             CopyRestrictLevel copyRectLevel = CopyRestrictLevel.OnlySimleProperties;
             if (cloneType == CloneObjectType.ForSave) copyRectLevel = CopyRestrictLevel.AllPropertiesManytoOnePK;
             else if (cloneType == CloneObjectType.ForTemp) copyRectLevel = CopyRestrictLevel.AllPropertiesNewLists;
+            else if (cloneType == CloneObjectType.ForNew) copyRectLevel = CopyRestrictLevel.AllPropertiesNewLists;
             else if (cloneType == CloneObjectType.ForExport) copyRectLevel = CopyRestrictLevel.AllPropertiesAllRelPK;
 
             if (o == null) return null;
             Type t = o.GetType();
             object destObject = Activator.CreateInstance(t);
             CopyObjectProperties(o, destObject, copyRectLevel);
+            if (cloneType == CloneObjectType.ForNew)
+            {
+                GenerateAndSetNewPkAndDateForObject(destObject);
+            }
             return destObject;
         }
         public object CloneObjectToOtherType(object o, Type destType)

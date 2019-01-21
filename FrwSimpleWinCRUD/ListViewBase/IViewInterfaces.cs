@@ -75,8 +75,10 @@ namespace FrwSoftware
     {
         object FilteredObject { get; set; }
         IList SelectedObjects { get; }
+        IEnumerable Objects { get; set; }
         void RefreshObject(object o);
         void RefreshList();
+        void RemoveSelectedItems();
     }
 
     public interface IPropertyProcessor : IObjectViewProcessor

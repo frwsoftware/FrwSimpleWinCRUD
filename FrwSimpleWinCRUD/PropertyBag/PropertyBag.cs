@@ -934,23 +934,31 @@ namespace Flobbster.Windows.Forms
 
 		PropertyDescriptor ICustomTypeDescriptor.GetDefaultProperty()
 		{
-			// This function searches the property list for the property
-			// with the same name as the DefaultProperty specified, and
-			// returns a property descriptor for it.  If no property is
-			// found that matches DefaultProperty, a null reference is
-			// returned instead.
+            try
+            {
+                // This function searches the property list for the property
+                // with the same name as the DefaultProperty specified, and
+                // returns a property descriptor for it.  If no property is
+                // found that matches DefaultProperty, a null reference is
+                // returned instead.
 
-			PropertySpec propertySpec = null;
-			if(defaultProperty != null)
-			{
-				int index = properties.IndexOf(defaultProperty);
-				propertySpec = properties[index];
-			}
+                PropertySpec propertySpec = null;
+                if (defaultProperty != null)
+                {
+                    int index = properties.IndexOf(defaultProperty);
+                    propertySpec = properties[index];
+                }
 
-			if(propertySpec != null)
-				return new PropertySpecDescriptor(propertySpec, this, propertySpec.Name, null);
-			else
-				return null;
+                if (propertySpec != null)
+                    return new PropertySpecDescriptor(propertySpec, this, propertySpec.Name, null);
+                else
+                    return null;
+            }
+            catch(Exception ex)
+            {
+                Log.ShowError(ex);
+                return null;
+            }
 		}
 
 		object ICustomTypeDescriptor.GetEditor(Type editorBaseType)
@@ -973,53 +981,70 @@ namespace Flobbster.Windows.Forms
 			return ((ICustomTypeDescriptor)this).GetProperties(new Attribute[0]);
 		}
 
-		PropertyDescriptorCollection ICustomTypeDescriptor.GetProperties(Attribute[] attributes)
-		{
-			// Rather than passing this function on to the default TypeDescriptor,
-			// which would return the actual properties of PropertyBag, I construct
-			// a list here that contains property descriptors for the elements of the
-			// Properties list in the bag.
+        PropertyDescriptorCollection ICustomTypeDescriptor.GetProperties(Attribute[] attributes)
+        {
+            try
+            {
+                // Rather than passing this function on to the default TypeDescriptor,
+                // which would return the actual properties of PropertyBag, I construct
+                // a list here that contains property descriptors for the elements of the
+                // Properties list in the bag.
 
-			ArrayList props = new ArrayList();
+                ArrayList props = new ArrayList();
 
-			foreach(PropertySpec property in properties)
-			{
-				ArrayList attrs = new ArrayList();
+                foreach (PropertySpec property in properties)
+                {
+                    ArrayList attrs = new ArrayList();
 
-				// If a category, description, editor, or type converter are specified
-				// in the PropertySpec, create attributes to define that relationship.
-				if(property.Category != null)
-					attrs.Add(new CategoryAttribute(property.Category));
+                    // If a category, description, editor, or type converter are specified
+                    // in the PropertySpec, create attributes to define that relationship.
+                    if (property.Category != null)
+                        attrs.Add(new CategoryAttribute(property.Category));
 
-				if(property.Description != null)
-					attrs.Add(new DescriptionAttribute(property.Description));
+                    if (property.Description != null)
+                        attrs.Add(new DescriptionAttribute(property.Description));
 
-				if(property.EditorTypeName != null)
-					attrs.Add(new EditorAttribute(property.EditorTypeName, typeof(UITypeEditor)));
+                    if (property.EditorTypeName != null)
+                        attrs.Add(new EditorAttribute(property.EditorTypeName, typeof(UITypeEditor)));
 
-				if(property.ConverterTypeName != null)
-					attrs.Add(new TypeConverterAttribute(property.ConverterTypeName));
+                    if (property.ConverterTypeName != null)
+                        attrs.Add(new TypeConverterAttribute(property.ConverterTypeName));
 
-				// Additionally, append the custom attributes associated with the
-				// PropertySpec, if any.
-				if(property.Attributes != null)
-					attrs.AddRange(property.Attributes);
+                    // Additionally, append the custom attributes associated with the
+                    // PropertySpec, if any.
+                    if (property.Attributes != null)
+                        attrs.AddRange(property.Attributes);
 
-				Attribute[] attrArray = (Attribute[])attrs.ToArray(typeof(Attribute));
+                    Attribute[] attrArray = (Attribute[])attrs.ToArray(typeof(Attribute));
 
-				// Create a new property descriptor for the property item, and add
-				// it to the list.
-				PropertySpecDescriptor pd = new PropertySpecDescriptor(property,
-					this, property.Name, attrArray);
-				props.Add(pd);
-			}
+                    // Create a new property descriptor for the property item, and add
+                    // it to the list.
+                    try
+                    {
+                        PropertySpecDescriptor pd = new PropertySpecDescriptor(property,
+                            this, property.Name, attrArray);
+                        props.Add(pd);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.LogError("Error create property " + property.PropTag,  ex);
+                    }
 
-			// Convert the list of PropertyDescriptors to a collection that the
-			// ICustomTypeDescriptor can use, and return it.
-			PropertyDescriptor[] propArray = (PropertyDescriptor[])props.ToArray(
-				typeof(PropertyDescriptor));
-			return new PropertyDescriptorCollection(propArray);
-		}
+
+                }
+
+                // Convert the list of PropertyDescriptors to a collection that the
+                // ICustomTypeDescriptor can use, and return it.
+                PropertyDescriptor[] propArray = (PropertyDescriptor[])props.ToArray(
+                typeof(PropertyDescriptor));
+                return new PropertyDescriptorCollection(propArray);
+            }
+            catch (Exception ex)
+            {
+                Log.ShowError(ex);
+                return new PropertyDescriptorCollection(new PropertyDescriptor[] { });
+            }
+        }
 
 		object ICustomTypeDescriptor.GetPropertyOwner(PropertyDescriptor pd)
 		{

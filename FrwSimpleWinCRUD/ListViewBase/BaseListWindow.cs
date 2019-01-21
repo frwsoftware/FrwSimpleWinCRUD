@@ -37,6 +37,7 @@ namespace FrwSoftware
         public object FilteredObject { get; set; }
         public bool SelectionListMode { get; set; }//Control is used in the dialog of the selection list
         public bool DialogView { get; set; }//Display the properties window as a dialog
+        public bool NoDmMode { get; set; }
         public event ObjectSelectEventHandler OnObjectSelectEvent;
         public bool IsBufferToCut { get; set; }//for copy/past
         protected SimplePropertyDialog propertyDialog = null;
@@ -74,6 +75,17 @@ namespace FrwSoftware
                 return null;
             }
         }
+        virtual public IEnumerable Objects
+        {
+            get
+            {
+                return null;
+            }
+            set
+            {
+
+            }
+        }
         #endregion
         public BaseListWindow()
         {
@@ -88,6 +100,11 @@ namespace FrwSoftware
                 string descr = ModelHelper.GetEntityJDescriptionOrName(SourceObjectType);
                 SetNewCaption(descr + " - " + FrwCRUDRes.List);
             }
+            if (DlgMode)//in dlg mode only dialogView enabled 
+            {
+                DialogView = dialogViewButton.Checked = true;
+                dialogViewButton.Visible = false;
+            }
 
         }
 
@@ -99,6 +116,10 @@ namespace FrwSoftware
         // updates the view of the object in the list (it is used from the edit form)
         virtual public void RefreshObject(object o)
         {
+        }
+        virtual public void RemoveSelectedItems()
+        {
+
         }
 
         protected void StartRefreshing()
@@ -134,6 +155,7 @@ namespace FrwSoftware
 
         virtual protected bool DeleteObjectInStorage(object[] oarray)
         {
+            if (NoDmMode || AttrHelper.IsAttributeDefinedForType<JEntity>(SourceObjectType, true) == false) return true;
             bool deleted = false;
             foreach (var ob in oarray)
             {
@@ -144,6 +166,7 @@ namespace FrwSoftware
         }
         virtual protected bool DeleteAllObjectsInStorage()
         {
+            if (NoDmMode || AttrHelper.IsAttributeDefinedForType<JEntity>(SourceObjectType, true) == false) return true;
             bool deleted = false;
             if (SourceObjectType != null)
             {
@@ -154,12 +177,18 @@ namespace FrwSoftware
         }
         virtual protected object EmptyObjectInStorage(Type sourceObjectType, IDictionary<string, object> pars = null)
         {
+            //if (NoDmMode || AttrHelper.IsAttributeDefinedForType<JEntity>(SourceObjectType, true) == false) return true; do not uncomment, let's create right empty object
             //create new object bat not added it to storage
             return Dm.Instance.EmptyObject(sourceObjectType, pars);
 
         }
-   
-   
+        virtual protected object CloneObjectInStorage(Object sourceObject)
+        {
+            Type sourceObjectType = sourceObject.GetType();
+            return Dm.Instance.CloneObject(sourceObject, CloneObjectType.ForNew);
+        }
+
+
         virtual protected bool RemoveObjectFromInStorage(object[] o)
         {
             return false;
@@ -356,6 +385,10 @@ namespace FrwSoftware
         {
 
         }
+        virtual protected void CloneObject(object selectedListItem, object selectedObject, IDictionary<string, object> extraParams)
+        {
+
+        }
         virtual protected object AddObjectLocal(object selectedObject, Type sourceObjectType, IDictionary<string, object> extraParams = null)
         {
             object o = null;
@@ -414,6 +447,56 @@ namespace FrwSoftware
                 return null;
             }
         }
+        virtual protected object CloneObjectLocal(object selectedObject,  IDictionary<string, object> extraParams = null)
+        {
+            Type sourceObjectType = selectedObject.GetType();
+            object o = null;
+            try
+            {
+                JRights rights = GetRights(selectedObject);
+                if (!rights.CanAdd) throw new InvalidOperationException(FrwConstants.NO_RIGHTS);
+                if (DialogView)
+                {
+                    IPropertyProcessor propertyControl = null;
+                    if (propertyDialog == null || propertyDialog.PropertyWindow.SourceObjectType.Equals(sourceObjectType) == false)
+                    {
+                        propertyControl = (IPropertyProcessor)AppManager.Instance.CreateNewContentInstance(typeof(IPropertyProcessor), sourceObjectType, null);
+                        propertyDialog = new SimplePropertyDialog(propertyControl);
+                    }
+                    else propertyControl = propertyDialog.PropertyWindow;
+                    propertyDialog.ViewMode = ViewMode.New;//
+                    o = CloneObjectInStorage(selectedObject);
+                    propertyControl.SourceObject = o;
+                    propertyControl.ProcessView();
+                    DialogResult res = propertyDialog.ShowDialog();
+                    if (res == DialogResult.OK)
+                    {
+                        ChildObjectUpdateEventArgs e = new ChildObjectUpdateEventArgs();
+                        e.UpdatedObject = o;
+                        e.ViewMode = propertyDialog.ViewMode;
+                        EnsureAddedObjectVisible(e);
+                        return o;
+                    }
+                    else return null;
+                }
+                else
+                {
+                    IPropertyProcessor propertyControl = AppManager.Instance.CreatePropertyContentForModelType(this.ContentContainer, this, sourceObjectType, null);
+                    propertyControl.ViewMode = ViewMode.New;//
+                    o = CloneObjectInStorage(selectedObject);
+                    propertyControl.SourceObject = o;
+                    propertyControl.ProcessView();
+                    //selectedObject = o;
+                    // in this case the update in the repository asynchronously initiates the propertyControl
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.ShowError(ex);
+                return null;
+            }
+        }
 
         virtual protected void EnsureAddedObjectVisible(ChildObjectUpdateEventArgs e)
         {
@@ -424,6 +507,7 @@ namespace FrwSoftware
         virtual protected void  DeleteObject(object selectedListItem, object[] selectedObjects)
         {
         }
+
 
         protected bool DeleteObjectLocal(object[] selectedObjects)
         {
@@ -745,7 +829,10 @@ namespace FrwSoftware
                                 p.SetValue(destListItem, (sourceObjects as IList)[0]);
                                 try
                                 {
-                                    Dm.Instance.SaveObject(destListItem);
+                                    if (!(NoDmMode || AttrHelper.IsAttributeDefinedForType<JEntity>(SourceObjectType, true) == false))//todo valudation
+                                    {
+                                        Dm.Instance.SaveObject(destListItem);
+                                    }
                                 }
                                 catch (JValidationException ex)
                                 {
@@ -766,7 +853,11 @@ namespace FrwSoftware
                                 }
                                 try
                                 {
-                                    Dm.Instance.SaveObject(destListItem);
+                                    if (!(NoDmMode || AttrHelper.IsAttributeDefinedForType<JEntity>(SourceObjectType, true) == false))//todo valudation
+                                    {
+                                        Dm.Instance.SaveObject(destListItem);
+                                    }
+                                
                                 }
                                 catch (JValidationException ex)
                                 {
@@ -913,6 +1004,25 @@ namespace FrwSoftware
                         try
                         {
                             DeleteObject(selectedListItem, new object[] { selectedObject });
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.ShowError(ex);
+                        }
+                    };
+                    menuItemList.Add(menuItem);
+
+                    menuItem = new ToolStripMenuItem();
+                    menuItem.Text = FrwCRUDRes.List_CloneRecord;
+                    menuItem.Image = Properties.Resources.AllPics_11;//todo
+                    menuItem.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
+                    menuItem.ImageScaling = ToolStripItemImageScaling.None;
+                    menuItem.Enabled = rights.CanAdd;
+                    menuItem.Click += (s, em) =>
+                    {
+                        try
+                        {
+                            CloneObject(selectedListItem, selectedObject,  null);
                         }
                         catch (Exception ex)
                         {
@@ -1096,7 +1206,7 @@ namespace FrwSoftware
                 //{
                 //  item.Password = newPassword;
                 //}));
-
+                AppManager.Instance.MakeContextMenuBlock(this.SourceObjectType, menuItemList, selectedObject, this.ContentContainer);
             }
         }
 
@@ -1254,8 +1364,10 @@ namespace FrwSoftware
                 Cursor.Current = Cursors.WaitCursor;
                 if (SourceObjectType != null)
                 {
-
-                    if (SourceObjectType != null) Dm.Instance.SaveEntityData(SourceObjectType);
+                    if (!(NoDmMode || AttrHelper.IsAttributeDefinedForType<JEntity>(SourceObjectType, true) == false))//todo valudation
+                    {
+                        if (SourceObjectType != null) Dm.Instance.SaveEntityData(SourceObjectType);
+                    }
                 }
             }
             catch (Exception ex)

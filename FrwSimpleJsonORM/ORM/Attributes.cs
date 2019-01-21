@@ -121,7 +121,8 @@ namespace FrwSoftware
                 if (staticProperty.PropertyType == typeof(System.Resources.ResourceManager))
                 {
                     System.Resources.ResourceManager resourceManager = (System.Resources.ResourceManager)staticProperty.GetValue(null, null);
-                    return resourceManager.GetString(resourceKey);
+                    string s = resourceManager.GetString(resourceKey);
+                    return string.IsNullOrEmpty(s) ? resourceKey : s;
                 }
             }
 
@@ -150,6 +151,18 @@ namespace FrwSoftware
     {
     }
     [AttributeUsage(AttributeTargets.Property)]
+    public class JExpired : Attribute
+    {
+        public JExpired()
+        {
+        }
+        public JExpired(string expiredProperty)
+        {
+            ExpiredProperty = expiredProperty;
+        }
+        public string ExpiredProperty { get; set; }
+    }
+    [AttributeUsage(AttributeTargets.Property)]
     public class JAttachments : Attribute
     {
     }
@@ -164,8 +177,10 @@ namespace FrwSoftware
     public enum DisplyPropertyStyle
     {
         TextOnly,
+        ColoredTextOnly,
         ImageOnly,
-        TextAndImage
+        TextAndImage,
+        ColoredTextAndImage
     }
     [AttributeUsage(AttributeTargets.Property)]
     public class JImageName : Attribute

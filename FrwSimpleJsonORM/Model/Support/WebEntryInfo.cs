@@ -66,7 +66,8 @@ namespace FrwSoftware
         ftp,
         sftp,
         ssh,
-        rdp
+        rdp,
+        tcp
     }
 
     public class WebEntryInfoWrap
@@ -87,13 +88,16 @@ namespace FrwSoftware
         }
 
         public int SecLevel { get; set; }
-        private IList<string> protocols = new List<string>();
-        public IList<string> Protocols {
+
+        private IList<JPort> accessPorts = new List<JPort>();
+        public IList<JPort> AccessPorts
+        {
             get
             {
-                return protocols;
+                return accessPorts;
             }
         }
+    
         public bool IsHttpsAllowed
         {
             get
@@ -103,7 +107,7 @@ namespace FrwSoftware
                     if (url.StartsWith((ProtocolEnum.https.ToString()))) return true;
                     else return false;
                 }
-                else return (protocols.FirstOrDefault(s => s.Equals(ProtocolEnum.https.ToString())) != null);
+                else return (accessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.https.ToString())) != null);
             }
         }
         public bool IsHttpAllowed
@@ -115,14 +119,14 @@ namespace FrwSoftware
                     if (url.StartsWith((ProtocolEnum.https.ToString()))) return false;
                     else return true;
                 }
-                return (protocols.FirstOrDefault(s => s.Equals(ProtocolEnum.http.ToString())) != null);
+                return (accessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.http.ToString())) != null);
             }
         }
         public bool IsRDPAllowed
         {
             get
             {
-                 return (protocols.FirstOrDefault(s => s.Equals(ProtocolEnum.rdp.ToString())) != null);
+                 return (accessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.rdp.ToString())) != null);
             }
         }
         private string url = null;
@@ -131,13 +135,14 @@ namespace FrwSoftware
             {
                 //https has prority 
                 if (url != null) return url;
-                else return MakeHttpUrl((protocols.FirstOrDefault(s => s.Equals(ProtocolEnum.https.ToString())) != null));
+                else return MakeHttpUrl((accessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.https.ToString())) != null));
             }
             set
             {
                 url = value;
             }
         }
+        /*
         public string HttpUrl
         {
             get
@@ -170,6 +175,7 @@ namespace FrwSoftware
                 url = value;
             }
         }
+        */
         private string MakeHttpUrl(bool isHttps)
         {
             StringBuilder str = new StringBuilder();
@@ -219,21 +225,70 @@ namespace FrwSoftware
         public string ExternalAddress { get; set; }
         public bool IsInInternalNetwork { get; set; }
         [JDisplayName("HTTP порт")]
-        public string PortHTTP { get; set; }
+        public string PortHTTP {
+            get
+            {
+                JPort p = accessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.http.ToString()));
+                return (p != null) ? (p.Port) : null;
+            }
+        }
         [JDisplayName("HTTP внешний порт")]
-        public string ExtPortHTTP { get; set; }
+        public string ExtPortHTTP {
+            get
+            {
+                JPort p = accessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.http.ToString()));
+                return (p != null) ? (p.ExtPort) : null;
+            }
+        }
         [JDisplayName("HTTPS порт")]
-        public string PortHTTPS { get; set; }
+        public string PortHTTPS {
+            get
+            {
+                JPort p = accessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.https.ToString()));
+                return (p != null) ? (p.Port) : null;
+            }
+
+        }
         [JDisplayName("HTTPS внешний порт")]
-        public string ExtPortHTTPS { get; set; }
+        public string ExtPortHTTPS {
+            get
+            {
+                JPort p = accessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.https.ToString()));
+                return (p != null) ? (p.ExtPort) : null;
+            }
+        }
         [JDisplayName("SSH порт")]
-        public string PortSSH { get; set; }
+        public string PortSSH {
+            get
+            {
+                JPort p = accessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.ssh.ToString()));
+                return (p != null) ? (p.Port) : null;
+            }
+        }
         [JDisplayName("SSH внешний порт")]
-        public string ExtPortSSH { get; set; }
+        public string ExtPortSSH {
+            get
+            {
+                JPort p = accessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.ssh.ToString()));
+                return (p != null) ? (p.ExtPort) : null;
+            }
+        }
         [JDisplayName("RDP порт")]
-        public string PortRDP { get; set; }
+        public string PortRDP {
+            get
+            {
+                JPort p = accessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.rdp.ToString()));
+                return (p != null) ? (p.Port) : null;
+            }
+        }
         [JDisplayName("RDP внешний порт")]
-        public string ExtPortRDP { get; set; }
+        public string ExtPortRDP {
+            get
+            {
+                JPort p = accessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.rdp.ToString()));
+                return (p != null) ? (p.ExtPort) : null;
+            }
+        }
 
 
         public string Login { get; set; }

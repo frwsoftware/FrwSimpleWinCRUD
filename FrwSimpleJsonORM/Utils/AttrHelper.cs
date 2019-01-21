@@ -67,7 +67,13 @@ namespace FrwSoftware
                 prop => Attribute.IsDefined(prop, typeof(T)));
             return props;
         }
-  
+        public static bool IsPropertiesWithAttributePresent<T>(Type t) where T : Attribute
+        {
+            PropertyInfo propF = t.GetProperties().FirstOrDefault(
+                prop => Attribute.IsDefined(prop, typeof(T)));
+            return (propF != null)?true:false;
+        }
+
         public static Type GetTypeWithAttribute<TAttribute>() where TAttribute : System.Attribute
         {
             IEnumerable<Type> types = GetTypesWithAttribute<TAttribute>(true);
@@ -173,7 +179,18 @@ namespace FrwSoftware
             return potentialBase.IsAssignableFrom(potentialDescendant) || potentialDescendant.IsSubclassOf(potentialBase)
                    || potentialDescendant == potentialBase;
         }
-
+        static public bool IsGenericList(Type type)
+        {
+            if (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(List<>) || type.GetGenericTypeDefinition() == typeof(IList<>)
+                || type.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
         static public Type GetGenericListArgType(Type type, bool softCheck = false)
         {
             if (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(List<>) || type.GetGenericTypeDefinition() == typeof(IList<>)
