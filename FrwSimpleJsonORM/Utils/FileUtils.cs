@@ -144,17 +144,25 @@ namespace FrwSoftware
                 count++;
             }
         }
+        public static void CreateDirectoryForFileName(string fileName)
+        {
+            FileInfo f = new FileInfo(fileName);
+            CreateDirectory(f.DirectoryName);
+        }
         public static void CreateDirectory(string dirName)
         {
             DirectoryInfo dirInfo = new DirectoryInfo(dirName);
-            if (dirInfo.Exists == false) Directory.CreateDirectory(dirInfo.FullName);
-            int count = 0;
-            while (Directory.Exists(dirName) == false && count < 1000)
+            if (dirInfo.Exists == false)
             {
-                //Had this problem under Windows 7, .Net 4.0, VS2010. It would appear Directory.Delete() is not synchronous so the issue is timing. I'm guessing Directory.CreateDirectory() does not fail because the existing folder is marked for deletion. The new folder is then dropped as Directory.Delete() finishes.
-                //http://stackoverflow.com/questions/35069311/why-sometimes-directory-createdirectory-fails
-                System.Threading.Thread.Sleep(10);
-                count++;
+                Directory.CreateDirectory(dirInfo.FullName);
+                int count = 0;
+                while (Directory.Exists(dirName) == false && count < 1000)
+                {
+                    //Had this problem under Windows 7, .Net 4.0, VS2010. It would appear Directory.Delete() is not synchronous so the issue is timing. I'm guessing Directory.CreateDirectory() does not fail because the existing folder is marked for deletion. The new folder is then dropped as Directory.Delete() finishes.
+                    //http://stackoverflow.com/questions/35069311/why-sometimes-directory-createdirectory-fails
+                    System.Threading.Thread.Sleep(10);
+                    count++;
+                }
             }
         }
 
@@ -186,6 +194,56 @@ namespace FrwSoftware
             }
 
         }
+        public static void CopyDirectory(DirectoryInfo source, DirectoryInfo destination, bool overwrite = true)
+        {
+            if (!destination.Exists)
+            {
+                Directory.CreateDirectory(destination.FullName);
+            }
 
+            // Copy all files.
+            FileInfo[] files = source.GetFiles();
+            foreach (FileInfo file in files)
+            {
+                file.CopyTo(Path.Combine(destination.FullName,
+                    file.Name), overwrite);
+            }
+
+            // Process subdirectories.
+            DirectoryInfo[] dirs = source.GetDirectories();
+            foreach (DirectoryInfo dir in dirs)
+            {
+                // Get destination directory.
+                string destinationDir = Path.Combine(destination.FullName, dir.Name);
+
+                // Call CopyDirectory() recursively.
+                CopyDirectory(dir, new DirectoryInfo(destinationDir));
+            }
+        }
+        static public string MakeRelativePath(string fileName, string baseName)
+        {
+            fileName = fileName.Replace(@"\\", @"\");
+            fileName = fileName.Replace(@"/", @"\");
+            baseName = baseName.Replace(@"\\", @"\");
+            baseName = baseName.Replace(@"/", @"\");
+            string diff = fileName.Replace(baseName, "");
+            if (diff.StartsWith("\\")) diff = diff.Substring(1);
+            return diff;
+        }
+        static public int GetRelativePathLevel(string fileName, string baseName)
+        {
+            fileName = fileName.Replace(@"\\", @"\");
+            fileName = fileName.Replace(@"/", @"\");
+            baseName = baseName.Replace(@"\\", @"\");
+            baseName = baseName.Replace(@"/", @"\");
+            string diff = fileName.Replace(baseName, "");
+            if (diff.StartsWith("\\")) diff = diff.Substring(1);
+            return diff.Count(f => f == '\\');
+        }
+        static public string GetSafeFilename(string filename, string replStr)
+        {
+            //https://stackoverflow.com/questions/62771/how-do-i-check-if-a-given-string-is-a-legal-valid-file-name-under-windows
+            return string.Join(replStr, filename.Split(Path.GetInvalidFileNameChars()));
+        }
     }
 }

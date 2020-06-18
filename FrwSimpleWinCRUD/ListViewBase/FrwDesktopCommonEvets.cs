@@ -61,7 +61,7 @@ namespace FrwSoftware
     {
         public ViewMode ViewMode { get; set; }
         public object UpdatedObject { get; set; }
-        public string UpdatedPropertyName { get; set; }//заполняется тогда, когда нужно обновить только конкретный атрибут
+        public string UpdatedPropertyName { get; set; }
     }
     public delegate void ChildObjectUpdateEventHandler(object sender, ChildObjectUpdateEventArgs e);
 

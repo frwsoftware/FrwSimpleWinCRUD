@@ -14,7 +14,6 @@ namespace FrwSoftware
         task
     }
 
-
     [JDisplayName(typeof(FrwUtilsRes), "JNotification")]
     [JEntity]
     public class JNotification

@@ -15,48 +15,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Reflection;
-using System.Collections;
 
 namespace FrwSoftware
 {
-
-    public enum DocType
-    {
-        bin,
-        txt,
-        html,
-        doc,
-        mwiki,
-        md,
-        image,
-        video
-    }
 
     public enum ViewType
     {
         NONE,
         WORD,
-        IE,
         Simple,
-        Awesomium,  
         CefBrowser
-    }
-
-    public enum LockIntReqType
-    {
-        BLOCK_NONE,
-        BLOCK_All_OTHER_DOMAIN,
-        BLOCK_All_EXPECT_ENTRY_POINT
     }
 
     public enum BrowserPrivateType
     {
         COMMON_CACHE,
         PERSONAL_IN_MEMORY_CACHE,
-        PERSONAL_OLD_DISK_CACHE,
-        PERSONAL_NEW_DISK_CACHE
+        PERSONAL_OLD_DISK_CACHE
     }
 
     public enum ProtocolEnum
@@ -78,25 +54,36 @@ namespace FrwSoftware
 
     public class WebEntryInfo
     {
-  
 
-        public WebEntryInfo()
-        {
-            RecоmmendedViewType = ViewType.NONE;
-            LockIntReqType = LockIntReqType.BLOCK_NONE;
-            BrowserPrivateType = BrowserPrivateType.COMMON_CACHE;
-        }
-
-        public int SecLevel { get; set; }
-
-        private IList<JPort> accessPorts = new List<JPort>();
-        public IList<JPort> AccessPorts
+        public string Login { get; set; }
+        public string Password { get; set; }
+        public string BasicAuthLogin { get; set; }
+        public string BasicAuthPassword { get; set; }
+        public ViewType RecоmmendedViewType { get; set; } = ViewType.NONE;
+        public string CachePath { get; set; }
+        public BrowserPrivateType BrowserPrivateType { get; set; } = BrowserPrivateType.COMMON_CACHE;
+        public JUserAgent JUserAgent { get; set; }
+        public string AllowedVPNServerId { get; set; }
+        public string Path { get; set; }
+        public string InternalAddress { get; set; }
+        public string ExternalAddress { get; set; }
+        public bool IsInInternalNetwork { get; set; }
+        private string url = null;
+        public string Url
         {
             get
             {
-                return accessPorts;
+                //https has prority 
+                if (url != null) return url;
+                else return MakeHttpUrl((AccessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.https.ToString())) != null));
+            }
+            set
+            {
+                url = value;
             }
         }
+
+        public IList<JPort> AccessPorts { get;  } = new List<JPort>();
     
         public bool IsHttpsAllowed
         {
@@ -107,7 +94,7 @@ namespace FrwSoftware
                     if (url.StartsWith((ProtocolEnum.https.ToString()))) return true;
                     else return false;
                 }
-                else return (accessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.https.ToString())) != null);
+                else return (AccessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.https.ToString())) != null);
             }
         }
         public bool IsHttpAllowed
@@ -119,63 +106,17 @@ namespace FrwSoftware
                     if (url.StartsWith((ProtocolEnum.https.ToString()))) return false;
                     else return true;
                 }
-                return (accessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.http.ToString())) != null);
+                return (AccessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.http.ToString())) != null);
             }
         }
         public bool IsRDPAllowed
         {
             get
             {
-                 return (accessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.rdp.ToString())) != null);
+                 return (AccessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.rdp.ToString())) != null);
             }
         }
-        private string url = null;
-        public string Url {
-            get
-            {
-                //https has prority 
-                if (url != null) return url;
-                else return MakeHttpUrl((accessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.https.ToString())) != null));
-            }
-            set
-            {
-                url = value;
-            }
-        }
-        /*
-        public string HttpUrl
-        {
-            get
-            {
-                if (IsHttpAllowed)
-                {
-                    if (url != null) return url;
-                    else return MakeHttpUrl(false);
-                }
-                else return null;
-            }
-            set
-            {
-                url = value;
-            }
-        }
-        public string HttpsUrl
-        {
-            get
-            {
-                if (IsHttpsAllowed)
-                {
-                    if (url != null) return url;
-                    else return MakeHttpUrl(true);
-                }
-                else return null;
-            }
-            set
-            {
-                url = value;
-            }
-        }
-        */
+
         private string MakeHttpUrl(bool isHttps)
         {
             StringBuilder str = new StringBuilder();
@@ -184,7 +125,7 @@ namespace FrwSoftware
             if (IsInInternalNetwork)
             {
                 if (InternalAddress == null) return null;
-                str.Append(InternalAddress);
+                str.Append(InternalAddress.Trim());
                 if (isHttps && string.IsNullOrEmpty(PortHTTPS) == false)
                 {
                     str.Append(":");
@@ -199,7 +140,7 @@ namespace FrwSoftware
             else
             {
                 if (ExternalAddress == null) return null;
-                str.Append(ExternalAddress);
+                str.Append(ExternalAddress.Trim());
                 if (isHttps && string.IsNullOrEmpty(ExtPortHTTPS) == false)
                 {
                     str.Append(":");
@@ -220,91 +161,73 @@ namespace FrwSoftware
 
         }
 
-        public string Path { get; set; }
-        public string InternalAddress { get; set; }
-        public string ExternalAddress { get; set; }
-        public bool IsInInternalNetwork { get; set; }
-        [JDisplayName("HTTP порт")]
+        [JDisplayName("HTTP port")]
         public string PortHTTP {
             get
             {
-                JPort p = accessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.http.ToString()));
+                JPort p = AccessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.http.ToString()));
                 return (p != null) ? (p.Port) : null;
             }
         }
-        [JDisplayName("HTTP внешний порт")]
+        [JDisplayName("HTTP external port")]
         public string ExtPortHTTP {
             get
             {
-                JPort p = accessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.http.ToString()));
+                JPort p = AccessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.http.ToString()));
                 return (p != null) ? (p.ExtPort) : null;
             }
         }
-        [JDisplayName("HTTPS порт")]
+        [JDisplayName("HTTPS port")]
         public string PortHTTPS {
             get
             {
-                JPort p = accessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.https.ToString()));
+                JPort p = AccessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.https.ToString()));
                 return (p != null) ? (p.Port) : null;
             }
 
         }
-        [JDisplayName("HTTPS внешний порт")]
+        [JDisplayName("HTTPS external port")]
         public string ExtPortHTTPS {
             get
             {
-                JPort p = accessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.https.ToString()));
+                JPort p = AccessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.https.ToString()));
                 return (p != null) ? (p.ExtPort) : null;
             }
         }
-        [JDisplayName("SSH порт")]
+        [JDisplayName("SSH port")]
         public string PortSSH {
             get
             {
-                JPort p = accessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.ssh.ToString()));
+                JPort p = AccessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.ssh.ToString()));
                 return (p != null) ? (p.Port) : null;
             }
         }
-        [JDisplayName("SSH внешний порт")]
+        [JDisplayName("SSH external port")]
         public string ExtPortSSH {
             get
             {
-                JPort p = accessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.ssh.ToString()));
+                JPort p = AccessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.ssh.ToString()));
                 return (p != null) ? (p.ExtPort) : null;
             }
         }
-        [JDisplayName("RDP порт")]
+        [JDisplayName("RDP port")]
         public string PortRDP {
             get
             {
-                JPort p = accessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.rdp.ToString()));
+                JPort p = AccessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.rdp.ToString()));
                 return (p != null) ? (p.Port) : null;
             }
         }
-        [JDisplayName("RDP внешний порт")]
+        [JDisplayName("RDP external port")]
         public string ExtPortRDP {
             get
             {
-                JPort p = accessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.rdp.ToString()));
+                JPort p = AccessPorts.FirstOrDefault(s => s.Protocol.Equals(ProtocolEnum.rdp.ToString()));
                 return (p != null) ? (p.ExtPort) : null;
             }
         }
 
-
-        public string Login { get; set; }
-        public string Password { get; set; }
-        public string BasicAuthLogin { get; set; }
-        public string BasicAuthPassword { get; set; }
-
-        public ViewType RecоmmendedViewType { get; set; }
-        public LockIntReqType LockIntReqType { get; set; }
-        public string CachePath { get; set; }
-        public BrowserPrivateType BrowserPrivateType { get; set; }
-        public JUserAgent JUserAgent { get; set; }
-
-        public IList AllowedNetworks { get; set; }
-       
-
+        ////////////////////////////////
         static public WebEntryInfo GetWebEntryInfoFromObject(object o)
         {
             if (o == null) return null;

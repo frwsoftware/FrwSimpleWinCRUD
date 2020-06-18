@@ -360,7 +360,8 @@ namespace FrwSoftware
             {
 
                 TreeNodeSelectEventArgs e = new TreeNodeSelectEventArgs();
-                e.SelectedOblect = SelectedNode.Tag;
+                object x = (SelectedNode.Tag is TreeObjectWrap) ? (SelectedNode.Tag as TreeObjectWrap).Tag : SelectedNode.Tag;
+                e.SelectedOblect = x;
         
                 e.DbClick = true;
 
@@ -376,7 +377,8 @@ namespace FrwSoftware
 
                 if (SelectedNode.Tag != null)
                 {
-                    e.SelectedOblect = SelectedNode.Tag;
+                    object x = (SelectedNode.Tag is TreeObjectWrap) ? (SelectedNode.Tag as TreeObjectWrap).Tag : SelectedNode.Tag;
+                    e.SelectedOblect = x;
                 }
 
                 if (OnTreeNodeSelectEvent != null) this.OnTreeNodeSelectEvent(this, e);
@@ -439,8 +441,7 @@ namespace FrwSoftware
                         if (ht.flags == 16)//todo
                         {
                             //Clicked on a ExpandOrCollapse button 
-                            //- срабатывает не всегда
-                            //todo итем всё равно выделяется 
+                            //does not always work todo the item still stands out
                         }
                         else
                             OnItemSelected();
@@ -480,7 +481,8 @@ namespace FrwSoftware
                     {
                         if (e.Node.Tag != null)
                         {
-                            bool res = AfterEditTreeNodeLabel(e.Node.Tag, e.Label);
+                            object x = (e.Node.Tag is TreeObjectWrap) ? (e.Node.Tag as TreeObjectWrap).Tag :e.Node.Tag;
+                            bool res = AfterEditTreeNodeLabel(x, e.Label);
                             e.CancelEdit = !res;
                             e.Node.EndEdit(!res);
                         }

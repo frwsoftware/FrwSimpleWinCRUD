@@ -366,7 +366,7 @@ namespace FrwSoftware
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
                     JAttachment at = new JAttachment();
-                    at.Path = dlg.TextToEdit;
+                    at.Path = dlg.EditedText;
                     this.listView.AddObject(at);
                 }
             }

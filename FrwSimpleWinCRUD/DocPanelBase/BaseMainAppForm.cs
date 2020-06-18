@@ -136,36 +136,6 @@ namespace FrwSoftware
             try
             {
                 setEventWarrningButton(false);
-                /*
-                //eventWarrningButton.DropDownItems.Clear();//- очистка приводит к тому, что меню появляется по 0.0 координатам 
-                ToolStripItem sep = new ToolStripSeparator();
-                eventWarrningButton.DropDownItems.Add(sep);
-                List<ToolStripItem> tmp = new List<ToolStripItem>();
-                foreach (ToolStripItem c in eventWarrningButton.DropDownItems)
-                {
-                    if (c != sep) tmp.Add(c);
-                }
-                foreach (var c in tmp)
-                {
-                    eventWarrningButton.DropDownItems.Remove(c);
-                }
-                ToolStripItem item = new ToolStripMenuItem();
-                item.Text = "Notifications";
-                item.Click += (s, em) =>
-                {
-                    try
-                    {
-                        CreateList(typeof(JNotification));
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.ShowError(ex);
-                    }
-                };
-                eventWarrningButton.DropDownItems.Add(item);
-                */
-
-
             }
             catch (Exception ex)
             {
@@ -446,7 +416,7 @@ namespace FrwSoftware
             JEntity entityAttr = AttrHelper.GetClassAttribute<JEntity>(t);
             ToolStripMenuItem menuItem = new ToolStripMenuItem();
             menuItem.Name = "menuItem_" + t.FullName;
-            menuItem.Text = ModelHelper.GetEntityJDescriptionOrFullName(t);
+            menuItem.Text = ModelHelper.GetEntityJDescriptionOrName(t);
             menuItem.Click += (s, em) =>
             {
                 CreateList(t);
@@ -460,7 +430,7 @@ namespace FrwSoftware
             JEntity entityAttr = AttrHelper.GetClassAttribute<JEntity>(t);
             ToolStripMenuItem menuItem = new ToolStripMenuItem();
             menuItem.Name = "menuItem_" + t.FullName;
-            menuItem.Text = name != null ? name : ModelHelper.GetEntityJDescriptionOrFullName(t);
+            menuItem.Text = name != null ? name : ModelHelper.GetEntityJDescriptionOrName(t);
             menuItem.Click += (s, em) =>
             {
                 try
@@ -599,9 +569,9 @@ namespace FrwSoftware
             {
                 JDocPanelLayout layout = Dm.Instance.EmptyObject<JDocPanelLayout>(null);
                 SimpleTextDialog dlg = new SimpleTextDialog();
-                if (dlg.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(dlg.TextToEdit))
+                if (dlg.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(dlg.EditedText))
                 {
-                    layout.Name = dlg.TextToEdit;
+                    layout.Name = dlg.EditedText;
                     AppManager.Instance.SaveLayout(layout);
                     Dm.Instance.SaveObject(layout);
                 }
@@ -700,7 +670,6 @@ namespace FrwSoftware
 
         protected void CreateToolsMenuItems(ToolStripMenuItem menuItemTools, ToolStrip toolBar, StatusStrip statusBar)
         {
-            ToolStripMenuItem menuItem = null;
             ////////////////////////////////////////
             ToolStripMenuItem groupItem = new ToolStripMenuItem(FrwCRUDRes.Jobs_and_notifications);
             menuItemTools.DropDownItems.Add(groupItem);

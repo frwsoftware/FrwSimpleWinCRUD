@@ -119,9 +119,6 @@ namespace FrwSoftware
             else return false;
         }
 
-        //[JsonIgnore]
-        //public object JobConcurrentLock = new object();
-
         [JsonIgnore]
         private Queue<JRunningJob> jobBatchQueue = new Queue<JRunningJob>();
 
@@ -137,7 +134,7 @@ namespace FrwSoftware
         }
         public void DoPostLJobBatch(PostLastJobRunEventArgs arg)
         {
-            PostJobBatch(null, arg);
+            if (PostJobBatch != null) PostJobBatch(null, arg);
         }
         [JDisplayName(typeof(FrwUtilsRes), "JJobType_JobBatchQueueCount")]
         [JsonIgnore]

@@ -135,7 +135,7 @@ namespace FrwSoftware
                 if (linkedObject == null) return false;
                 object pkValue = ModelHelper.GetPKValue(linkedObject);
                 if (pkValue == null) return false;
-                if (key is string) return ((string)key).Equals(pkValue);//? не нужно
+                if (key is string) return ((string)key).Equals(pkValue);
                 else
                 {
                     object pkValue1 = ModelHelper.GetPKValue(key);

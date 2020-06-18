@@ -37,7 +37,9 @@ namespace FrwSoftware
     public partial class SimpleTreeListWindow : BaseTreeListWindow 
     {
         protected List<Type> rootEntites = new List<Type>();
-        protected bool showGroupsFolder = true;
+        //protected bool showGroupsFolder = true;
+        protected List<Type> notShowGroupsFolderTypes = new List<Type>();
+
         public SimpleTreeListWindow()
         {
             InitializeComponent();
@@ -48,59 +50,70 @@ namespace FrwSoftware
 
             treeControl.OnTreeNodeSelectEvent += TreeControl_OnTreeNodeSelectEvent;
 
-            this.treeControl.CanExpandGetter += delegate (TreeNode parentNode)
+            this.treeControl.CanExpandGetter += delegate (TreeNode currentNode)
             {
-                if (parentNode == null) return true;
-                object x = parentNode.Tag;
-                if (x == null) return false;
-                if (x is string) return true;//folder 
-                Type type = x.GetType();
-                if (x is RootGroupTreeFolder)
+                if (currentNode == null) return true;
+                //currentNode may be not object node (may by branch node), so find real object node to view object 
+                TreeNode currentObjectNode = (currentNode.Tag is BranchGroupTreeFolder) ? currentNode.Parent : currentNode;
+                TreeNode parentObjectNode = (currentObjectNode != null && currentObjectNode.Parent != null)
+                    ? ((currentObjectNode.Parent.Tag is BranchGroupTreeFolder) ? currentObjectNode.Parent.Parent : currentObjectNode.Parent) : null;
+
+                object curentObject = (currentNode.Tag is TreeObjectWrap) ? (currentNode.Tag as TreeObjectWrap).Tag : currentNode.Tag;
+                object parentObject = (parentObjectNode != null) ? ((parentObjectNode.Tag is TreeObjectWrap)? (parentObjectNode.Tag as TreeObjectWrap).Tag : parentObjectNode.Tag) : null;
+
+                RefEntityInfo currentNodeRel = (currentObjectNode != null && currentObjectNode.Tag is TreeObjectWrap) ? (currentObjectNode.Tag as TreeObjectWrap).Rel : null;
+                RefEntityInfo parentNodeRel = (parentObjectNode != null && parentObjectNode.Tag is TreeObjectWrap) ? (parentObjectNode.Tag as TreeObjectWrap).Rel : null;
+
+                if (curentObject == null) return false;
+                if (curentObject is string) return true;//folder 
+                Type type = curentObject.GetType();
+                if (curentObject is RootGroupTreeFolder)
                 {
-                    Type etype = (x as RootGroupTreeFolder).EntityType;
+                    Type etype = (curentObject as RootGroupTreeFolder).EntityType;
                     if (ModelHelper.IsSingleHierEntity(etype))
                     {
                         return (Dm.Instance.FindRootList(etype).Count > 0);
                     }
                     else return (Dm.Instance.FindAll(etype).Count > 0);
                 }
-                else if (x is BranchGroupTreeFolder)
+                else if (curentObject is BranchGroupTreeFolder)
                 {
-                    BranchGroupTreeFolder bf = (x as BranchGroupTreeFolder);
-                    if (AttrHelper.GetAttribute<JManyToMany>(bf.RefEntityInfo.foreinProperty) != null)
-                        return Dm.Instance.ResolveManyToManyRelation(bf.ParentObject, bf.RefEntityInfo.RefEntity).Count > 0;
-                    else if (AttrHelper.GetAttribute<JManyToOne>(bf.RefEntityInfo.foreinProperty) != null)
-                        return Dm.Instance.ResolveOneToManyRelation(bf.ParentObject, bf.RefEntityInfo.RefEntity,
-                             bf.RefEntityInfo.foreinProperty.Name).Count > 0;
-                    else if (AttrHelper.GetAttribute<JOneToOne>(bf.RefEntityInfo.foreinProperty) != null)
-                        return (Dm.Instance.ResolveOneToOneRelation(bf.ParentObject, bf.RefEntityInfo.RefEntity,
-                             bf.RefEntityInfo.foreinProperty.Name) != null);
+                    BranchGroupTreeFolder bf = (curentObject as BranchGroupTreeFolder);
+                    if (bf.RefEntityInfo.PropertyInForeign != null)
+                    {
+                        if (AttrHelper.GetAttribute<JManyToMany>(bf.RefEntityInfo.PropertyInForeign) != null)
+                            return Dm.Instance.ResolveManyToManyRelation(bf.ParentObject, bf.RefEntityInfo.ForeignEntity).Count > 0;
+                        else if (AttrHelper.GetAttribute<JManyToOne>(bf.RefEntityInfo.PropertyInForeign) != null)
+                            return Dm.Instance.ResolveOneToManyRelation(bf.ParentObject, bf.RefEntityInfo.ForeignEntity,
+                                 bf.RefEntityInfo.PropertyInForeign.Name).Count > 0;
+                        else if (AttrHelper.GetAttribute<JOneToOne>(bf.RefEntityInfo.PropertyInForeign) != null)
+                            return (Dm.Instance.ResolveOneToOneRelationReverse(bf.ParentObject, bf.RefEntityInfo.ForeignEntity,
+                                 bf.RefEntityInfo.PropertyInForeign.Name) != null);
+                    }
+                    else if (bf.RefEntityInfo.PropertyInSource != null)
+                    {
+                        if (AttrHelper.GetAttribute<JManyToOne>(bf.RefEntityInfo.PropertyInSource) != null || AttrHelper.GetAttribute<JOneToOne>(bf.RefEntityInfo.PropertyInSource) != null)
+                        {
+                            object o = AttrHelper.GetPropertyValue(bf.ParentObject, bf.RefEntityInfo.PropertyInSource);
+                            return (o != null); 
+                        }
+                    }
 
                 }
                 else
                 {
-                    JEntity entityAttr = x.GetType().GetCustomAttribute<JEntity>();
+                    JEntity entityAttr = curentObject.GetType().GetCustomAttribute<JEntity>();
                     if (entityAttr != null)
                     {
-                        if (showGroupsFolder)
-                        {
-                            List<RefEntityInfo> rels = Dm.Instance.GetAllReferencedToEntity(x, false);
-                            return rels.Count(s => (s.foreinProperty != null)) > 0;
-                            /*
-                            foreach (var rt in rels)
-                            {
-                                HashSet<object> refs = rt.Records;
-                                if (refs.Count > 0)
-                                {
-                                    return true;
-                                }
-                            }
-                            */
-                        }
-                        else
-                        {
+                        //if (showGroupsFolder)
+                        //{
+                         //   List<RefEntityInfo> rels = Dm.Instance.GetAllReferencedToEntity(parentObject, false);
+                         //   return rels.Count(s => (s.RefFromProperty != null || s.RefToProperty != null)) > 0;
+                        //}
+                        //else
+                        //{
                             //find all ManyToOne relations rels to this entity type 
-                            List<RefEntityInfo> rels = Dm.Instance.GetAllReferencedToEntity(x);
+                            List<RefEntityInfo> rels = Dm.Instance.GetAllReferencedToEntity(curentObject);
                             foreach (var rt in rels)
                             {
                                 HashSet<object> refs = rt.Records;
@@ -109,15 +122,15 @@ namespace FrwSoftware
                                     return true;
                                 }
                             }
-                        }
+                        //}
                     }
                 }
                 return false;
             };
-            treeControl.ChildrenGetter += delegate (TreeNode parentNode)
+            treeControl.ChildrenGetter += delegate (TreeNode currentNode)
             {
                 IList lo = new List<object>();
-                if (parentNode == null)
+                if (currentNode == null)
                 {
                     //root
                     foreach (var e in rootEntites)
@@ -129,81 +142,109 @@ namespace FrwSoftware
                 }
                 else
                 {
-                    object x = parentNode.Tag;
-                    if (x == null) return new List<object>();
-                    if (x is RootGroupTreeFolder)
+
+                    TreeNode currentObjectNode = (currentNode.Tag is BranchGroupTreeFolder) ? currentNode.Parent : currentNode;
+                    TreeNode parentObjectNode = (currentObjectNode != null && currentObjectNode.Parent != null) 
+                        ? ((currentObjectNode.Parent.Tag is BranchGroupTreeFolder) ? currentObjectNode.Parent.Parent : currentObjectNode.Parent) : null;
+
+                    object currentObject = (currentNode.Tag is TreeObjectWrap) ? (currentNode.Tag as TreeObjectWrap).Tag : currentNode.Tag;
+                    object parentObject = (parentObjectNode != null) ? ((parentObjectNode.Tag is TreeObjectWrap) ? (parentObjectNode.Tag as TreeObjectWrap).Tag : parentObjectNode.Tag) : null;
+
+                    RefEntityInfo currentNodeRel = (currentObjectNode != null && currentObjectNode.Tag is TreeObjectWrap) ?  (currentObjectNode.Tag as TreeObjectWrap).Rel : null;
+                    RefEntityInfo parentNodeRel = (parentObjectNode != null && parentObjectNode.Tag is TreeObjectWrap) ? (parentObjectNode.Tag as TreeObjectWrap).Rel : null;
+
+                    if (currentObject == null) return new List<object>();
+                    if (currentObject is RootGroupTreeFolder)
                     {
-                        Type type = (x as RootGroupTreeFolder).EntityType;
+                        Type type = (currentObject as RootGroupTreeFolder).EntityType;
                         if (ModelHelper.IsSingleHierEntity(type))
                         {
-                            return (Dm.Instance.FindRootList(type));
+                            return WrapList(Dm.Instance.FindRootList(type), null);
                         }
-                        else return Dm.Instance.FindAll(type);
+                        else return WrapList(Dm.Instance.FindAll(type), null);
                     }
-                    else if (x is BranchGroupTreeFolder)
+                    else if (currentObject is BranchGroupTreeFolder)
                     {
-                        BranchGroupTreeFolder bf = (x as BranchGroupTreeFolder);
-                        if (AttrHelper.GetAttribute<JManyToMany>(bf.RefEntityInfo.foreinProperty) != null)
-                            return Dm.Instance.ResolveManyToManyRelation(bf.ParentObject, bf.RefEntityInfo.RefEntity);
-                        else if (AttrHelper.GetAttribute<JManyToOne>(bf.RefEntityInfo.foreinProperty) != null)
-                            return Dm.Instance.ResolveOneToManyRelation(bf.ParentObject, bf.RefEntityInfo.RefEntity,
-                                 bf.RefEntityInfo.foreinProperty.Name);
-                        else if (AttrHelper.GetAttribute<JOneToOne>(bf.RefEntityInfo.foreinProperty) != null)
-                            lo.Add(Dm.Instance.ResolveOneToOneRelation(bf.ParentObject, bf.RefEntityInfo.RefEntity,
-                                 bf.RefEntityInfo.foreinProperty.Name));
-                    }
-                    else
-                    {
-                        bool isSingleHierEntity = ModelHelper.IsSingleHierEntity(x.GetType());
-                        JEntity entityAttr = x.GetType().GetCustomAttribute<JEntity>();
-                        if (entityAttr != null)
-                        {
-                            if (showGroupsFolder)
-                            {
-                                //List<RefEntityInfo> rels = Dm.Instance.GetAllReferencedToEntity(x, false);
-                                List<RefEntityInfo> rels = Dm.Instance.GetAllReferencedToEntity(x);
-                                foreach (var rt in rels)
-                                {
-                                    if (rt.foreinProperty != null)
-                                    {
-                                        if (rt.IsSelfRelation() && isSingleHierEntity)
-                                        {
-                                            //IList lll = Dm.Instance.ResolveOneToManyRelation(x, rt.RefEntity,
-                                            //   rt.foreinProperty.Name);
-                                            //foreach (var l1 in lll)
-                                            //  lo.Add(l1);
-                                            foreach (var l1 in rt.Records)
-                                              lo.Add(l1);
+                        BranchGroupTreeFolder bf = (currentObject as BranchGroupTreeFolder);
 
+                        if (savedTreeState.IsRelationVisible(bf.RefEntityInfo.SourceEntity, bf.RefEntityInfo.Name))
+                        {
+
+                            if (bf.RefEntityInfo.PropertyInForeign != null)
+                            {
+                                if (AttrHelper.GetAttribute<JManyToMany>(bf.RefEntityInfo.PropertyInForeign) != null)
+                                    return WrapList(Dm.Instance.ResolveManyToManyRelation(bf.ParentObject, bf.RefEntityInfo.ForeignEntity), bf.RefEntityInfo);
+                                else if (AttrHelper.GetAttribute<JManyToOne>(bf.RefEntityInfo.PropertyInForeign) != null)
+                                    return WrapList(Dm.Instance.ResolveOneToManyRelation(bf.ParentObject, bf.RefEntityInfo.ForeignEntity,
+                                         bf.RefEntityInfo.PropertyInForeign.Name), bf.RefEntityInfo);
+                                else if (AttrHelper.GetAttribute<JOneToOne>(bf.RefEntityInfo.PropertyInForeign) != null)
+                                    lo.Add(new TreeObjectWrap()
+                                    {
+                                        Tag = Dm.Instance.ResolveOneToOneRelationReverse(bf.ParentObject, bf.RefEntityInfo.ForeignEntity,
+                                         bf.RefEntityInfo.PropertyInForeign.Name),
+                                        Rel = bf.RefEntityInfo
+                                    });
+                            }
+                            else if (bf.RefEntityInfo.PropertyInSource != null)
+                            {
+                                if (AttrHelper.GetAttribute<JManyToOne>(bf.RefEntityInfo.PropertyInSource) != null || AttrHelper.GetAttribute<JOneToOne>(bf.RefEntityInfo.PropertyInSource) != null)
+                                {
+                                    object o = AttrHelper.GetPropertyValue(bf.ParentObject, bf.RefEntityInfo.PropertyInSource);
+
+                                    if (o != null)
+                                    {
+                                        if (parentObject != null && parentObject.Equals(o)
+                                            && currentNodeRel != null && currentNodeRel.PropertyInForeign != null && bf.RefEntityInfo.PropertyInSource != null
+                                            && currentNodeRel.PropertyInForeign == bf.RefEntityInfo.PropertyInSource)
+                                        {
                                         }
                                         else
                                         {
-                                            if (rt.Records.Count > 0)
+                                            lo.Add(new TreeObjectWrap() { Tag = o, Rel = bf.RefEntityInfo });
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        bool isSingleHierEntity = ModelHelper.IsSingleHierEntity(currentObject.GetType());
+                        JEntity entityAttr = currentObject.GetType().GetCustomAttribute<JEntity>();
+                        if (entityAttr != null)
+                        {
+                            List<RefEntityInfo> rels = Dm.Instance.GetAllReferencedToEntity(currentObject);
+                            foreach (var rt in rels)
+                            {
+                                if (savedTreeState.IsRelationVisible(rt.SourceEntity, rt.Name))
+                                {
+
+                                    bool isSelfRelation = rt.IsSelfRelation();
+                                    if ((notShowGroupsFolderTypes.Contains(rt.ForeignEntity) == false && rt.PropertyInForeign != null) && !(isSelfRelation && isSingleHierEntity))
+                                    {
+                                        if (rt.Records.Count > 0)
+                                        {
+                                            BranchGroupTreeFolder bf = new BranchGroupTreeFolder();
+                                            bf.ParentObject = currentObject;
+                                            bf.RefEntityInfo = rt;
+                                            lo.Add(bf);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        foreach (var l in rt.Records)
+                                        {
+                                            if (!(parentObject != null && parentObject.Equals(l)
+                                                && currentNodeRel != null && currentNodeRel.PropertyInForeign != null && rt.PropertyInSource != null
+                                                && currentNodeRel.PropertyInForeign == rt.PropertyInSource))
                                             {
-                                                BranchGroupTreeFolder bf = new BranchGroupTreeFolder();
-                                                bf.ParentObject = x;
-                                                bf.RefEntityInfo = rt;
-                                                lo.Add(bf);
+                                                lo.Add(new TreeObjectWrap() { Tag = l, Rel = rt });
                                             }
                                         }
                                     }
                                 }
-                            }
-                            else { 
-                                List<RefEntityInfo> rels = Dm.Instance.GetAllReferencedToEntity(x);
-
-                                foreach (var rt in rels)
-                                {
-                                    HashSet<object> refs = rt.Records;
-                                    if (refs.Count > 0)
-                                    {
-                                        foreach (var l in refs)
-                                        {
-                                            lo.Add(l);
-                                        }
-                                    }
-                                }
-                            }
+                            }//foreach (var rt in rels)
                         }
                         return lo;
                     }
@@ -237,12 +278,65 @@ namespace FrwSoftware
                 return false;
             };
         }
-        override protected void ComplateNodeFromObject(TreeNode node, object o)
-        {
-            base.ComplateNodeFromObject(node, o);
 
-            object x = node.Tag;
-            if (x == null) return;
+        override protected void MakeContextMenu(List<ToolStripItem> menuItemList, object selectedListItem, object selectedObject, string aspectName)
+        {
+            base.MakeContextMenu(menuItemList, selectedListItem, selectedObject, aspectName);
+
+            TreeNode currentNode = selectedListItem as TreeNode;
+
+            TreeNode currentObjectNode = (currentNode.Tag is BranchGroupTreeFolder) ? currentNode.Parent : currentNode;
+            //TreeNode parentObjectNode = (currentObjectNode != null && currentObjectNode.Parent != null)
+              //  ? ((currentObjectNode.Parent.Tag is BranchGroupTreeFolder) ? currentObjectNode.Parent.Parent : currentObjectNode.Parent) : null;
+
+            object currentObject = (currentNode.Tag is TreeObjectWrap) ? (currentNode.Tag as TreeObjectWrap).Tag : currentNode.Tag;
+            //object parentObject = (parentObjectNode != null) ? ((parentObjectNode.Tag is TreeObjectWrap) ? (parentObjectNode.Tag as TreeObjectWrap).Tag : parentObjectNode.Tag) : null;
+
+            RefEntityInfo currentNodeRel = (currentObjectNode != null && currentObjectNode.Tag is TreeObjectWrap) ? (currentObjectNode.Tag as TreeObjectWrap).Rel : null;
+            //RefEntityInfo parentNodeRel = (parentObjectNode != null && parentObjectNode.Tag is TreeObjectWrap) ? (parentObjectNode.Tag as TreeObjectWrap).Rel : null;
+
+            if (currentNodeRel != null)
+            {
+                menuItemList.Add(new ToolStripSeparator());
+                ToolStripMenuItem menuItem = null;
+                menuItem = new ToolStripMenuItem();
+                menuItem.Text = FrwCRUDRes.Do_not_show_this_dependency;
+                menuItem.Click += (s, em) =>
+                {
+                    try
+                    {
+                        savedTreeState.InvisibleField(currentNodeRel.SourceEntity, currentNodeRel.Name);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.ShowError(ex);
+                    }
+                };
+                menuItemList.Add(menuItem);
+
+            }
+
+        }
+        private IList WrapList(IList list, RefEntityInfo rt)
+        {
+            IList lo = new List<object>();
+            foreach (var l in list)
+            {
+                lo.Add(new TreeObjectWrap() { Tag = l, Rel = rt });
+            }
+            return lo;
+        }
+        override protected void ComplateNodeFromObject(TreeNode node, object wo)
+        {
+            base.ComplateNodeFromObject(node, wo);
+
+            object wx = node.Tag;
+            if (wx == null) return;
+
+            object x;
+            if (wx is TreeObjectWrap) x = (wx as TreeObjectWrap).Tag;
+            else x = wx;
+
             Type type = x.GetType();
             if (x is RootGroupTreeFolder)
             {
@@ -254,7 +348,7 @@ namespace FrwSoftware
             }
             else if (x is BranchGroupTreeFolder)
             {
-                Type etype =  (x as BranchGroupTreeFolder).RefEntityInfo.RefEntity;
+                Type etype =  (x as BranchGroupTreeFolder).RefEntityInfo.ForeignEntity;
                 string name = (x as BranchGroupTreeFolder).RefEntityInfo.GetRelDescription();
                 node.Name = name;
                 node.Text = name;
@@ -323,7 +417,6 @@ namespace FrwSoftware
    
         override protected void MakeContextMenuAddBlock(List<ToolStripItem> menuItemList, object selectedListItem, object selectedObject, JRights rights)
         {
-            ToolStripMenuItem menuItem = null;
 
             TreeNode selectedNode = selectedListItem as TreeNode;
 
@@ -337,15 +430,15 @@ namespace FrwSoftware
                 else if (selectedObject is BranchGroupTreeFolder)
                 {
                     BranchGroupTreeFolder bf = (selectedObject as BranchGroupTreeFolder);
-                    menuItemList.Add(CreateAddNode(selectedListItem, bf.ParentObject, rights, bf.RefEntityInfo.RefEntity, bf.RefEntityInfo));
+                    menuItemList.Add(CreateAddNode(selectedListItem, bf.ParentObject, rights, bf.RefEntityInfo.ForeignEntity, bf.RefEntityInfo));
                 }
                 else
                 {
                     List<RefEntityInfo> rels = Dm.Instance.GetAllReferencedToEntity(selectedObject, false);
                     foreach (var rt in rels)
                     {
-                        if (rt.foreinProperty != null)
-                            menuItemList.Add(CreateAddNode(selectedListItem, selectedObject, rights, rt.RefEntity, rt));
+                        if (rt.PropertyInForeign != null)
+                            menuItemList.Add(CreateAddNode(selectedListItem, selectedObject, rights, rt.ForeignEntity, rt));
                     }
                 }
             }

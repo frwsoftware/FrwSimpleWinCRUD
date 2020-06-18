@@ -201,8 +201,8 @@ namespace FrwSoftware
         {
             try
             {
-                //menuCustomTask.DropDownItems.Clear();- очистка приводит к тому, что меню появляется по 0.0 координатам 
-                ToolStripItem sep = new ToolStripSeparator();
+                //menuCustomTask.DropDownItems.Clear();- clearing causes the menu to appear at 0.0 coordinates
+                                ToolStripItem sep = new ToolStripSeparator();
                 menuItemLayouts.DropDownItems.Add(sep);
                 List<ToolStripItem> tmp = new List<ToolStripItem>();
                 foreach (ToolStripItem c in menuItemLayouts.DropDownItems)

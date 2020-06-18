@@ -17,11 +17,18 @@
 using System;
 using System.Windows.Forms;
 using System.IO;
+using System.Text;
 
 namespace ConsoleWidget
 {
     public class ConsoleStream : TextWriter
     {
+        public ConsoleStream()
+        {
+            sb = new StringBuilder();
+            w = new StringWriter(sb);
+        }
+        /*
         //the textbox we write into
         private RichTextBox FBox = null;
 
@@ -31,20 +38,14 @@ namespace ConsoleWidget
             FBox = box;
         }
 
+   
         //the textbox of this stream
         public RichTextBox TextBox
         {
             get { return FBox; }
             set { FBox = value; }
         }
-
-        //return default encoding
-        public override System.Text.Encoding Encoding { get { return System.Text.Encoding.Default; } }
-
-        //the delegate we pass to the textbox
-        delegate void SetTextCallback(string text);
-
-        // This method is passed in to the SetTextCallBack delegate
+              // This method is passed in to the SetTextCallBack delegate
         // to update the Text property of textBox.
         private void SetText(string text)
         {
@@ -54,10 +55,34 @@ namespace ConsoleWidget
                 FBox.ScrollToCaret();
             }
         }
+        */
+        //return default encoding
+        public override System.Text.Encoding Encoding { get { return System.Text.Encoding.Default; } }
 
+        //the delegate we pass to the textbox
+        delegate void SetTextCallback(string text);
+
+  
+        StringBuilder sb = null;
+        StringWriter w = null;
+        object sblock = new object();
+        public string GetText()
+        {
+            lock (sblock)
+            {
+                string text = sb.ToString();
+                sb.Clear();
+                return text;
+            }
+        }
         //write a string
         public override void Write(string value)
         {
+            lock (sblock)
+            {
+                w.Write(value);
+            }
+            /*
             //only one thread can write in the textbox at a time
             lock (FBox)
             {
@@ -77,6 +102,7 @@ namespace ConsoleWidget
                     SetText(value);
                 }
             }
+            */
         }
 
         //write a string + new line

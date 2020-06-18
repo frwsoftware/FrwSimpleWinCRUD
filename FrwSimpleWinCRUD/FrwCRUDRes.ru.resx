@@ -639,4 +639,28 @@
   <data name="List_CloneRecord" xml:space="preserve">
     <value>Клонировать запись</value>
   </data>
+  <data name="List_Statistics" xml:space="preserve">
+    <value>Статистика для записей списка</value>
+  </data>
+  <data name="MoveDown" xml:space="preserve">
+    <value>Вниз</value>
+  </data>
+  <data name="MoveUp" xml:space="preserve">
+    <value>Вверх</value>
+  </data>
+  <data name="Download_widget_placement_from_this_entry" xml:space="preserve">
+    <value>Загрузить  размещение виджетов из этой записи</value>
+  </data>
+  <data name="Save_current_widget_placement_to_this_entry" xml:space="preserve">
+    <value>Сохранить текущее размещение виджетов в эту запись</value>
+  </data>
+  <data name="Do_not_show_this_dependency" xml:space="preserve">
+    <value>Не показывать эту зависимость</value>
+  </data>
+  <data name="More_than_one_entry_selected" xml:space="preserve">
+    <value>Выделено более одной записи</value>
+  </data>
+  <data name="No_item_selected" xml:space="preserve">
+    <value>Нет выделенных записей</value>
+  </data>
 </root>

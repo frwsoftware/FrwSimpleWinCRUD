@@ -120,10 +120,15 @@ namespace FrwSoftware
         /// </summary>
         static public void StartupExample()
         {
-            if (!MainAppUtils.CheckForSingleInstance()) return;
+            if (!AppManager.CheckForSingleInstance()) return;
+            //crearte config manager instance 
+            if (!FrwConfig.IsInstanceSet)
+            {
+                FrwConfig.Instance = new FrwSimpleWinCRUDConfig();
+            }
             //Initializes all required objects. If you need to initialize objects individually or perform a 
             //special initialization, copy the code from the body of this method and modify it.
-            MainAppUtils.InitAppPaths();
+            AppManager.Instance.InitApplication();
             //set type of your main application form 
             AppManager.Instance.MainAppFormType = typeof(MyMainForm);
             MyMainForm form = (MyMainForm)AppManager.Instance.LoadDocPanelContainersState(true);
@@ -144,7 +149,7 @@ namespace FrwSoftware
             //Calls the unloading code (including database saving and winform object state saving) of all required objects. 
             //If you want to upload objects separately or perform a special upload, copy the code 
             //from the body of this method and modify it.
-            MainAppUtils.DestroyApp();
+            AppManager.Instance.DestroyApp();
         }
 
     }

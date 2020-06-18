@@ -122,7 +122,8 @@ namespace FrwSoftware
                         if (ignoreAttr != null)
                             continue;
 
-                        string desc = ModelHelper.GetPropertyJDescriptionOrName(p);
+                        string name = ModelHelper.GetPropertyJDescriptionOrName(p);
+                        string desc = ModelHelper.GetPropertyJDescriptionOrName(p, true);
                         bool isCustomEdit = false;
                         if (AppManager.Instance.IsCustomEditProperty(SourceObjectType, p.Name))
                         {
@@ -131,7 +132,7 @@ namespace FrwSoftware
                         Type pType = null;
                         if (isCustomEdit) pType = typeof(string);//disabled comboboxes for list type fields 
                         else pType = p.PropertyType;
-                        props = new PropertySpec(desc, pType, null, desc);
+                        props = new PropertySpec(name, pType, null, desc);
                         props.PropTag = p.Name;
                         if (readOnlyAttr != null || viewMode == ViewMode.View || viewMode == ViewMode.ViewContent)
                         {

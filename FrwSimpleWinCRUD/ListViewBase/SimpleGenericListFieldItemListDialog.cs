@@ -110,5 +110,16 @@ namespace FrwSoftware
                 Log.ShowError(ex);
             }
         }
+
+        private void moveUpButton_Click(object sender, EventArgs e)
+        {
+            listWindow.MoveUpSelectedItems();
+        }
+
+        private void moveDownButton_Click(object sender, EventArgs e)
+        {
+            listWindow.MoveDownSelectedItems();
+        }
+
     }
 }

@@ -216,8 +216,8 @@ namespace FrwSoftware
         {
             try
             {
-                if (listView.SelectedObjects != null && listView.SelectedObjects.Count > 1) MessageBox.Show("Выделено более одной записи");
-                else if (listView.SelectedObjects == null || listView.SelectedObjects.Count == 0) MessageBox.Show("Нет выделенных записей");
+                if (listView.SelectedObjects != null && listView.SelectedObjects.Count > 1) MessageBox.Show(FrwCRUDRes.More_than_one_entry_selected);
+                else if (listView.SelectedObjects == null || listView.SelectedObjects.Count == 0) MessageBox.Show(FrwCRUDRes.No_item_selected);
                 else
                 {
                     object selectedObject = null;

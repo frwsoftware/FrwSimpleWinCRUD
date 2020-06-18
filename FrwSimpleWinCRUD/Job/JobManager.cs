@@ -276,7 +276,14 @@ namespace FrwSoftware
                 }
                 catch (Exception ex)
                 {
-                    job.JobLog.Error("Job fatal error", ex);
+                    if (ex is System.Threading.ThreadAbortException)
+                    {
+                        job.JobLog.Warn("Job aborted");
+                    }
+                    else
+                    {
+                        job.JobLog.Error("Job fatal error", ex);
+                    }
                     ew.Result = RunningJobStageEnum.exception;
                     JobManager.Instance.ComplateJob(job, RunningJobStageEnum.exception);
                 }

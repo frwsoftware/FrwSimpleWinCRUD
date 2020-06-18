@@ -46,7 +46,7 @@ namespace FrwSoftware
     {
     }
     /// <summary>
-    /// This field is used as the base for listing (prior to JNameProperty) 
+    /// This field is used as the base for tree listing (prior to JNameProperty) 
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
     public class JShortNameProperty : Attribute
@@ -135,16 +135,45 @@ namespace FrwSoftware
     {
         public JEntity()
         {
-            this.CustomLoad = false;
+            DsType = typeof(JsonDs);
         }
-        public JEntity(bool customLoad)
-        {
-            this.CustomLoad = customLoad;
-        }
-        public bool CustomLoad { get; set; }
+        //public StoreType StoreType = StoreType.Jsonfile;
+        public Type DsType { get; set; }
         public string ImageName { get; set; }
+        public string Path { get; set; }
         public Type Resource { get; set; }
+        public bool ShortTable { get; set; }
     }
+
+    [AttributeUsage(AttributeTargets.Class)]
+    public class JEntityPlugin : Attribute
+    {
+        public JEntityPlugin(Type entityType)
+        {
+            this.EntityType = entityType;
+        }
+        public Type EntityType { get; set; }
+    }
+    [AttributeUsage(AttributeTargets.Class)]
+    public class JListViewForEntityPlugin : Attribute
+    {
+        public JListViewForEntityPlugin(Type entityType)
+        {
+            this.EntityType = entityType;
+        }
+        public Type EntityType { get; set; }
+    }
+    
+    [AttributeUsage(AttributeTargets.Class)]
+    public class JPropertyViewForEntityPlugin : Attribute
+    {
+        public JPropertyViewForEntityPlugin(Type entityType)
+        {
+            this.EntityType = entityType;
+        }
+        public Type EntityType { get; set; }
+    }
+
 
     [AttributeUsage(AttributeTargets.Property)]
     public class JUrl : Attribute

@@ -25,7 +25,7 @@ namespace FrwSoftware
 {
     public partial class SimpleTextDialog : BaseDialogForm
     {
-        public string TextToEdit
+        public string EditedText
         {
             get
             {

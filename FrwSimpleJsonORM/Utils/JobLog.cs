@@ -68,7 +68,10 @@ namespace FrwSoftware
                 FileInfo logFile = new FileInfo(LogFileName);
                 if (logFile.Directory.Exists == false)
                     FileUtils.CreateDirectory(logFile.Directory.FullName);
-                File.WriteAllText(LogFileName, LogString);
+                if (File.Exists(LogFileName))
+                    File.AppendAllText(LogFileName, LogString);
+                else 
+                    File.WriteAllText(LogFileName, LogString);
             }
         }
 
@@ -77,12 +80,21 @@ namespace FrwSoftware
             if (message == null) message = "";
             DateTime time = DateTime.Now;
             if (e != null) message = message + e;
-            string messageWithDate = time.ToString(LOG_DATETIME_PATTERN) + message; 
+            string messageWithDate = time.ToString(LOG_DATETIME_PATTERN) + message;
+
             w.WriteLine(messageWithDate);
+            if (sb.Length > 100000)
+            {
+                SaveLogToFile();
+                sb.Clear();
+            }
+
             if (externalWriter != null) externalWriter.WriteLine(messageWithDate);
             if (WriteToConsole) Console.WriteLine(message);
             if (ParentLog != null) ParentLog.WriteLine(message);
         }
+        
+
 
         public void Info(string message)
         {

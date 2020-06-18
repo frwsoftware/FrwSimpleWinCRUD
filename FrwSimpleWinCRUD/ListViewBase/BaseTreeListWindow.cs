@@ -25,6 +25,17 @@ using System.IO;
 
 namespace FrwSoftware
 {
+    public class TreeObjectWrap
+    {
+        public object Tag { get; set; }
+        public RefEntityInfo Rel { get; set; }
+    }
+    public class BaseBranchTreeFolder
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+    }
+
     public partial class BaseTreeListWindow : BaseListWindow
     {
         protected BaseTreeControl treeControl;
@@ -103,21 +114,47 @@ namespace FrwSoftware
         }
         private void TreeControl_OnTreeContextMenuEvent(object sender, TreeContextMenuSelectEventArgs e)
         {
-            List<ToolStripItem> menuItemList = new List<ToolStripItem>();
-            MakeContextMenu(menuItemList, e.SelectedNode, e.SelectedNode.Tag, null);//todo aspectName
-            e.MenuItemList.AddRange(menuItemList);
-        }
+            try
+            {
+                List<ToolStripItem> menuItemList = new List<ToolStripItem>();
+                MakeContextMenu(menuItemList, e.SelectedNode, (e.SelectedNode.Tag is TreeObjectWrap) ? (e.SelectedNode.Tag as TreeObjectWrap).Tag : e.SelectedNode.Tag, null);//todo aspectName
+                e.MenuItemList.AddRange(menuItemList);
+            }
+            catch (Exception ex)
+            {
+                Log.ShowError(ex);
+            }
+}
 
-        virtual protected void ComplateNodeFromObject(TreeNode node, object o)
+        virtual protected void ComplateNodeFromObject(TreeNode node, object wo)
         {
-            node.Tag = o;
-            string name = null;
+            object o;
+            RefEntityInfo rel = null; 
+            if (wo is TreeObjectWrap)
+            {
+                o = (wo as TreeObjectWrap).Tag;
+                rel = (wo as TreeObjectWrap).Rel;
+            }
+            else o = wo;
+
+            node.Tag = wo;
+            string name;
             if (o is string) name = o as string;
+            if (o is BaseBranchTreeFolder)
+            {
+                name = (o as BaseBranchTreeFolder).Name;
+            }
             else name = ModelHelper.GetShortNameForObjectAdv(o);
             string shortName = (name.Length > 70) ? (name.Substring(0, 70) + "...") : name;
             node.Name = shortName;
             node.Text = shortName;
-            node.ToolTipText = name;
+            if (rel != null)
+                if (rel.PropertyInForeign != null)
+                    node.ToolTipText = name + " (" + rel.GetRelDescription() + ")";
+                else if (rel.PropertyInSource != null)
+                    node.ToolTipText = name + " (" + rel.GetRelDescription() + ")";
+            else 
+                node.ToolTipText = name;
         }
 
         override protected void AddObject(object selectedListItem, object selectedObject, Type sourceObjectType, IDictionary<string, object> extraParams)
@@ -230,7 +267,8 @@ namespace FrwSoftware
             if (sourceObjects != null && sourceObjects.Count > 0)
             {
                 //windows
-                string str = ModelHelper.ModelPropertyList((sourceObjects[0] as TreeNode).Tag, "\n", null, null);
+                object x = ((sourceObjects[0] as TreeNode).Tag is TreeObjectWrap) ? ((sourceObjects[0] as TreeNode).Tag as TreeObjectWrap).Tag : (sourceObjects[0] as TreeNode).Tag;
+                string str = ModelHelper.ModelPropertyList(x, "\n", null, null);
                 Clipboard.SetText(str);
                 //app
                 FrwTreeDataObject dataObject = new FrwTreeDataObject();
@@ -360,7 +398,10 @@ namespace FrwSoftware
             }
             else
             {
-                if (o.Equals(parent.Tag))
+                if ((parent.Tag is TreeObjectWrap && o.Equals((parent.Tag as TreeObjectWrap).Tag))
+                    ||
+                    (!(parent.Tag is TreeObjectWrap) && o.Equals(parent.Tag))
+                    )
                 {
                     return parent;
                 }
@@ -405,8 +446,9 @@ namespace FrwSoftware
         }
         override public IList GetSelectedObjects()
         {
+
             if (treeControl.SelectedNode != null && treeControl.SelectedNode.Tag != null)
-                return new List<object>() { treeControl.SelectedNode.Tag };
+                return new List<object>() {(treeControl.SelectedNode.Tag is TreeObjectWrap)? (treeControl.SelectedNode.Tag as TreeObjectWrap).Tag : treeControl.SelectedNode.Tag };
             else return null;
         }
 
@@ -441,7 +483,8 @@ namespace FrwSoftware
                 {
                     try
                     {
-                        var pars = new Dictionary<string, object> { { "Parent", parentNode.Tag }, { "ParentNode", parentNode } };
+                        object x = (parentNode.Tag is TreeObjectWrap) ? (parentNode.Tag as TreeObjectWrap).Tag : parentNode.Tag;
+                        var pars = new Dictionary<string, object> { { "Parent", x }, { "ParentNode", parentNode } };
                         AddObject(selectedListItem, selectedObject, SourceObjectType, pars);
                     }
                     catch (Exception ex)
@@ -454,7 +497,7 @@ namespace FrwSoftware
         }
         #region save restore config
         private string configFileStr = null;
-        private TreeListState savedTreeState = null;
+        protected TreeListState savedTreeState = null;
         private void LoadConfig()
         {
             try
@@ -511,6 +554,39 @@ namespace FrwSoftware
             ReloadList();
         }
     }
+
+    public class RelationVisibility
+    {
+        public string Name { get; set; }
+    }
+    public class EntityRelationVisibility
+    {
+        public string EntityTypeFullName { get; set; }//do not use Type? use string
+        public List<RelationVisibility> InvisileRelations { get; set; } = new List<RelationVisibility>();
+        public bool IsRelationVisible(string name)
+        {
+            foreach(var f in InvisileRelations)
+            {
+                if (f.Name.Equals(name)) return false;
+            }
+            return true;
+        }
+        public void InvisibleRelation(string name)
+        {
+            RelationVisibility fv = null;
+            foreach (var f in InvisileRelations)
+            {
+                if (f.Name.Equals(name)) fv = f;
+                break;
+            }
+            if (fv == null)
+            {
+                fv = new RelationVisibility() { Name = name};
+                InvisileRelations.Add(fv);
+            }
+        }
+    }
+
     public class TreeListState
     {
         private IDictionary<string, object> userSettings = new Dictionary<string, object>();
@@ -518,6 +594,38 @@ namespace FrwSoftware
 
         private  IList<string> nodeStates = new List<string>();
         public IList<string> NodeStates { get { return nodeStates; } set { nodeStates = value; } }
+
+        private IList<EntityRelationVisibility> relationVisibilities = new List<EntityRelationVisibility>();
+        public IList<EntityRelationVisibility> RelationVisibilities { get { return relationVisibilities; } set { relationVisibilities = value; } }
+
+        public bool IsRelationVisible(Type entityType, string name)
+        {
+            foreach (var f in RelationVisibilities)
+            {
+                if (entityType.FullName.Equals(f.EntityTypeFullName))
+                {
+                    return f.IsRelationVisible(name);
+                }
+            }
+            return true;
+        }
+        public void InvisibleField(Type entityType, string name)
+        {
+            EntityRelationVisibility fv = null;
+            foreach (var f in RelationVisibilities)
+            {
+                if (entityType.FullName.Equals(f.EntityTypeFullName))
+                {
+                    fv = f;
+                    break;
+                }
+            }
+            if (fv == null) {
+                fv = new EntityRelationVisibility() { EntityTypeFullName = entityType.FullName };
+                RelationVisibilities.Add(fv);
+            }
+            fv.InvisibleRelation(name);
+        }
     }
 
     public static class TreeViewExtensions

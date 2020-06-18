@@ -20,6 +20,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Reflection;
 
 namespace FrwSoftware
 {
@@ -52,23 +53,40 @@ namespace FrwSoftware
                 }
                 
                 sourceObject = value;
-                tempSourceObject = Dm.Instance.CloneObject(sourceObject, CloneObjectType.ForTemp);
+                tempSourceObject = Dm.CloneObject(sourceObject, CloneObjectType.ForTemp);
                 SetModified(false);
             }
+        }
+        public object CloningObject
+        {
+            get; set;
         }
         public bool SaveChanges()
         {
             JValidationResult result = Dm.Instance.ValidateObject(tempSourceObject);
             if (!result.isError)
             {
-                Dm.Instance.CopyObjectProperties(tempSourceObject, sourceObject, CopyRestrictLevel.AllPropertiesNewLists);
+                Dm.CopyObjectProperties(tempSourceObject, sourceObject, CopyRestrictLevel.AllPropertiesNewLists);
                 if (AttrHelper.IsAttributeDefinedForType<JEntity>(SourceObjectType, true)) { 
                     Dm.Instance.SaveObject(sourceObject);
+                    if (ViewMode == ViewMode.New && CloningObject != null)
+                    {
+                        MethodInfo cloneDependenciesMethod = SourceObjectType.GetMethod("CloneDependencies");
+                        if (cloneDependenciesMethod != null)
+                        {
+                            DialogResult res = MessageBox.Show("Clone dependencies?", FrwConstants.WARNING, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                            if (res == DialogResult.Yes)
+                            {
+                                object cdResult = cloneDependenciesMethod.Invoke(null, new object[] { CloningObject, sourceObject });//Pass null as the first argument (no need for an instance)
+                            }
+                        }
+                    }
                 }
                 SetModified(false);
                 ChildObjectUpdateEventArgs ev = new ChildObjectUpdateEventArgs();
                 ev.UpdatedObject = sourceObject;
                 OnPropertyObjectUpdate(ev);
+                if (ViewMode == ViewMode.New) ViewMode = ViewMode.Edit;
                 return true;
             }
             else {
@@ -101,7 +119,7 @@ namespace FrwSoftware
 
         protected void RevertChanges()
         {
-            tempSourceObject = Dm.Instance.CloneObject(sourceObject, CloneObjectType.ForTemp);
+            tempSourceObject = Dm.CloneObject(sourceObject, CloneObjectType.ForTemp);
             SetModified(false);
             ProcessView();
         }

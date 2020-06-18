@@ -210,7 +210,7 @@ namespace FrwSoftware
                 return settings.Values;
             }
         }
-        #region propery get anad set
+        #region propery get and set
         public JSetting GetProperty(string name)
         {
             JSetting setting = null;
@@ -230,6 +230,7 @@ namespace FrwSoftware
             }
             else return defaultValue;
         }
+
         public string GetPropertyValueAsString(string name)
         {
             JSetting setting = GetProperty(name);
@@ -239,6 +240,21 @@ namespace FrwSoftware
             }
             else return null;
         }
+
+        public string GetPropertyValueAsString(string name, string defaultValue)
+        {
+            JSetting setting = GetProperty(name);
+            if (setting != null && setting.Value != null)
+            {
+                return setting.Value.ToString();
+            }
+            else
+            {
+                if(setting != null) setting.Value = defaultValue;
+                return defaultValue;
+            }
+        }
+   
         public bool GetPropertyValueAsBool(string name)
         {
             return GetPropertyValueAsBool(name, false);
@@ -246,11 +262,33 @@ namespace FrwSoftware
         public bool GetPropertyValueAsBool(string name, bool defaultValue)
         {
             object value = GetPropertyValue(name);
-            if (value == null) return defaultValue;
+            if (value == null)
+            {
+           
+                return defaultValue;
+            }
             if (value is bool) return (bool)value;
             else if (value is string)
             {
                 return bool.Parse(value as string);
+            }
+            else
+            {
+                throw new ArgumentException();
+            }
+        }
+        public int GetPropertyValueAsInt(string name)
+        {
+            return GetPropertyValueAsInt(name, 0);
+        }
+        public int GetPropertyValueAsInt(string name, int defaultValue)
+        {
+            object value = GetPropertyValue(name);
+            if (value == null) return defaultValue;
+            if (value is int) return (int)value;
+            else if (value is string)
+            {
+                return int.Parse(value as string);
             }
             else
             {
@@ -326,20 +364,54 @@ namespace FrwSoftware
                 if (s.Value != null)
                 {
                     Type type = s.ValueType;
-                    JEntity entityAttr = AttrHelper.GetClassAttribute<JEntity>(type);
-                    if (entityAttr != null)//todo list 
+                    if (type != null)
                     {
-                        PropertyInfo pkProp = AttrHelper.GetProperty<JPrimaryKey>(type);
-                        if (pkProp == null) throw new Exception("Primary key not found in referenced entity");
-
-                        if (s.AllowMultiValues)
+                        JEntity entityAttr = AttrHelper.GetClassAttribute<JEntity>(type);
+                        if (entityAttr != null)//todo list 
                         {
-                            IList list = (IList)s.Value;
-                            IList values = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(type));
-                            foreach (var val in list)
+                            PropertyInfo pkProp = AttrHelper.GetProperty<JPrimaryKey>(type);
+                            if (pkProp == null) throw new Exception("Primary key not found in referenced entity");
+
+                            if (s.AllowMultiValues)
                             {
+                                IList list = (IList)s.Value;
+                                IList values = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(type));
+                                foreach (var val in list)
+                                {
+                                    object pvReal = null;
+                                    object pkValue = pkProp.GetValue(val);
+                                    if (pkValue != null)
+                                    {
+                                        try
+                                        {
+                                            pvReal = Dm.Instance.Find(type, pkValue);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            PropertyInfo nameProp = AttrHelper.GetProperty<JNameProperty>(type);
+                                            if (nameProp != null) nameProp.SetValue(val, Resources.Dm_ErrorFinding + ex);
+                                            pvReal = val;
+                                        }
+                                        if (pvReal != null)
+                                        {
+                                        }
+                                        else
+                                        {
+                                            //may be removed 
+                                            PropertyInfo nameProp = AttrHelper.GetProperty<JNameProperty>(type);
+                                            if (nameProp != null) nameProp.SetValue(val, Resources.Dm_NotFound);
+                                            pvReal = val;
+                                        }
+                                    }
+                                    values.Add(pvReal);
+                                }
+                                s.Value = values;
+                            }
+                            else
+                            {
+
                                 object pvReal = null;
-                                object pkValue = pkProp.GetValue(val);
+                                object pkValue = pkProp.GetValue(s.Value);
                                 if (pkValue != null)
                                 {
                                     try
@@ -349,49 +421,18 @@ namespace FrwSoftware
                                     catch (Exception ex)
                                     {
                                         PropertyInfo nameProp = AttrHelper.GetProperty<JNameProperty>(type);
-                                        if (nameProp != null) nameProp.SetValue(val, Resources.Dm_ErrorFinding + ex);
-                                        pvReal = val;
+                                        if (nameProp != null) nameProp.SetValue(s.Value, Resources.Dm_ErrorFinding + ex);
                                     }
                                     if (pvReal != null)
                                     {
+                                        s.Value = pvReal;
                                     }
                                     else
                                     {
                                         //may be removed 
                                         PropertyInfo nameProp = AttrHelper.GetProperty<JNameProperty>(type);
-                                        if (nameProp != null) nameProp.SetValue(val, Resources.Dm_NotFound);
-                                        pvReal = val;
+                                        if (nameProp != null) nameProp.SetValue(s.Value, Resources.Dm_NotFound);
                                     }
-                                }
-                                values.Add(pvReal);
-                            }
-                            s.Value = values;
-                        }
-                        else
-                        {
-                           
-                            object pvReal = null;
-                            object pkValue = pkProp.GetValue(s.Value);
-                            if (pkValue != null)
-                            {
-                                try
-                                {
-                                    pvReal = Dm.Instance.Find(type, pkValue);
-                                }
-                                catch (Exception ex)
-                                {
-                                    PropertyInfo nameProp = AttrHelper.GetProperty<JNameProperty>(type);
-                                    if (nameProp != null) nameProp.SetValue(s.Value, Resources.Dm_ErrorFinding + ex);
-                                }
-                                if (pvReal != null)
-                                {
-                                    s.Value = pvReal;
-                                }
-                                else
-                                {
-                                    //may be removed 
-                                    PropertyInfo nameProp = AttrHelper.GetProperty<JNameProperty>(type);
-                                    if (nameProp != null) nameProp.SetValue(s.Value, Resources.Dm_NotFound);
                                 }
                             }
                         }
@@ -427,21 +468,24 @@ namespace FrwSoftware
             //https://msdn.microsoft.com/en-us/library/system.environment.specialfolder.aspx 
 
             //stage 2
-            filename = Path.Combine(ComputerUserDir, settingsFileName);
-            fileInfo = new FileInfo(filename);
-            dir = fileInfo.Directory;
-            if (dir.Exists == false)
+            if (ComputerUserDir != null)
             {
-                Directory.CreateDirectory(dir.FullName);
-            }
-            if (fileInfo.Exists)
-            {
-                List<JSetting> settingsList = null;
-                settingsList = JsonSerializeHelper.LoadFromFile<List<JSetting>>(filename);
-                foreach (var s in settingsList)
+                filename = Path.Combine(ComputerUserDir, settingsFileName);
+                fileInfo = new FileInfo(filename);
+                dir = fileInfo.Directory;
+                if (dir.Exists == false)
                 {
-                    s.IsAttachedToComputer = true;
-                    settings[s.Name] = s;
+                    Directory.CreateDirectory(dir.FullName);
+                }
+                if (fileInfo.Exists)
+                {
+                    List<JSetting> settingsList = null;
+                    settingsList = JsonSerializeHelper.LoadFromFile<List<JSetting>>(filename);
+                    foreach (var s in settingsList)
+                    {
+                        s.IsAttachedToComputer = true;
+                        settings[s.Name] = s;
+                    }
                 }
             }
 
@@ -450,34 +494,37 @@ namespace FrwSoftware
                 if (setting.Value != null)
                 {
                     Type type = setting.ValueType;
-                    if (type != typeof(string))
+                    if (type != null)
                     {
-                        JEntity entityAttr = AttrHelper.GetClassAttribute<JEntity>(type);
-                        if (entityAttr != null)
+                        if (type != typeof(string))
                         {
-                            if (setting.AllowMultiValues)
+                            JEntity entityAttr = AttrHelper.GetClassAttribute<JEntity>(type);
+                            if (entityAttr != null)
                             {
-                                IList list = (IList)setting.Value;
-                                IList values = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(type));
-                                foreach (var pkOnlyObject in list)
+                                if (setting.AllowMultiValues)
                                 {
-                                    string str = JsonSerializeHelper.SaveToString(pkOnlyObject);
-                                    object realObject = JsonSerializeHelper.LoadFromString(str, type);
-                                    values.Add(realObject);
+                                    IList list = (IList)setting.Value;
+                                    IList values = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(type));
+                                    foreach (var pkOnlyObject in list)
+                                    {
+                                        string str = JsonSerializeHelper.SaveToString(pkOnlyObject);
+                                        object realObject = JsonSerializeHelper.LoadFromString(str, type);
+                                        values.Add(realObject);
+                                    }
+                                    setting.Value = values;
                                 }
-                                setting.Value = values;
+                                else
+                                {
+                                    setting.Value = JsonSerializeHelper.LoadFromString(JsonSerializeHelper.SaveToString(setting.Value), type);
+                                }
                             }
                             else
                             {
-                                setting.Value = JsonSerializeHelper.LoadFromString(JsonSerializeHelper.SaveToString(setting.Value), type);
-                            }
-                        }
-                        else
-                        {
-                            TypeConverter converter = TypeDescriptor.GetConverter(type);
-                            if (converter != null)//for system types (Font, etc.)
-                            {
-                                setting.Value = converter.ConvertFromString((string)setting.Value);
+                                TypeConverter converter = TypeDescriptor.GetConverter(type);
+                                if (converter != null)//for system types (Font, etc.)
+                                {
+                                    setting.Value = converter.ConvertFromString((string)setting.Value);
+                                }
                             }
                         }
                     }

@@ -70,14 +70,12 @@ namespace FrwSoftware
         }
         public override bool CompareKeyParams(IDictionary<string, object> pars)
         {
-            //keys в данном методе являются только объектами, но не стрингами 
             if (!compareJobTypeKey(DictHelper.Get(pars, "JobType"), JobType)) return false;
             return true;
         }
 
         private bool compareJobTypeKey(object key, JJobType item)
         {
-            //если ключ не задан сравнение по нему не производится 
             if (key != null)
             {
                 if (key is JJobType) return ((JJobType)key).Equals(item);

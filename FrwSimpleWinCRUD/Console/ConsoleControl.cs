@@ -44,6 +44,8 @@ namespace ConsoleControl
     [ToolboxBitmap(typeof(Resfinder), "ConsoleControl.ConsoleControl.bmp")]
     public partial class ConsoleControl : UserControl
     {
+        Timer timer = new Timer();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ConsoleControl"/> class.
         /// </summary>
@@ -74,11 +76,30 @@ namespace ConsoleControl
             richTextBoxConsole.KeyDown += richTextBoxConsole_KeyDown;
 
             //just
-            FConsole = new ConsoleStream(richTextBoxConsole);
+            //FConsole = new ConsoleStream(richTextBoxConsole);
+            FConsole = new ConsoleStream();
 
             //this.richTextBoxConsole.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             //this.richTextBoxConsole.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            timer.Tick += Timer_Tick;
+            timer.Interval = 2000;
+            timer.Start();
+        }
 
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            
+            if (richTextBoxConsole.IsHandleCreated)
+            {
+                if (richTextBoxConsole.TextLength > 10000)
+                {
+                    richTextBoxConsole.Clear();
+                }
+
+                string text = FConsole.GetText();
+                richTextBoxConsole.AppendText(text);
+                richTextBoxConsole.ScrollToCaret();
+            }
         }
 
         /// <summary>

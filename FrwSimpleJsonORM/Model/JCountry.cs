@@ -1,9 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿/**********************************************************************************
+ *   FrwSimpleWinCRUD   https://github.com/frwsoftware/FrwSimpleWinCRUD
+ *   The Open-Source Library for most quick  WinForm CRUD application creation
+ *   MIT License Copyright (c) 2016 FrwSoftware
+ *
+ *   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *   SOFTWARE.
+ **********************************************************************************/
 namespace FrwSoftware
 {
     [JDisplayName(typeof(FrwUtilsRes), "JCountry_Country")]
@@ -20,7 +27,7 @@ namespace FrwSoftware
 
         [JDisplayName(typeof(FrwUtilsRes), "JCountry_Flag")]
         [JImageName(DisplyPropertyStyle.TextAndImage)]
-        public string Image { get; set; } ////https://www.iconfinder.com/icons/167745/ua_icon#size=23 флаги 
+        public string Image { get; set; } ////https://www.iconfinder.com/icons/167745/ua_icon#size=23 flags
 
         public string Official_name_en { get; set; }
         public string Official_name_fr { get; set; }
@@ -48,5 +55,6 @@ namespace FrwSoftware
         public string Languages { get; set; }
         public string Geoname_ID { get; set; }
         public string EDGAR { get; set; }
+        public string WikidataId { get; set; }
     }
 }

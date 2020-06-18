@@ -330,4 +330,31 @@
   <data name="High" xml:space="preserve">
     <value>High</value>
   </data>
+  <data name="Application_Allready_Running" xml:space="preserve">
+    <value>Application allready running!</value>
+  </data>
+  <data name="Application_Folder_Not_Found" xml:space="preserve">
+    <value>The local database directory was not found by the path:</value>
+  </data>
+  <data name="WARNING1" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="JPort_ExtPort" xml:space="preserve">
+    <value>External port</value>
+  </data>
+  <data name="JPort_Info" xml:space="preserve">
+    <value>Information</value>
+  </data>
+  <data name="JPort_Name" xml:space="preserve">
+    <value>Full Name</value>
+  </data>
+  <data name="JPort_Port" xml:space="preserve">
+    <value>Port</value>
+  </data>
+  <data name="JPort_Protocol" xml:space="preserve">
+    <value>Protocol</value>
+  </data>
+  <data name="archived" xml:space="preserve">
+    <value>archived</value>
+  </data>
 </root>

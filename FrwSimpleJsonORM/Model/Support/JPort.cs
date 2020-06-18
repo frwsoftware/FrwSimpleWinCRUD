@@ -16,12 +16,12 @@ namespace FrwSoftware
         public static int SSH_DEFAULT = 22;
         public static int RDP_DEFAULT = 3389;
 
-        [JDisplayName("Протокол")]
+        [JDisplayName(typeof(FrwUtilsRes), "JPort_Protocol")]
         [JDictProp(DictNames.Protocol, false, DisplyPropertyStyle.TextOnly)]
         [JRequired]
         public string Protocol { get; set; }
 
-        [JDisplayName("Полное наименование")]
+        [JDisplayName(typeof(FrwUtilsRes), "JPort_Name")]
         [JNameProperty, JReadOnly, JsonIgnore]
         public string Name
         {
@@ -101,13 +101,13 @@ namespace FrwSoftware
             }
         }
 
-        [JDisplayName("Порт")]
+        [JDisplayName(typeof(FrwUtilsRes), "JPort_Port")]
         public string Port { get; set; }
 
-        [JDisplayName("Внешний порт")]
+        [JDisplayName(typeof(FrwUtilsRes), "JPort_ExtPort")]
         public string ExtPort { get; set; }
 
-        [JDisplayName("Информация")]
+        [JDisplayName(typeof(FrwUtilsRes), "JPort_Info")]
         public string Info { get; set; }
     }
 }

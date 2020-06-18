@@ -169,5 +169,32 @@ namespace FrwSoftware
             }
             return sb.ToString();
         }
+        static public string UrlEncode(string title)
+        {
+            /*
+             * You can encode a URL using with the UrlEncode method or the UrlPathEncode method. 
+             * However, the methods return different results. The UrlEncode method converts each space character to a
+             * plus character (+). The UrlPathEncode method converts each space character into the string "%20",
+             * which represents a space in hexadecimal notation. Use the UrlPathEncode method when you encode the 
+             * path portion of a URL in order to guarantee a consistent decoded URL, regardless of which platform or 
+             * browser performs the decoding.
+             */
+
+            return HttpUtility.UrlEncode(title);
+        }
+        static public string UrlPathEncode(string title)
+        {
+            return HttpUtility.UrlPathEncode(title);
+        }
+        static public string UrlDecode(string title)
+        {
+            return HttpUtility.UrlDecode(title);
+        }
+
+        static public string HtmlDecode(string title)
+        {
+            return HttpUtility.HtmlDecode(title);
+        }
+
     }
 }

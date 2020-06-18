@@ -34,6 +34,7 @@ namespace FrwSoftware
         public int Limit { get { return limit; } set { limit = value; } }
         protected ObjectListView listView = null;
         private bool isTreeList = false;
+        protected bool isVirtualList = false;
         public OLVHotItemStyle HotItemStyle { get; set; }
 
         private ToolStripButton columnsButton;
@@ -175,7 +176,15 @@ namespace FrwSoftware
             //this.listView = new FastDataListView ();
             //this.listView = new FastObjectListView ();
             //listView.VirtualMode = true; Should not be set for normal lists (this field is only for the Fast list and it is set internally.) When using the wizard, it is necessary to monitor whether it was installed.)
+
+            JEntity sourceEntityAttr = AttrHelper.GetClassAttribute<JEntity>(SourceObjectType);
+            if (sourceEntityAttr != null)
+            {
+                if (Dm.Instance.GetDs(SourceObjectType).IsCashed() == false) isVirtualList = true;
+            }
+
             if (isTreeList) listView = new TreeListView();
+            else if (isVirtualList) listView = new JVirtualObjectListView(SourceObjectType);
             else listView = new ObjectListView();
 
             listView.Cursor = Cursors.Default;
@@ -192,20 +201,21 @@ namespace FrwSoftware
             listView.UseCompatibleStateImageBehavior = false;
             listView.View = View.Details;
 
-            listView.UseFiltering = true;//can filter 
-            listView.UseFilterIndicator = true;
+            if (isVirtualList == false)
+            {
+                listView.UseFiltering = true;//can filter 
+                listView.UseFilterIndicator = true;
+            }
             listView.AllowColumnReorder = true;
+            //do not set to true for correct working of virtual lists 
             listView.TriStateCheckBoxes = false;//todo If you want the user to be able to give check boxes the Indeterminate value, you should set the ObjectListView.TriStateCheckBoxes property to true.
             listView.TintSortColumn = true;//If you set TintSortColumn property to true, the sort column will be automatically tinted. The color of the tinting is controlled by the SelectedColumnTint property.
             listView.ShowItemToolTips = true;
-
             //listView.UseHotItem = true;
-
             listView.UseHyperlinks = true;
             listView.HyperlinkClicked += ListView_HyperlinkClicked;
             listView.SelectColumnsOnRightClickBehaviour = ObjectListView.ColumnSelectBehaviour.Submenu;
             listView.ShowCommandMenuOnRightClick = true;
-            listView.TintSortColumn = true;
             listView.GridLines = true;
             listView.UseAlternatingBackColors = true;
             listView.AlternateRowBackColor = Color.Azure;
@@ -233,8 +243,24 @@ namespace FrwSoftware
             listView.ModelCanDrop += ListView_ModelCanDrop;
             listView.ModelDropped += ListView_ModelDropped;
             listView.CellToolTipShowing += ListView_CellToolTipShowing;
+            listView.HeaderToolTipShowing += ListView_HeaderToolTipShowing; 
+
             //add to container
             toolStripContainer1.ContentPanel.Controls.Add(listView);
+        }
+
+        private void ListView_HeaderToolTipShowing(object sender, ToolTipShowingEventArgs e)
+        {
+            if (SourceObjectType != null && e.Column.AspectName != null) { 
+                PropertyInfo propInfo = SourceObjectType.GetProperty(e.Column.AspectName);
+                if (propInfo != null) {
+                    string desc = ModelHelper.GetPropertyJDescriptionOrName(propInfo, true);
+                    if (desc != null)
+                    {
+                        e.Text = desc;
+                    }
+                }
+            }
         }
 
         private void ListView_CellToolTipShowing(object sender, ToolTipShowingEventArgs e)
@@ -1000,6 +1026,31 @@ namespace FrwSoftware
             }
             listView.RemoveObjects(listView.SelectedObjects);
         }
+
+        override public void MoveUpSelectedItems()
+        {
+            //throw new NotImplementedException();
+            if (listView.SelectedObjects != null)
+            {
+                var index = listView.SelectedIndex;
+                index--;
+                listView.MoveObjects(index, listView.SelectedObjects);
+            }
+        }
+        override public void MoveDownSelectedItems()
+        {
+            //throw new NotImplementedException();
+            if (listView.SelectedObjects != null)
+            {
+                var index = listView.SelectedIndex;
+                index++;
+                index++;
+                listView.MoveObjects(index, listView.SelectedObjects);
+            }
+        }
+
+
+
 
         private void listView_CellRightClick(object sender, BrightIdeasSoftware.CellRightClickEventArgs e)
         {

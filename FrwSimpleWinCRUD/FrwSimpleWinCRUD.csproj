@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>FrwSoftware</RootNamespace>
     <AssemblyName>FrwSoftware.FrwSimpleWinCRUD</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,9 +49,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HtmlAgilityPack, Version=1.8.11.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <HintPath>..\..\JustProjects\packages\HtmlAgilityPack.1.8.11\lib\Net45\HtmlAgilityPack.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="HtmlAgilityPack, Version=1.11.24.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\..\JustProjects\packages\HtmlAgilityPack.1.11.24\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
@@ -72,12 +72,10 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\JustProjects\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\..\JustProjects\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="ObjectListView, Version=2.9.1.25410, Culture=neutral, PublicKeyToken=b1c5bf581481bcd4, processorArchitecture=MSIL">
-      <HintPath>..\packages\ObjectListView.Official.2.9.2-alpha2\lib\net20\ObjectListView.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\..\JustProjects\packages\ObjectListView.Official.2.9.2-alpha2\lib\net20\ObjectListView.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -93,7 +91,6 @@
     <Reference Include="System.Xml" />
     <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=3.0.6.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
       <HintPath>..\..\JustProjects\packages\DockPanelSuite.3.0.6\lib\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
-      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -219,6 +216,7 @@
     <Compile Include="HTMLEditorControl\TextEditorControl.Designer.cs">
       <DependentUpon>TextEditorControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="IFormsEntityPlugin.cs" />
     <Compile Include="JDocPanelLayoutUtils.cs" />
     <Compile Include="Job\AbortableBackgroundWorker.cs">
       <SubType>Component</SubType>
@@ -282,14 +280,15 @@
       <DependentUpon>BasePropertyWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="ListViewBase\BaseTreeControl.cs" />
-    <Compile Include="ListViewBase\BaseTreeListWindow.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="ListViewBase\BaseTreeListWindow.cs" />
     <Compile Include="ListViewBase\BaseTreeListWindow.Designer.cs">
       <DependentUpon>BaseTreeListWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="ListViewBase\IViewInterfaces.cs" />
     <Compile Include="ListViewBase\FrwDesktopCommonEvets.cs" />
+    <Compile Include="ListViewBase\JVirtualObjectListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="ListViewBase\OLVListSettingDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -315,6 +314,18 @@
     </Compile>
     <Compile Include="ListViewBase\SimpleDateTimeDialog.Designer.cs">
       <DependentUpon>SimpleDateTimeDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ListViewBase\SimpleGenericSimpleListDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ListViewBase\SimpleGenericSimpleListDialog.Designer.cs">
+      <DependentUpon>SimpleGenericSimpleListDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ListViewBase\SimpleRelationSelectorDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ListViewBase\SimpleRelationSelectorDialog.Designer.cs">
+      <DependentUpon>SimpleRelationSelectorDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="ListViewBase\SimpleGenericListFieldItemListDialog.cs">
       <SubType>Form</SubType>
@@ -405,13 +416,14 @@
     <Compile Include="ListViewImpl\AppSettingsWindow.Designer.cs">
       <DependentUpon>AppSettingsWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="DocPanelBase\MainAppUtils.cs" />
     <Compile Include="NotifAndErrorConsoleWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="NotifAndErrorConsoleWindow.Designer.cs">
       <DependentUpon>NotifAndErrorConsoleWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Plugins\JJobTypeBasePlugin.cs" />
+    <Compile Include="Plugins\JRunningJobBasePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FrwCRUDRes.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -433,7 +445,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Docs\WinPan.cd" />
     <None Include="FrwSimpleWinCRUD.nuspec" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
@@ -493,6 +504,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="HTMLEditorControl\HtmlEditorControl.ru.resx">
       <DependentUpon>HtmlEditorControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="HTMLEditorControl\SimpleHtmlTextEditDialog.resx">
       <DependentUpon>SimpleHtmlTextEditDialog.cs</DependentUpon>
@@ -529,6 +541,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ListViewBase\SimpleDateTimeDialog.resx">
       <DependentUpon>SimpleDateTimeDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ListViewBase\SimpleGenericSimpleListDialog.resx">
+      <DependentUpon>SimpleGenericSimpleListDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ListViewBase\SimpleRelationSelectorDialog.resx">
+      <DependentUpon>SimpleRelationSelectorDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ListViewBase\SimpleGenericListFieldItemListDialog.resx">
       <DependentUpon>SimpleGenericListFieldItemListDialog.cs</DependentUpon>

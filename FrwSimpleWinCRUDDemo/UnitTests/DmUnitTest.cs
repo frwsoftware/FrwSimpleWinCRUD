@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using FrwSoftware.Model.Test;
 using FrwSoftware;
+using System.IO;
 
 namespace FrwSimpleWinCRUDUnitTestProject
 {
@@ -32,8 +33,13 @@ namespace FrwSimpleWinCRUDUnitTestProject
         {
             FrwConfig.Instance = new FrwSimpleWinCRUDConfig();
             FrwConfig.Instance.ProfileDir = "Data\\TestProfile";//set custom profile name to prevent override demo database 
-            MainAppUtils.InitAppPaths();
 
+            //clear database
+            string runPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase).Substring(6);
+            string _ProfileDir = Path.Combine(runPath, FrwConfig.Instance.ProfileDir);
+            FileUtils.DeleteDirectory(_ProfileDir);
+
+            AppManager.Instance.InitApplication();
             Console.WriteLine("FrwConfig.Instance.GlobalDir: " + FrwConfig.Instance.GlobalDir);
             Console.WriteLine("FrwConfig.Instance.ProfileDir: " + FrwConfig.Instance.ProfileDir);
             Console.WriteLine("FrwConfig.Instance.ComputerUserDir: " + FrwConfig.Instance.ComputerUserDir);
@@ -49,7 +55,7 @@ namespace FrwSimpleWinCRUDUnitTestProject
             Assert.IsFalse(Dm.Instance.IsEntityModified(typeof(Playlist)));
             Assert.IsFalse(Dm.Instance.IsEntityModified(typeof(Track)));
             Assert.IsFalse(Dm.Instance.IsEntityModified(typeof(Employee)));
-            Assert.IsFalse(Dm.Instance.IsJoinEntityModified(typeof(Track), typeof(Playlist) , null));
+            Assert.IsFalse(Dm.Instance.IsJoinModified(typeof(Track), typeof(Playlist) , null));
 
             Album album0 = (Album)Dm.Instance.EmptyObject(typeof(Album), null);
             album0.Title = "Album 0";
@@ -133,7 +139,7 @@ namespace FrwSimpleWinCRUDUnitTestProject
             //clone for save
             Assert.IsNotNull(track0.Album);
             Assert.IsNotNull(album0.Title);
-            Track track0CloneFoSave = (Track)Dm.Instance.CloneObject(track0, CloneObjectType.ForSave);
+            Track track0CloneFoSave = (Track)Dm.CloneObject(track0, CloneObjectType.ForSave);
             Assert.IsNotNull(track0CloneFoSave.Album);
             Assert.AreNotSame(track0.Album, track0CloneFoSave.Album);
             Assert.AreEqual(track0.Album.AlbumId, track0CloneFoSave.Album.AlbumId);
@@ -141,19 +147,19 @@ namespace FrwSimpleWinCRUDUnitTestProject
             Assert.IsNull(track0CloneFoSave.Album.Title);
 
             Assert.IsNotNull(album2.Tracks);
-            Album album2CloneFoSave = (Album)Dm.Instance.CloneObject(album2, CloneObjectType.ForSave);
+            Album album2CloneFoSave = (Album)Dm.CloneObject(album2, CloneObjectType.ForSave);
             Assert.IsNull(album2CloneFoSave.Tracks);
             
             //for temp
             Assert.IsNotNull(track0.Album);
             Assert.IsNotNull(album0.Title);
-            Track track0CloneForTemp = (Track)Dm.Instance.CloneObject(track0, CloneObjectType.ForTemp);
+            Track track0CloneForTemp = (Track)Dm.CloneObject(track0, CloneObjectType.ForTemp);
             Assert.IsNotNull(track0CloneForTemp.Album);
             Assert.AreSame(track0.Album, track0CloneForTemp.Album);
             Assert.IsNotNull(track0CloneForTemp.Name);
 
             Assert.IsNotNull(album2.Tracks);
-            Album album2CloneForTemp = (Album)Dm.Instance.CloneObject(album2, CloneObjectType.ForTemp);
+            Album album2CloneForTemp = (Album)Dm.CloneObject(album2, CloneObjectType.ForTemp);
             Assert.IsNotNull(album2CloneForTemp.Tracks);
             Assert.AreNotSame(album2.Tracks, album2CloneForTemp.Tracks);
             Assert.AreSame(album2.Tracks[0], album2CloneForTemp.Tracks[0]);
@@ -161,7 +167,7 @@ namespace FrwSimpleWinCRUDUnitTestProject
             //clone for export
             Assert.IsNotNull(track0.Album);
             Assert.IsNotNull(album0.Title);
-            Track track0CloneForExport = (Track)Dm.Instance.CloneObject(track0, CloneObjectType.ForExport);
+            Track track0CloneForExport = (Track)Dm.CloneObject(track0, CloneObjectType.ForExport);
             Assert.IsNotNull(track0CloneForExport.Album);
             Assert.AreNotSame(track0.Album, track0CloneForExport.Album);
             Assert.AreEqual(track0.Album.AlbumId, track0CloneForExport.Album.AlbumId);
@@ -169,7 +175,7 @@ namespace FrwSimpleWinCRUDUnitTestProject
             Assert.IsNull(track0CloneForExport.Album.Title);
 
             Assert.IsNotNull(album2.Tracks);
-            Album album2CloneForExport = (Album)Dm.Instance.CloneObject(album2, CloneObjectType.ForExport);
+            Album album2CloneForExport = (Album)Dm.CloneObject(album2, CloneObjectType.ForExport);
             Assert.IsNotNull(album2CloneForExport.Tracks);
             Assert.AreNotSame(album2.Tracks, album2CloneForExport.Tracks);
             Assert.AreNotSame(album2.Tracks[0], album2CloneForExport.Tracks[0]);
@@ -248,7 +254,7 @@ namespace FrwSimpleWinCRUDUnitTestProject
             Assert.IsFalse(album2.Tracks.Contains(track0));
 
             Assert.IsTrue(Dm.Instance.IsEntityModified(typeof(Album)));
-            Assert.IsFalse(Dm.Instance.IsEntityModified(typeof(Track)));
+            Assert.IsTrue(Dm.Instance.IsEntityModified(typeof(Track)));
 
             Track trackNotSaved = (Track)Dm.Instance.EmptyObject(typeof(Track), null);
             album2.Tracks.Add(trackNotSaved);
@@ -265,7 +271,7 @@ namespace FrwSimpleWinCRUDUnitTestProject
             //many to many
             Dm.Instance.SaveEntityData(typeof(Track));
             Dm.Instance.SaveEntityData(typeof(Playlist));
-            Assert.IsFalse(Dm.Instance.IsJoinEntityModified(typeof(Track), typeof(Playlist), null));
+            Assert.IsFalse(Dm.Instance.IsJoinModified(typeof(Track), typeof(Playlist), null));
             Assert.IsFalse(Dm.Instance.IsEntityModified(typeof(Track)));
             Assert.IsFalse(Dm.Instance.IsEntityModified(typeof(Playlist)));
 
@@ -311,12 +317,12 @@ namespace FrwSimpleWinCRUDUnitTestProject
 
             Assert.IsTrue(Dm.Instance.IsEntityModified(typeof(Track)));
             Assert.IsTrue(Dm.Instance.IsEntityModified(typeof(Playlist)));
-            Assert.IsTrue(Dm.Instance.IsJoinEntityModified(typeof(Track), typeof(Playlist), null));
+            Assert.IsTrue(Dm.Instance.IsJoinModified(typeof(Track), typeof(Playlist), null));
             Dm.Instance.SaveEntityData(typeof(Track));
             Dm.Instance.SaveEntityData(typeof(Playlist));
             Assert.IsFalse(Dm.Instance.IsEntityModified(typeof(Track)));
             Assert.IsFalse(Dm.Instance.IsEntityModified(typeof(Playlist)));
-            Assert.IsFalse(Dm.Instance.IsJoinEntityModified(typeof(Track), typeof(Playlist), null));
+            Assert.IsFalse(Dm.Instance.IsJoinModified(typeof(Track), typeof(Playlist), null));
 
             //change
             track2.Playlists.Add(playlist0);
@@ -348,13 +354,13 @@ namespace FrwSimpleWinCRUDUnitTestProject
 
 
             Assert.IsTrue(Dm.Instance.IsEntityModified(typeof(Track)));
-            Assert.IsTrue(Dm.Instance.IsEntityModified(typeof(Playlist)));
-            Assert.IsTrue(Dm.Instance.IsJoinEntityModified(typeof(Track), typeof(Playlist), null));
+            //Assert.IsTrue(Dm.Instance.IsEntityModified(typeof(Playlist)));
+            Assert.IsTrue(Dm.Instance.IsJoinModified(typeof(Track), typeof(Playlist), null));
             Dm.Instance.SaveEntityData(typeof(Track));
             Dm.Instance.SaveEntityData(typeof(Playlist));
             Assert.IsFalse(Dm.Instance.IsEntityModified(typeof(Track)));
             Assert.IsFalse(Dm.Instance.IsEntityModified(typeof(Playlist)));
-            Assert.IsFalse(Dm.Instance.IsJoinEntityModified(typeof(Track), typeof(Playlist), null));
+            Assert.IsFalse(Dm.Instance.IsJoinModified(typeof(Track), typeof(Playlist), null));
 
             //change
             track2.Playlists.Remove(playlist0);
@@ -390,13 +396,13 @@ namespace FrwSimpleWinCRUDUnitTestProject
             Assert.IsTrue(playlist3.Tracks.Contains(track3));
 
             Assert.IsTrue(Dm.Instance.IsEntityModified(typeof(Track)));
-            Assert.IsTrue(Dm.Instance.IsEntityModified(typeof(Playlist)));
-            Assert.IsTrue(Dm.Instance.IsJoinEntityModified(typeof(Track), typeof(Playlist), null));
+            Assert.IsFalse(Dm.Instance.IsEntityModified(typeof(Playlist)));
+            Assert.IsTrue(Dm.Instance.IsJoinModified(typeof(Track), typeof(Playlist), null));
             Dm.Instance.SaveEntityData(typeof(Track));
             Dm.Instance.SaveEntityData(typeof(Playlist));
             Assert.IsFalse(Dm.Instance.IsEntityModified(typeof(Track)));
             Assert.IsFalse(Dm.Instance.IsEntityModified(typeof(Playlist)));
-            Assert.IsFalse(Dm.Instance.IsJoinEntityModified(typeof(Track), typeof(Playlist), null));
+            Assert.IsFalse(Dm.Instance.IsJoinModified(typeof(Track), typeof(Playlist), null));
 
 
             Playlist PlaylistNotSaved = (Playlist)Dm.Instance.EmptyObject(typeof(Playlist), null);

@@ -69,14 +69,13 @@ namespace FrwSoftware
         }
         public override bool CompareKeyParams(IDictionary<string, object> pars)
         {
-            //keys в данном методе являются только объектами, но не стрингами 
+            //keys in this method are only objects, but not strings
             if (!compareJobKey(DictHelper.Get(pars, "RunningJob"), RunningJob)) return false;
             return true;
         }
 
         private bool compareJobKey(object key, JRunningJob item)
         {
-            //если ключ не задан сравнение по нему не производится 
             if (key != null)
             {
                 if (key is JRunningJob) return ((JRunningJob)key).Equals(item);

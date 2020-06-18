@@ -30,16 +30,36 @@ namespace FrwSoftware
         {
             File.WriteAllText(fileName, SaveToString(oToSave), Encoding.UTF8);
         }
+        public static void SaveToFileLageData(object oToSave, string fileName)
+        {
+            //https://stackoverflow.com/questions/39598171/serializeobject-throws-system-outofmemoryexception
+            //File.WriteAllText(fileName, SaveToString(oToSave), Encoding.UTF8); - OutOfMemory
+            using (var fs = File.Open(fileName, FileMode.Create))
+            using (var sw = new StreamWriter(fs))
+            using (var jw = new JsonTextWriter(sw))
+            {
+                JsonSerializerSettings settings = CreateSettingsForSave();
+                settings.Formatting = Formatting.Indented;
+                var serializer =  JsonSerializer.Create(settings);
+                serializer.Serialize(jw, oToSave);
+            }
+
+        }
         public static string SaveToString(object oToSave)
+        {
+            JsonSerializerSettings settings = CreateSettingsForSave();
+            return JsonConvert.SerializeObject(oToSave, Formatting.Indented, settings);
+        }
+        private static  JsonSerializerSettings CreateSettingsForSave()
         {
             //short
             JsonSerializerSettings settings = new JsonSerializerSettings();
             settings.NullValueHandling = NullValueHandling.Ignore;//Json.NET will skip writing JSON properties if the.NET value is null when serializing and will skip setting fields / properties if the JSON property is null when deserializing
             settings.DefaultValueHandling = DefaultValueHandling.Ignore;
             //By default Json.NET writes dates in the ISO 8601 format, e.g. "2012-03-21T05:40Z" (в реальности "2016-10-13T11:20:02.7187476+03:00")
-            return JsonConvert.SerializeObject(oToSave, Formatting.Indented, settings);
+            return settings;
         }
-        
+
         public static string SaveToStringWithNullAndDefaultValues(object oToSave)
         {
             JsonSerializerSettings settings = new JsonSerializerSettings();

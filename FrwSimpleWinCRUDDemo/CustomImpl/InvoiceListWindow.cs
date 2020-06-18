@@ -22,6 +22,7 @@ using FrwSoftware.Model.Chinook;
 
 namespace FrwSoftware
 {
+    [JListViewForEntityPlugin(typeof(Invoice))]
     public partial class InvoiceListWindow : SimpleListWindow
     {
         private ToolStripComboBox filterComboBox = null;

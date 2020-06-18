@@ -14,16 +14,37 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 
 
 namespace FrwSoftware
 {
+    public class CursorWait : IDisposable
+    {
+        public CursorWait(bool appStarting = false, bool applicationCursor = false)
+        {
+            //https://stackoverflow.com/questions/1568557/how-can-i-make-the-cursor-turn-to-the-wait-cursor
+            // Wait
+            Cursor.Current = appStarting ? Cursors.AppStarting : Cursors.WaitCursor;
+            if (applicationCursor) Application.UseWaitCursor = true;
+        }
+
+        public void Dispose()
+        {
+            // Reset
+            Cursor.Current = Cursors.Default;
+            Application.UseWaitCursor = false;
+        }
+    }
     public class NotificationEventArgs : EventArgs
     {
         public string Message { get; set; }
@@ -42,7 +63,7 @@ namespace FrwSoftware
     public delegate void DocContentRegistredEventHandler(object sender, DocContentRegistredEventArgs e);
     public delegate void DocContentShowEventHandler(object sender, DocContentShowEventArgs e);
 
-    public class AppManager
+    public class AppManager : BaseAppManager
     {
         /*
          * This dialogue is heavy. Therefore, when calling it from the list cell, looping occurs. 
@@ -160,48 +181,225 @@ namespace FrwSoftware
             Dm.Instance.SaveObject(layout);
         }
 
-        // the main function of creating a list object
-        virtual protected IListProcessor GetListWindowForType(Type type)
+
+        private static Mutex m = null;
+
+        static public string GetMainAppName()
         {
-            BaseListWindow w = null;
-            w = new SimpleListWindow();
-            w.SourceObjectType = type;
-            return w;
-        }
-        // the main function of creating a property form object 
-        virtual protected IPropertyProcessor GetPropertyWindowForType(Type type)
-        {
-            BasePropertyWindow w = null;
-            w = new SimplePropertyWindow();
-            w.SourceObjectType = type;
-            return w;
+            string appName = System.AppDomain.CurrentDomain.FriendlyName; // MyApp.exe or MyApp.vhost.exe if you running the application in debug mode
+            //string appName = Process.GetCurrentProcess().ProcessName;// MyApp or MyApp.vhost if you running the application in debug mode
+            int dotIndex = appName.IndexOf(".");
+            if (dotIndex > -1) appName = appName.Substring(0, dotIndex);
+            return appName;
         }
 
-        virtual public void MakeContextMenuBlock(Type type, List<ToolStripItem> menuItemList, object selectedObject, IContentContainer container)
+
+        static public bool CheckForSingleInstance()
         {
-            if (selectedObject is JDocPanelLayout)//to base
+            string appName = GetMainAppName();
+            //test for single instance 
+            bool mutexCreated;
+            m = new Mutex(true, appName, out mutexCreated);
+            if (!mutexCreated)
             {
-                JDocPanelLayout item = selectedObject as JDocPanelLayout;
-                JDocPanelLayoutUtils.MakeContextMenuBlock(menuItemList, item, container);
+                MessageBox.Show(null, FrwUtilsRes.Application_Allready_Running, FrwUtilsRes.WARNING1,
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Application.Exit();
+                return false;
             }
-            else if (selectedObject is JJobType)
+            return true;
+        }
+
+        override public void InitApplication()
+        {
+            base.InitApplication();
+            LoadPlugins();
+            string exePath = Path.GetDirectoryName(Application.ExecutablePath);
+            Console.WriteLine("Application.ExecutablePath: " + exePath);
+
+        }
+
+        override public void DestroyApp()
+        {
+            base.DestroyApp();
+        }
+
+        // the main function of creating a list object
+        protected IListProcessor GetListWindowForType(Type type)
+        {
+            IListProcessor p = GetListViewForEntityPlugin(type);
+            if (p != null)
             {
-                menuItemList.Add(new ToolStripSeparator());
-                JJobType job = (JJobType)selectedObject;
-                if (job != null)
+                p.SourceObjectType = type;
+                return p;
+            }
+            else
+            {
+                BaseListWindow w = null;
+                w = new SimpleListWindow();
+                w.SourceObjectType = type;
+                return w;
+            }
+        }
+        // the main function of creating a property form object 
+        protected IPropertyProcessor GetPropertyWindowForType(Type type)
+        {
+            IPropertyProcessor p = GetPropertyViewForEntityPlugin(type);
+            if (p != null)
+            {
+                p.SourceObjectType = type;
+                return p;
+            }
+            else
+            {
+                BasePropertyWindow w = null;
+                w = new SimplePropertyWindow();
+                w.SourceObjectType = type;
+                return w;
+            }
+        }
+        private void LoadPlugins()
+        {
+            var entityTypes = AttrHelper.GetTypesWithAttribute<JEntity>(true);
+
+            var listViewForEntityPluginTypes = AttrHelper.GetTypesWithAttribute<JListViewForEntityPlugin>(true);
+            foreach (var entityPluginType in listViewForEntityPluginTypes)
+            {
+                JListViewForEntityPlugin entityPluginAttr = AttrHelper.GetClassAttribute<JListViewForEntityPlugin>(entityPluginType);
+                Type eType = entityPluginAttr.EntityType;
+                JEntity entityAttr = AttrHelper.GetClassAttribute<JEntity>(eType);
+                if (entityAttr == null)
                 {
-                    JobManager.MakeContextMenuForRunningJobBatch(job, menuItemList, container);
+                    throw new Exception("Plugin is designed for non entity type. " + entityPluginType + " Type " + eType + " not marked as JEntity");
                 }
-            }
-            else if (selectedObject is JRunningJob)
-            {
-                menuItemList.Add(new ToolStripSeparator());
-                JRunningJob job = (JRunningJob)selectedObject;
-                if (job != null)
+                bool found = false;
+                foreach (var e in entityTypes)
                 {
-                    JobManager.MakeContextMenuForRunningJob(job, menuItemList, container);
+                    if (eType == e)
+                    {
+                        found = true;
+                        break;
+                    }
                 }
+                if (!found)
+                {
+                    throw new Exception("Entity type for plugin not found. " + entityPluginType + " Type " + eType);
+                }
+                RegisterListViewForEntityPluginType(eType, entityPluginType);
             }
+            
+            var propertyViewForEntityPluginTypes = AttrHelper.GetTypesWithAttribute<JPropertyViewForEntityPlugin>(true);
+            foreach (var entityPluginType in propertyViewForEntityPluginTypes)
+            {
+                JPropertyViewForEntityPlugin entityPluginAttr = AttrHelper.GetClassAttribute<JPropertyViewForEntityPlugin>(entityPluginType);
+                Type eType = entityPluginAttr.EntityType;
+                JEntity entityAttr = AttrHelper.GetClassAttribute<JEntity>(eType);
+                if (entityAttr == null)
+                {
+                    throw new Exception("Plugin is designed for non entity type. " + entityPluginType + " Type " + eType + " not marked as JEntity");
+                }
+                bool found = false;
+                foreach (var e in entityTypes)
+                {
+                    if (eType == e)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    throw new Exception("Entity type for plugin not found. " + entityPluginType + " Type " + eType);
+                }
+                RegisterPropertyViewForEntityPluginType(eType, entityPluginType);
+            }
+        }
+        private Dictionary<Type, List<Type>> listViewForEntityPluginsMap = new Dictionary<Type, List<Type>>();
+        public List<Type> RegisterListViewForEntityPluginType(Type t, Type plugin)
+        {
+            List<Type> ds;
+            listViewForEntityPluginsMap.TryGetValue(t, out ds);
+            if (ds == null)
+            {
+                ds = new List<Type>();
+                listViewForEntityPluginsMap[t] = ds;
+            }
+            ds.Add(plugin);
+            return ds;
+        }
+        public List<Type> GetListViewForEntityPluginTypes(Type t)
+        {
+            List<Type> ds;
+            listViewForEntityPluginsMap.TryGetValue(t, out ds);
+            return ds;
+        }
+        public IListProcessor GetListViewForEntityPlugin(Type t)
+        {
+            Type pt = null;
+            List<Type> lt = GetListViewForEntityPluginTypes(t);
+            if (lt != null) pt = lt.FirstOrDefault();
+            if (pt != null)
+            {
+                object o;
+                try
+                {
+                    o = Activator.CreateInstance(pt);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error created plugin" + pt + " Type " + t, ex);
+                }
+                if (!(o is IListProcessor))
+                {
+                    throw new Exception("Plugin is not implements valid interfaces . " + pt + " Type " + t);
+                }
+                return (IListProcessor)o;
+            }
+            else return null;
+        }
+
+        private Dictionary<Type, List<Type>> propertyViewForEntityPluginsMap = new Dictionary<Type, List<Type>>();
+        public List<Type> RegisterPropertyViewForEntityPluginType(Type t, Type plugin)
+        {
+            List<Type> ds;
+            propertyViewForEntityPluginsMap.TryGetValue(t, out ds);
+            if (ds == null)
+            {
+                ds = new List<Type>();
+                propertyViewForEntityPluginsMap[t] = ds;
+            }
+            ds.Add(plugin);
+            return ds;
+        }
+        public List<Type> GetPropertyViewForEntityPluginTypes(Type t)
+        {
+            List<Type> ds;
+            propertyViewForEntityPluginsMap.TryGetValue(t, out ds);
+            return ds;
+        }
+        public IPropertyProcessor GetPropertyViewForEntityPlugin(Type t)
+        {
+            Type pt = null;
+            List<Type> lt = GetPropertyViewForEntityPluginTypes(t);
+            if (lt != null) pt = lt.FirstOrDefault();
+            if (pt != null)
+            {
+                object o;
+                try
+                {
+                    o = Activator.CreateInstance(pt);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error created plugin" + pt + " Type " + t, ex);
+                }
+                if (!(o is IPropertyProcessor))
+                {
+                    throw new Exception("Plugin is not implements valid interfaces . " + pt + " Type " + t);
+                }
+                return (IPropertyProcessor)o;
+            }
+            else return null;
         }
 
 
@@ -211,10 +409,10 @@ namespace FrwSoftware
         {
         }
 
-        virtual protected BaseMainAppForm GetMainForm()
-        {
-            return new BaseMainAppForm();
-        }
+        //virtual protected BaseMainAppForm GetMainForm()
+        //{
+        //    return new BaseMainAppForm();
+        //}
 
         #region baseoperation
 
@@ -638,7 +836,7 @@ namespace FrwSoftware
                         Size s = new Size(int.Parse(xml.getAttrValue(dc, "Width")), int.Parse(xml.getAttrValue(dc, "Height")));
                         //Rectangle rect = (Rectangle)rectConverter.ConvertFromInvariantString(xmlIn.GetAttribute("Bounds"));
                         TestIfLocationInScreens(p.X, p.Y, s.Width, s.Height, 20, out locationInScreen, out rightBottomInScreen);
-                        if (locationInScreen)//если попали в экраны 
+                        if (locationInScreen)
                         {
                             ((Form)form).StartPosition = FormStartPosition.Manual;
                             //form.Bounds = new Rectangle(p.X, p.Y, s.Width, s.Height); - same as Size, Location
@@ -1217,19 +1415,69 @@ namespace FrwSoftware
                 //todo make clone 
                 Type argType = AttrHelper.GetGenericListArgType(pType);
                 IList s = AttrHelper.GetPropertyValue(rowObject, p) as IList;
-                SimpleGenericListFieldItemListDialog dialog = new SimpleGenericListFieldItemListDialog(argType);
-                dialog.SourceObjects = s;
-                //dialog.SourceObjects = attachments;//!!! after CommonStoragePath and StoragePrefixPath
-                                                   //dialog.EditedText = s;
-                DialogResult res = dialog.ShowDialog(owner);
-                if (res == DialogResult.OK)
+
+                if (argType == typeof(string))
                 {
-                    if (readOnlyAttr != null) MessageBox.Show(null, FrwCRUDRes.This_field_is_readonly,
-                                         FrwCRUDRes.WARNING, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    else
+                    SimpleGenericSimpleListDialog dialog = new SimpleGenericSimpleListDialog();
+                    dialog.SourceObjects = s;
+                    DialogResult res = dialog.ShowDialog(owner);
+                    if (res == DialogResult.OK)
                     {
-                        AttrHelper.SetPropertyValue(rowObject, aspectName, dialog.SourceObjects);
-                        complated = true;
+                        if (readOnlyAttr != null) MessageBox.Show(null, FrwCRUDRes.This_field_is_readonly,
+                                             FrwCRUDRes.WARNING, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        else
+                        {
+                            IList newList = dialog.SourceObjects;
+                            IList newListToSave = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(AttrHelper.GetGenericListArgType(pType)));
+                            if (newList != null)
+                            {
+                                foreach (var l in newList)
+                                {
+                                    newListToSave.Add(l);
+                                }
+                            }
+                            AttrHelper.SetPropertyValue(rowObject, aspectName, newListToSave);
+                            complated = true;
+                        }
+                    }
+                    else if (res == DialogResult.Abort)
+                    {
+                        if (readOnlyAttr != null) MessageBox.Show(null, FrwCRUDRes.This_field_is_readonly,
+                                             FrwCRUDRes.WARNING, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        else
+                        {
+                            AttrHelper.SetPropertyValue(rowObject, aspectName, null);
+                            complated = true;
+                        }
+                    }
+
+                }
+                else
+                {
+                    SimpleGenericListFieldItemListDialog dialog = new SimpleGenericListFieldItemListDialog(argType);
+                    dialog.SourceObjects = s;
+                    //dialog.SourceObjects = attachments;//!!! after CommonStoragePath and StoragePrefixPath
+                    //dialog.EditedText = s;
+                    DialogResult res = dialog.ShowDialog(owner);
+                    if (res == DialogResult.OK)
+                    {
+                        if (readOnlyAttr != null) MessageBox.Show(null, FrwCRUDRes.This_field_is_readonly,
+                                             FrwCRUDRes.WARNING, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        else
+                        {
+                            AttrHelper.SetPropertyValue(rowObject, aspectName, dialog.SourceObjects);
+                            complated = true;
+                        }
+                    }
+                    else if (res == DialogResult.Abort)
+                    {
+                        if (readOnlyAttr != null) MessageBox.Show(null, FrwCRUDRes.This_field_is_readonly,
+                                             FrwCRUDRes.WARNING, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        else
+                        {
+                            AttrHelper.SetPropertyValue(rowObject, aspectName, null);
+                            complated = true;
+                        }
                     }
                 }
             }
@@ -1276,8 +1524,60 @@ namespace FrwSoftware
         {
             return new List<ToolStripItem>();
         }
-    }
 
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        public static extern bool SetProcessDPIAware();
+        //[System.Runtime.InteropServices.DllImport("shcore.dll")]//It is not available on Windows 7
+        //static extern int SetProcessDpiAwareness(_Process_DPI_Awareness value);
+        //enum _Process_DPI_Awareness
+        //{
+        //    Process_DPI_Unaware = 0,
+        //    Process_System_DPI_Aware = 1,
+        //    Process_Per_Monitor_DPI_Aware = 2
+        //}
+        /// <summary>
+        /// dc
+        /// </summary>
+        /// <param name="hwnd"></param>
+        /// <returns></returns>
+        [DllImport("User32.dll")]
+        static extern IntPtr GetDC(IntPtr hwnd);
+        [DllImport("User32.dll")]
+        static extern int ReleaseDC(IntPtr hwnd, IntPtr dc);
+        [DllImport("gdi32.dll")]
+        static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
+
+        static public void AjustVideoSetting()
+        {
+            bool setProcessDPIAware = Properties.Settings.Default.SetProcessDPIAware;
+
+            //https://msdn.microsoft.com/ru-ru/library/windows/desktop/dn469266.aspx
+            //https://toster.ru/q/230782 
+            //Once you go past 100 % (or 125 % with the "XP-style DPI scaling" checkbox ticked), 
+            //Windows by default takes over the scaling of your UI. 
+            //It does so by having your app render its output to a bitmap and drawing that bitmap to the screen.
+            //The rescaling of that bitmap makes the text inevitably look fuzzy.A feature called "DPI virtualization", it keeps old programs usable on high resolution monitors.
+            //http://stackoverflow.com/questions/13228185/how-to-configure-an-app-to-run-correctly-on-a-machine-with-a-high-dpi-setting-e/13228495#13228495
+            //This call should be at the very beginning of the program, otherwise it will not work out correctly.
+            if (setProcessDPIAware)
+            {
+                if (Environment.OSVersion.Version.Major >= 6)
+                {
+                    SetProcessDPIAware();
+                    //SetProcessDpiAwareness(_Process_DPI_Awareness.Process_Per_Monitor_DPI_Aware);
+                }
+            }
+        }
+
+    }
+    public enum DeviceCap
+    {
+        VERTRES = 10,
+        DESKTOPVERTRES = 117,
+
+        // http://pinvoke.net/default.aspx/gdi32/GetDeviceCaps.html
+    }
     public class FrwOlvDataObject : DataObject
     {
         public IList SelectedObjects { get; set; }

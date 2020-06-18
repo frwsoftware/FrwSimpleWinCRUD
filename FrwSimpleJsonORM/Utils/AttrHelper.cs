@@ -126,9 +126,9 @@ namespace FrwSoftware
                      prop => Attribute.IsDefined(prop, attrTYpe));
                 return props;
             }
-            catch(Exception e)
+            catch(Exception)
             {
-                int i = 1;
+   
                 return null;
             }
         }
@@ -137,6 +137,15 @@ namespace FrwSoftware
             return t.GetMethods().Where(
                  m => Attribute.IsDefined(m, attrTYpe)).FirstOrDefault(); ;
         }
+
+        public static IList CreateListEmpty(Type t)
+        {
+            Type lt = typeof(List<>);
+            Type listType = lt.MakeGenericType(t);
+            IList list = (IList)Activator.CreateInstance(listType);
+            return list;
+        }
+
         public static object GetPropertyValue(object o, string aspectName)
         {
             if (o == null) return null;
@@ -190,6 +199,36 @@ namespace FrwSoftware
             {
                 return false;
             }
+        }
+
+        static public bool IsListContainsObjectWithSamePk(IList listToFind, object findObject)
+        {
+            object pk = ModelHelper.GetPKValue(findObject);
+
+            bool found = false;
+            foreach (var no in listToFind)
+            {
+                if (pk != null && pk.Equals(ModelHelper.GetPKValue(no)))
+                {
+                    found = true;
+                    break;
+                }
+            }
+            return found;
+        }
+
+        //https://stackoverflow.com/questions/863881/how-do-i-tell-if-a-type-is-a-simple-type-i-e-holds-a-single-value
+        public static bool IsSimple(Type type)
+        {
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+            {
+                // nullable type, check if the nested type is simple.
+                return IsSimple(type.GetGenericArguments()[0]);
+            }
+            return type.IsPrimitive
+              || type.IsEnum
+              || type.Equals(typeof(string))
+              || type.Equals(typeof(decimal));
         }
         static public Type GetGenericListArgType(Type type, bool softCheck = false)
         {
@@ -287,6 +326,20 @@ namespace FrwSoftware
                 return blankObject;
             }
             else return null;
+        }
+        static public IList FindDublicatesInList(IList list)
+        {
+            var myList = new List<object>();
+            var duplicates = new List<object>();
+            foreach (var s in list)
+            {
+                if (!myList.Contains(s))
+                    myList.Add(s);
+                else
+                    duplicates.Add(s);
+            }
+            if (duplicates.Count == 0) return null;
+            else return duplicates;
         }
     }
 

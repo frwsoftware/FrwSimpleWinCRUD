@@ -33,14 +33,17 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.setNullButton = new System.Windows.Forms.Button();
             this.deleteButton = new System.Windows.Forms.Button();
+            this.moveUpButton = new System.Windows.Forms.Button();
+            this.moveDownButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // cancelButtion
             // 
             this.cancelButtion.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButtion.Location = new System.Drawing.Point(974, 614);
+            this.cancelButtion.Location = new System.Drawing.Point(708, 409);
+            this.cancelButtion.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.cancelButtion.Name = "cancelButtion";
-            this.cancelButtion.Size = new System.Drawing.Size(164, 44);
+            this.cancelButtion.Size = new System.Drawing.Size(119, 29);
             this.cancelButtion.TabIndex = 5;
             this.cancelButtion.Text = global::FrwSoftware.FrwCRUDRes.Cancel;
             this.cancelButtion.UseVisualStyleBackColor = true;
@@ -49,9 +52,10 @@
             // okButton
             // 
             this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.okButton.Location = new System.Drawing.Point(791, 614);
+            this.okButton.Location = new System.Drawing.Point(575, 409);
+            this.okButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.okButton.Name = "okButton";
-            this.okButton.Size = new System.Drawing.Size(164, 44);
+            this.okButton.Size = new System.Drawing.Size(119, 29);
             this.okButton.TabIndex = 4;
             this.okButton.Text = global::FrwSoftware.FrwCRUDRes.OK;
             this.okButton.UseVisualStyleBackColor = true;
@@ -61,16 +65,18 @@
             // 
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1154, 574);
+            this.panel1.Size = new System.Drawing.Size(839, 383);
             this.panel1.TabIndex = 3;
             // 
             // setNullButton
             // 
             this.setNullButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.setNullButton.Location = new System.Drawing.Point(601, 614);
+            this.setNullButton.Location = new System.Drawing.Point(437, 409);
+            this.setNullButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.setNullButton.Name = "setNullButton";
-            this.setNullButton.Size = new System.Drawing.Size(164, 44);
+            this.setNullButton.Size = new System.Drawing.Size(119, 29);
             this.setNullButton.TabIndex = 6;
             this.setNullButton.Text = global::FrwSoftware.FrwCRUDRes.Set_NULL;
             this.setNullButton.UseVisualStyleBackColor = true;
@@ -79,26 +85,47 @@
             // 
             // deleteButton
             // 
-            this.deleteButton.Location = new System.Drawing.Point(13, 614);
-            this.deleteButton.Margin = new System.Windows.Forms.Padding(4);
+            this.deleteButton.Location = new System.Drawing.Point(9, 409);
             this.deleteButton.Name = "deleteButton";
-            this.deleteButton.Size = new System.Drawing.Size(160, 44);
+            this.deleteButton.Size = new System.Drawing.Size(116, 29);
             this.deleteButton.TabIndex = 10;
             this.deleteButton.Text = global::FrwSoftware.FrwCRUDRes.Remove;
             this.deleteButton.UseVisualStyleBackColor = true;
             this.deleteButton.Click += new System.EventHandler(this.deleteButton_Click);
             // 
+            // moveUpButton
+            // 
+            this.moveUpButton.Location = new System.Drawing.Point(131, 409);
+            this.moveUpButton.Name = "moveUpButton";
+            this.moveUpButton.Size = new System.Drawing.Size(116, 29);
+            this.moveUpButton.TabIndex = 11;
+            this.moveUpButton.Text = global::FrwSoftware.FrwCRUDRes.MoveUp;
+            this.moveUpButton.UseVisualStyleBackColor = true;
+            this.moveUpButton.Click += new System.EventHandler(this.moveUpButton_Click);
+            // 
+            // moveDownButton
+            // 
+            this.moveDownButton.Location = new System.Drawing.Point(253, 409);
+            this.moveDownButton.Name = "moveDownButton";
+            this.moveDownButton.Size = new System.Drawing.Size(116, 29);
+            this.moveDownButton.TabIndex = 12;
+            this.moveDownButton.Text = global::FrwSoftware.FrwCRUDRes.MoveDown;
+            this.moveDownButton.UseVisualStyleBackColor = true;
+            this.moveDownButton.Click += new System.EventHandler(this.moveDownButton_Click);
+            // 
             // SimpleGenericListFieldItemListDialog
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1154, 666);
+            this.ClientSize = new System.Drawing.Size(839, 444);
+            this.Controls.Add(this.moveDownButton);
+            this.Controls.Add(this.moveUpButton);
             this.Controls.Add(this.deleteButton);
             this.Controls.Add(this.setNullButton);
             this.Controls.Add(this.cancelButtion);
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.panel1);
-            this.Margin = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "SimpleGenericListFieldItemListDialog";
             this.ShowIcon = false;
             this.Text = "##List";
@@ -115,5 +142,7 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button setNullButton;
         private System.Windows.Forms.Button deleteButton;
+        private System.Windows.Forms.Button moveUpButton;
+        private System.Windows.Forms.Button moveDownButton;
     }
 }

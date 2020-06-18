@@ -27,24 +27,30 @@ namespace FrwSoftware
     public class ModelHelper
     {
         #region i18n
-        public static string GetPropertyJDescriptionOrName(PropertyInfo p)
+        public static string GetPropertyJDescriptionOrName(PropertyInfo p, bool getFullDescription = false)
         {
             if (p == null) return null;
+
+            string name = null;
             DisplayNameAttribute displayNameAttr = p.GetCustomAttribute<DisplayNameAttribute>();
-            if (displayNameAttr != null && displayNameAttr.DisplayName != null) return displayNameAttr.DisplayName;
-            DisplayAttribute displayAttr = p.GetCustomAttribute<DisplayAttribute>();
-            if (displayAttr != null && displayAttr.Name != null) return displayAttr.Name;
-            JDisplayName descAttr = p.GetCustomAttribute<JDisplayName>();
-            if (descAttr != null) return descAttr.DisplayName;
-            else return p.Name;
-        }
-        public static string GetEntityJDescriptionOrFullName(Type t)
-        {
-            DisplayNameAttribute displayNameAttr = t.GetCustomAttribute<DisplayNameAttribute>();
-            if (displayNameAttr != null && displayNameAttr.DisplayName != null) return displayNameAttr.DisplayName;
-            JDisplayName descAttr = t.GetCustomAttribute<JDisplayName>();
-            if (descAttr != null) return descAttr.DisplayName;
-            else return t.FullName;
+            if (displayNameAttr != null && displayNameAttr.DisplayName != null) name = displayNameAttr.DisplayName;
+            if (name == null)
+            {
+                DisplayAttribute displayAttr = p.GetCustomAttribute<DisplayAttribute>();
+                if (displayAttr != null && displayAttr.Name != null) name = displayAttr.Name;
+            }
+            if (name == null)
+            {
+                JDisplayName descAttr = p.GetCustomAttribute<JDisplayName>();
+                if (descAttr != null) return descAttr.DisplayName;
+                else name = p.Name;
+            }
+            if (!getFullDescription)
+            {
+                int dotIndex = name.IndexOfAny(new char[]{'.', '\n', '\t' }); // .IndexOf(".");
+                if (dotIndex > -1) name = name.Substring(0, dotIndex);
+            }
+            return name;            
         }
         public static string GetEntityJDescriptionOrName(Type t)
         {
@@ -55,23 +61,18 @@ namespace FrwSoftware
             else return t.Name;
         }
 
-        //reverse 
-        public static string GetPropertyNameForDescription(Type t, string description)
-        {
-            foreach (var p in t.GetProperties())
-            {
-                JDisplayName descAttr = p.GetCustomAttribute<JDisplayName>();
-                if (descAttr != null && descAttr.DisplayName != null && descAttr.DisplayName.Equals(description))
-                {
-                    return p.Name;
-                }
-            }
-            return null;
-        }
-
         #endregion
 
         #region Property
+        public static PropertyInfo GetPK(Type t)
+        {
+            PropertyInfo pPK = AttrHelper.GetProperty(typeof(JPrimaryKey), t);
+            if (pPK != null)
+            {
+                return pPK;
+            }
+            return null;
+        }
         public static object GetPKValue(object o)
         {
             PropertyInfo pPK = AttrHelper.GetProperty(typeof(JPrimaryKey), o.GetType());
@@ -80,6 +81,14 @@ namespace FrwSoftware
                 return pPK.GetValue(o);
             }
             return null;
+        }
+        public static void SetPKValue(object o, object pkValue)
+        {
+            PropertyInfo pPK = AttrHelper.GetProperty(typeof(JPrimaryKey), o.GetType());
+            if (pPK != null)
+            {
+                pPK.SetValue(o, pkValue);
+            }
         }
 
         public static string ModelPropertyList(object obj, string lineDelimeter, string[] includes, string[] excludes)
@@ -91,7 +100,6 @@ namespace FrwSoftware
             {
                 if (excludes != null && Array.Exists(excludes, element => element == p.Name)) continue;
                 if (includes != null && !Array.Exists(includes, element => element == p.Name)) continue;
-                //JManyToOne manyToOneAttr = AttrHelper.GetAttribute<JManyToOne>(t, p.Name);
                 JIgnore ignoreAttr = AttrHelper.GetAttribute<JIgnore>(t, p.Name);
                 if (ignoreAttr != null) continue;
                 string desc = GetPropertyJDescriptionOrName(p);
@@ -105,10 +113,6 @@ namespace FrwSoftware
             }
             return sb.ToString();
         }
-
-
-
-
 
         #endregion
 
@@ -179,7 +183,7 @@ namespace FrwSoftware
             PropertyInfo IsArchiveProp = t.GetProperty("IsArchive");
             if (IsArchiveProp != null && IsArchiveProp.PropertyType == typeof(bool) && (bool)IsArchiveProp.GetValue(o) == true)
             {
-                s = "A* " + s + " (archived)";
+                s = "A* " + s + " ("+ FrwUtilsRes.archived + ")";
             }
             return s;
         }
@@ -191,7 +195,7 @@ namespace FrwSoftware
             PropertyInfo IsArchiveProp = t.GetProperty("IsArchive");
             if (IsArchiveProp != null && IsArchiveProp.PropertyType == typeof(bool) && (bool)IsArchiveProp.GetValue(o) == true)
             {
-                s = "A* " + s + " (archived)";
+                s = "A* " + s + " (" + FrwUtilsRes.archived + ")";
             }
             return s;
         }
@@ -229,7 +233,105 @@ namespace FrwSoftware
             }
             return list;
         }
- 
+
+        static public PropertyInfo FindRefFieldInForeinEntity(Type whatFindType, Type whereFindType, Type reationTypeToFind, string nameToFind)
+        {
+            IEnumerable<PropertyInfo> whereEntityRefFields = AttrHelper.GetProperties(reationTypeToFind, whereFindType);
+            PropertyInfo whereEntityRefField = null;
+            if (nameToFind == null)
+            {
+                //nameToFind Can be null, then it is assumed that the foreinEntityRefField is the only one and matches the type (previously: by name with pk)
+                foreach (var p in whereEntityRefFields)
+                {
+                    Type refType = (typeof(JManyToOne).Equals(reationTypeToFind) || typeof(JOneToOne).Equals(reationTypeToFind)) ? p.PropertyType : AttrHelper.GetGenericListArgType(p.PropertyType);
+                    if (refType.Equals(whatFindType))
+                    {
+                        if (whereEntityRefField != null) throw new Exception("Found more than one field referenced to this entity type");
+                        whereEntityRefField = p;
+                    }
+                }
+            }
+            else
+            {
+                //nameToFind Set explicitly, which is relevant if the table has several fields of the same type that refer to the same table
+                foreach (var p in whereEntityRefFields)
+                {
+                    Type refType = (typeof(JManyToOne).Equals(reationTypeToFind) || typeof(JOneToOne).Equals(reationTypeToFind)) ? p.PropertyType : AttrHelper.GetGenericListArgType(p.PropertyType);
+                    if (refType.Equals(whatFindType))
+                    {
+                        if (
+                            ((typeof(JManyToOne).Equals(reationTypeToFind) || typeof(JOneToMany).Equals(reationTypeToFind)) && (p.Name).Equals(nameToFind))
+                            ||
+                            (typeof(JManyToMany).Equals(reationTypeToFind) && (p.Name).Equals(nameToFind))
+                            ||
+                            (typeof(JOneToOne).Equals(reationTypeToFind) && (p.Name).Equals(nameToFind))
+                            )//todo 
+                        {
+                            whereEntityRefField = p;
+                            break;
+                        }
+                    }
+
+                }
+            }
+            return whereEntityRefField;
+        }
+        static public string MakeAllEntitiesDescription(bool makeTable)
+        {
+            StringBuilder str = new StringBuilder();
+            var entityTypes = AttrHelper.GetTypesWithAttribute<JEntity>(true);
+            foreach (var sourceEntityType in entityTypes)
+            {
+                string eDesc = ModelHelper.GetEntityJDescriptionOrName(sourceEntityType);
+                str.Append(makeTable?"<br/>":"\n");
+                str.Append(eDesc);
+                str.Append(makeTable ? "<br/>" : "\n");
+                if (makeTable)
+                {
+                    str.Append("\n");
+                    str.Append("<table>");
+                }
+                //bool pkFound = false;
+                foreach (PropertyInfo p in sourceEntityType.GetProperties())
+                {
+                    str.Append("\n");
+                    if (makeTable)
+                    {
+                        str.Append("<tr>");
+                    }
+                    string desc = GetPropertyJDescriptionOrName(p, true);
+                    if (makeTable)
+                    {
+                        str.Append("\n");
+                        str.Append("<td>");
+                    }
+                    str.Append(p.Name);
+                    if (makeTable)
+                    {
+                        str.Append("\n");
+                        str.Append("</td><td>");
+                    }
+                    else 
+                    {
+                        str.Append(": ");
+                    }
+                    str.Append(desc);
+                    if (makeTable)
+                    {
+                        str.Append("\n");
+                        str.Append("</tr>");
+                    }
+                    else str.Append("\n");
+                }
+                if (makeTable)
+                {
+                    str.Append("\n");
+                    str.Append("</table>");
+                }
+            }
+            return str.ToString();
+        }
+
     }
 
 }

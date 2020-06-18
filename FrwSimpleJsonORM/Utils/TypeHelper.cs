@@ -44,8 +44,36 @@ namespace FrwSoftware
             {
                 //find in all allready loaded 
                 Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-                myType = assemblies.SelectMany(a => a.GetTypes())
-                            .FirstOrDefault(t => t.FullName == fullTypeName);
+
+                try
+                {
+                    myType = assemblies.SelectMany(a => a.GetTypes())
+                                .FirstOrDefault(t => t.FullName == fullTypeName);
+                }
+                catch (Exception ex0)
+                {
+                    //we need detalized information about with assembly gets this error 
+                    Log.LogError("Error when finding type for : " + fullTypeName, ex0);
+                    foreach (var a1 in assemblies)
+                    {
+                        try
+                        {
+                            a1.GetTypes();
+                        }
+                        catch (System.Reflection.ReflectionTypeLoadException ex)
+                        {
+                            Log.LogError("Error loading assembly for name: " + a1, ex);
+                            if (ex.LoaderExceptions != null)
+                            {
+                                foreach (var e in ex.LoaderExceptions)
+                                {
+                                    Log.LogError("LoaderExceptions", e);
+                                }
+                            }
+                        }
+                    }
+                    throw ex0;
+                }
 
                 if (myType == null)
                 {

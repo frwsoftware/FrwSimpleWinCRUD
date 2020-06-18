@@ -121,8 +121,16 @@ namespace FrwSoftware
         {
 
         }
+        virtual public void MoveUpSelectedItems()
+        {
 
-        protected void StartRefreshing()
+        }
+        virtual public void MoveDownSelectedItems()
+        {
+
+        }
+
+        public void StartRefreshing()
         {
             if (refreshTimer == null)
             {
@@ -132,7 +140,7 @@ namespace FrwSoftware
             }
             refreshTimer.Start();
         }
-        protected void StopRefreshing()
+        public void StopRefreshing()
         {
             if (refreshTimer != null) refreshTimer.Stop();
         }
@@ -185,7 +193,7 @@ namespace FrwSoftware
         virtual protected object CloneObjectInStorage(Object sourceObject)
         {
             Type sourceObjectType = sourceObject.GetType();
-            return Dm.Instance.CloneObject(sourceObject, CloneObjectType.ForNew);
+            return Dm.CloneObject(sourceObject, CloneObjectType.ForNew);
         }
 
 
@@ -467,6 +475,7 @@ namespace FrwSoftware
                     propertyDialog.ViewMode = ViewMode.New;//
                     o = CloneObjectInStorage(selectedObject);
                     propertyControl.SourceObject = o;
+                    propertyControl.CloningObject = selectedObject;
                     propertyControl.ProcessView();
                     DialogResult res = propertyDialog.ShowDialog();
                     if (res == DialogResult.OK)
@@ -485,6 +494,7 @@ namespace FrwSoftware
                     propertyControl.ViewMode = ViewMode.New;//
                     o = CloneObjectInStorage(selectedObject);
                     propertyControl.SourceObject = o;
+                    propertyControl.CloningObject = selectedObject;
                     propertyControl.ProcessView();
                     //selectedObject = o;
                     // in this case the update in the repository asynchronously initiates the propertyControl
@@ -570,7 +580,7 @@ namespace FrwSoftware
                 {
                     Dictionary<string, object> pars = null;
                     //todo multi refs case 
-                    string propName = (addedRefInfo != null && addedRefInfo.foreinProperty != null) ? addedRefInfo.foreinProperty.Name : selectedObject.GetType().Name;
+                    string propName = (addedRefInfo != null && addedRefInfo.PropertyInForeign != null) ? addedRefInfo.PropertyInForeign.Name : selectedObject.GetType().Name;
                     if (selectedObject != null && AttrHelper.GetClassAttribute<JEntity>(selectedObject.GetType()) != null)  pars = new Dictionary<string, object> { { propName, selectedObject } };
                     AddObject(selectedListItem, selectedObject, addedType, pars);
                 }
@@ -606,25 +616,27 @@ namespace FrwSoftware
                 };
                 menuItemList.Add(menuItem);
 
-                List<RefEntityInfo> rels = Dm.Instance.GetAllReferencedToEntity(selectedObject, false);
-                if (rels.Count(s => s.foreinProperty != null) > 0)
-                //if (rels.Count > 0)
+                if (selectedObject != null)
                 {
-                    menuItem = new ToolStripMenuItem();
-                    menuItem.Text = FrwCRUDRes.List_Create_New_Record + FrwCRUDRes.__Childs_;
-                    menuItem.Image = Properties.Resources.AllPics_05;
-                    menuItem.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
-                    menuItem.ImageScaling = ToolStripItemImageScaling.None;
-                    menuItem.Enabled = rights.CanAdd;
-
-                    List<ToolStripItem> menuItemList1 = new List<ToolStripItem>();
-                    foreach (var rt in rels)
+                    List<RefEntityInfo> rels = Dm.Instance.GetAllReferencedToEntity(selectedObject, false);
+                    if (rels.Count(s => s.PropertyInForeign != null) > 0)
                     {
-                        if (rt.foreinProperty != null)
-                            menuItemList1.Add(CreateAddNode(selectedListItem, selectedObject, rights, rt.RefEntity, rt));
+                        menuItem = new ToolStripMenuItem();
+                        menuItem.Text = FrwCRUDRes.List_Create_New_Record + FrwCRUDRes.__Childs_;
+                        menuItem.Image = Properties.Resources.AllPics_05;
+                        menuItem.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
+                        menuItem.ImageScaling = ToolStripItemImageScaling.None;
+                        menuItem.Enabled = rights.CanAdd;
+
+                        List<ToolStripItem> menuItemList1 = new List<ToolStripItem>();
+                        foreach (var rt in rels)
+                        {
+                            if (rt.PropertyInForeign != null)
+                                menuItemList1.Add(CreateAddNode(selectedListItem, selectedObject, rights, rt.ForeignEntity, rt));
+                        }
+                        menuItem.DropDownItems.AddRange(menuItemList1.ToArray<ToolStripItem>());
+                        menuItemList.Add(menuItem);
                     }
-                    menuItem.DropDownItems.AddRange(menuItemList1.ToArray<ToolStripItem>());
-                    menuItemList.Add(menuItem);
                 }
             }
         }
@@ -1135,27 +1147,38 @@ namespace FrwSoftware
                         dlg.ShowDialog();
                     };
                     menuItemList.Add(menuItem);
+
+                    menuItem = new ToolStripMenuItem();
+                    menuItem.Text = FrwCRUDRes.List_Statistics;
+                    menuItem.Click += (s, em) =>
+                    {
+                        SimpleTextEditDialog dlg = new SimpleTextEditDialog();
+                        dlg.EditedText = Dm.Instance.GetStaticticsReport(selectedObject);//  JMailAccount.DependencyAnalysis(item);
+                        dlg.ShowDialog();
+                    };
+                    menuItemList.Add(menuItem);
+
                 }
-                IList<WebEntryInfoWrap> webEntryInfos = WebEntryInfo.GetWebEntryInfosFromObject(selectedObject);
-                if (webEntryInfos.Count > 0)
+                IList<WebEntryInfoWrap> webEntryInfoWraps = WebEntryInfo.GetWebEntryInfosFromObject(selectedObject);
+                if (webEntryInfoWraps.Count > 0)
                 {
                     menuItemList.Add(new ToolStripSeparator());
-                    foreach (var w in webEntryInfos)
+                    foreach (var wrap in webEntryInfoWraps)
                     {
-                        if (webEntryInfos.Count > 1)
+                        if (webEntryInfoWraps.Count > 1)
                         {
                             menuItem = new ToolStripMenuItem();
-                            menuItem.Text = ModelHelper.GetPropertyJDescriptionOrName(w.Property);
+                            menuItem.Text = ModelHelper.GetPropertyJDescriptionOrName(wrap.Property);
                             menuItemList.Add(menuItem);
-                            menuItem.DropDownItems.AddRange(AppManager.Instance.CreateOpenInBrowserContextMenu(w.WebEntryInfo, this.ContentContainer, selectedObject).ToArray<ToolStripItem>());
+                            menuItem.DropDownItems.AddRange(AppManager.Instance.CreateOpenInBrowserContextMenu(wrap.WebEntryInfo, this.ContentContainer, selectedObject).ToArray<ToolStripItem>());
                         }
                         else
                         {
-                            menuItemList.AddRange(AppManager.Instance.CreateOpenInBrowserContextMenu(w.WebEntryInfo, this.ContentContainer, selectedObject));
+                            menuItemList.AddRange(AppManager.Instance.CreateOpenInBrowserContextMenu(wrap.WebEntryInfo, this.ContentContainer, selectedObject));
                         }
                     }
                 }
-
+                /*
                 PropertyInfo p = AttrHelper.GetPropertiesWithAttribute<JHelps>(selectedObject.GetType()).FirstOrDefault();
                 if (p != null && AttrHelper.IsGenericListTypeOf(p.PropertyType, typeof(JHelp)))
                 {
@@ -1201,12 +1224,29 @@ namespace FrwSoftware
                     menuItem.DropDownItems.AddRange(subMenuItems.ToArray<ToolStripItem>());
 
                 }
+                */
                 //todo
                 //menuItemList.AddRange(AppManager.Instance.CreateGetPasswordContextMenu(newPassword =>
                 //{
                 //  item.Password = newPassword;
                 //}));
-                AppManager.Instance.MakeContextMenuBlock(this.SourceObjectType, menuItemList, selectedObject, this.ContentContainer);
+
+                Type typeForPlugin = (selectedObject != null)?selectedObject.GetType() : this.SourceObjectType;
+                if (typeForPlugin != null)
+                {
+                    List<IEntityPlugin> plugins = Dm.Instance.GetPlugins(typeForPlugin);
+                    if (plugins != null)
+                    {
+                        foreach (var plugin in plugins)
+                        {
+                            if (plugin is IFormsEntityPlugin)
+                            {
+                                (plugin as IFormsEntityPlugin).MakeContextMenu(this, menuItemList, selectedListItem, selectedObject, aspectName);
+                            }
+                        }
+                    }
+                }
+
             }
         }
 
@@ -1356,6 +1396,7 @@ namespace FrwSoftware
             ShowSettingsDialog();
         }
 
+        
         private void saveButton_Click(object sender, EventArgs e)
         {
             Cursor cursor = Cursor.Current;
@@ -1379,7 +1420,7 @@ namespace FrwSoftware
                 Cursor.Current = cursor;
             }
         }
-
+        
         protected void AddToolStripItem(ToolStripItem item)
         {
             this.toolStrip.Items.Add(item);

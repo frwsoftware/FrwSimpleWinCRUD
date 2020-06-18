@@ -19,7 +19,7 @@ namespace FrwSoftware {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class FrwUtilsRes {
@@ -75,6 +75,33 @@ namespace FrwSoftware {
         public static string Allow {
             get {
                 return ResourceManager.GetString("Allow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Application allready running!.
+        /// </summary>
+        public static string Application_Allready_Running {
+            get {
+                return ResourceManager.GetString("Application_Allready_Running", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The local database directory was not found by the path:.
+        /// </summary>
+        public static string Application_Folder_Not_Found {
+            get {
+                return ResourceManager.GetString("Application_Folder_Not_Found", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to archived.
+        /// </summary>
+        public static string archived {
+            get {
+                return ResourceManager.GetString("archived", resourceCulture);
             }
         }
         
@@ -466,6 +493,51 @@ namespace FrwSoftware {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to External port.
+        /// </summary>
+        public static string JPort_ExtPort {
+            get {
+                return ResourceManager.GetString("JPort_ExtPort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Information.
+        /// </summary>
+        public static string JPort_Info {
+            get {
+                return ResourceManager.GetString("JPort_Info", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Full Name.
+        /// </summary>
+        public static string JPort_Name {
+            get {
+                return ResourceManager.GetString("JPort_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Port.
+        /// </summary>
+        public static string JPort_Port {
+            get {
+                return ResourceManager.GetString("JPort_Port", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Protocol.
+        /// </summary>
+        public static string JPort_Protocol {
+            get {
+                return ResourceManager.GetString("JPort_Protocol", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Preferences.
         /// </summary>
         public static string JPreferences {
@@ -687,6 +759,15 @@ namespace FrwSoftware {
         public static string Warning {
             get {
                 return ResourceManager.GetString("Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning.
+        /// </summary>
+        public static string WARNING1 {
+            get {
+                return ResourceManager.GetString("WARNING1", resourceCulture);
             }
         }
         

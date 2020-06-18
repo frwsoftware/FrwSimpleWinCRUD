@@ -330,4 +330,31 @@
   <data name="High" xml:space="preserve">
     <value>Высокий</value>
   </data>
+  <data name="Application_Allready_Running" xml:space="preserve">
+    <value>Приложение уже запущено!</value>
+  </data>
+  <data name="Application_Folder_Not_Found" xml:space="preserve">
+    <value>Локальный каталог баз данных не найден по пути:</value>
+  </data>
+  <data name="WARNING1" xml:space="preserve">
+    <value>Предупреждение</value>
+  </data>
+  <data name="JPort_ExtPort" xml:space="preserve">
+    <value>Внешний порт</value>
+  </data>
+  <data name="JPort_Info" xml:space="preserve">
+    <value>Информация</value>
+  </data>
+  <data name="JPort_Name" xml:space="preserve">
+    <value>Полное наименование</value>
+  </data>
+  <data name="JPort_Port" xml:space="preserve">
+    <value>Порт</value>
+  </data>
+  <data name="JPort_Protocol" xml:space="preserve">
+    <value>Протокол</value>
+  </data>
+  <data name="archived" xml:space="preserve">
+    <value>архив.</value>
+  </data>
 </root>

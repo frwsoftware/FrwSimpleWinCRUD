@@ -51,11 +51,17 @@ namespace FrwSoftware
                 JHeaderImage headerImageAttr = AttrHelper.GetAttribute<JHeaderImage>(SourceObjectType, column.AspectName);
                 PropertyInfo propInfo = AttrHelper.GetProperty(SourceObjectType, column.AspectName);
                 Type pType = propInfo.PropertyType;
-                if (pType == typeof(bool))
+                if (isVirtualList)
                 {
-                    column.CheckBoxes = true;
-                    column.HeaderCheckBox = true;// -not SubItemChecking, but only HeaderCheckBoxChanging 
+                    column.Sortable = false;
                 }
+                //else { 
+                    if (pType == typeof(bool))
+                    {
+                        column.CheckBoxes = true;
+                        column.HeaderCheckBox = true;// -not SubItemChecking, but only HeaderCheckBoxChanging 
+                    }
+                //}
                 if (AttrHelper.GetAttribute<JUrl>(propInfo) != null) column.Hyperlink = true;
                 column.Text = ModelHelper.GetPropertyJDescriptionOrName(propInfo);
                 if (headerImageAttr != null && headerImageAttr.HeaderImageName != null)
@@ -174,7 +180,7 @@ namespace FrwSoftware
 
         override protected void ReloadList()
         {
-            if (!(NoDmMode || AttrHelper.IsAttributeDefinedForType<JEntity>(SourceObjectType, true) == false))
+            if (!(isVirtualList || NoDmMode || AttrHelper.IsAttributeDefinedForType<JEntity>(SourceObjectType, true) == false))
             {
                 this.listView.SetObjects(Dm.Instance.FindAll(SourceObjectType));
             }
@@ -217,8 +223,6 @@ namespace FrwSoftware
                 //added j 
                 if (Attribute.GetCustomAttribute(pinfo, typeof(JIgnore)) != null)
                     continue;
-                //if (Attribute.GetCustomAttribute(pinfo, typeof(JManyToOne)) != null)
-                  //  continue; //обычно дублирована с JForeinKey поэтому оставляем одну 
 
                 OLVColumnAttribute attr = Attribute.GetCustomAttribute(pinfo, typeof(OLVColumnAttribute)) as OLVColumnAttribute;
                 OLVColumn column = null;
@@ -231,7 +235,12 @@ namespace FrwSoftware
                 {
                     column = this.MakeColumnFromAttribute(pinfo, attr);
                 }
-                if (column != null) columns.Add(column);
+                if (column != null)
+                {
+                    //reset checkboxes (setted by ConfigurePossibleBooleanColumn()) for correct working of virtual lists 
+                    column.CheckBoxes = false;
+                    columns.Add(column);
+                }
             }
 
             // How many columns have DisplayIndex specifically set?

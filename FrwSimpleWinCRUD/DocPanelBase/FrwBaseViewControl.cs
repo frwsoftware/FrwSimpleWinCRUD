@@ -62,7 +62,6 @@ namespace FrwSoftware
         }
         protected bool compareObjectKey(object key, object value)
         {
-            //если ключ не задан сравнение по нему не производится 
             if (key != null)
             {
                 if (value != null)
@@ -75,7 +74,6 @@ namespace FrwSoftware
         }
         protected bool compareStringKey(object key, string value)
         {
-            //если ключ не задан сравнение по нему не производится 
             if (key != null)
             {
                 if (key is string)
@@ -92,7 +90,6 @@ namespace FrwSoftware
         }
         protected bool compareLongKey(object key, long value)
         {
-            //если ключ не задан сравнение по нему не производится 
             if (key != null)
             {
                 if (key is long || key is int)
@@ -112,7 +109,6 @@ namespace FrwSoftware
         }
         protected bool compareBoolKey(object key, bool value)
         {
-            //если ключ не задан сравнение по нему не производится 
             if (key != null)
             {
                 if (key is bool)

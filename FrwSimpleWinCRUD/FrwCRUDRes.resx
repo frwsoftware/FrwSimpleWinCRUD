@@ -643,4 +643,28 @@
   <data name="List_CloneRecord" xml:space="preserve">
     <value>Clone Record</value>
   </data>
+  <data name="List_Statistics" xml:space="preserve">
+    <value>Statistics for list records</value>
+  </data>
+  <data name="MoveDown" xml:space="preserve">
+    <value>Move Down</value>
+  </data>
+  <data name="MoveUp" xml:space="preserve">
+    <value>Move Up</value>
+  </data>
+  <data name="Download_widget_placement_from_this_entry" xml:space="preserve">
+    <value>Download widget placement from this entry</value>
+  </data>
+  <data name="Save_current_widget_placement_to_this_entry" xml:space="preserve">
+    <value>Save current widget placement to this entry</value>
+  </data>
+  <data name="Do_not_show_this_dependency" xml:space="preserve">
+    <value>Do not show this dependency</value>
+  </data>
+  <data name="More_than_one_entry_selected" xml:space="preserve">
+    <value>More than one entry selected</value>
+  </data>
+  <data name="No_item_selected" xml:space="preserve">
+    <value>No item selected</value>
+  </data>
 </root>

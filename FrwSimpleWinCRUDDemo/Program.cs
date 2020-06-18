@@ -38,7 +38,7 @@ namespace FrwSoftware
         [STAThread]
         static void Main()
         {
-            MainAppUtils.AjustVideoSetting();
+            AppManager.AjustVideoSetting();
             try
             {
                 Form form = null;
@@ -46,7 +46,7 @@ namespace FrwSoftware
                 {
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);
-                    if (!MainAppUtils.CheckForSingleInstance()) return;
+                    if (!AppManager.CheckForSingleInstance()) return;
                     
                     //for testing, remove this lines in real app
                     var culture = new CultureInfo("en-US");
@@ -55,7 +55,12 @@ namespace FrwSoftware
 
                     log = Log.GetLogger();
                     AppManager.Instance = new DemoAppManager();
-                    MainAppUtils.InitAppPaths();
+                    //crearte config manager instance 
+                    if (!FrwConfig.IsInstanceSet)
+                    {
+                        FrwConfig.Instance = new FrwSimpleWinCRUDConfig();
+                    }
+                    AppManager.Instance.InitApplication();
                     AppManager.Instance.MainAppFormType = typeof(FrwMainAppForm);
                     form = AppManager.Instance.LoadDocPanelContainersState(true);
                     form.FormClosing += Form_FormClosing;
@@ -95,7 +100,7 @@ namespace FrwSoftware
         {
             try
             {
-                MainAppUtils.DestroyApp();
+                AppManager.Instance.DestroyApp();
             }
             catch (Exception ex)
             {

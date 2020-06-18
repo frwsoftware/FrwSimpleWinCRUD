@@ -79,12 +79,17 @@ namespace FrwSoftware
         void RefreshObject(object o);
         void RefreshList();
         void RemoveSelectedItems();
+        void MoveUpSelectedItems();
+        void MoveDownSelectedItems();
+        void StartRefreshing();
+        void StopRefreshing();
     }
 
     public interface IPropertyProcessor : IObjectViewProcessor
     {
         ViewMode ViewMode { get; set; }
         object SourceObject { get; set; }
+        object CloningObject { get; set; }
         bool SaveChanges();
         bool CancelChanges();
 

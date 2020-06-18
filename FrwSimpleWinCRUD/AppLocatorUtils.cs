@@ -44,6 +44,10 @@ namespace FrwSoftware
         {
             get; set;
         }
+        public static string ChromeProtablePath
+        {
+            get; set;
+        }
         public static string KittyPath
         {
             get; set;

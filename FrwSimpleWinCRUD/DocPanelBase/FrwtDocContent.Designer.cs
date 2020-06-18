@@ -46,7 +46,7 @@
             // 
             this.testMenuItem.Name = "testMenuItem";
             this.testMenuItem.Size = new System.Drawing.Size(185, 24);
-            this.testMenuItem.Text = "Тестовое меню";
+            this.testMenuItem.Text = "Test";
             // 
             // FrwDocContent
             // 

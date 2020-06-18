@@ -19,7 +19,7 @@ namespace FrwSoftware {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class FrwCRUDRes {
@@ -336,6 +336,24 @@ namespace FrwSoftware {
         public static string Dictionaries {
             get {
                 return ResourceManager.GetString("Dictionaries", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do not show this dependency.
+        /// </summary>
+        public static string Do_not_show_this_dependency {
+            get {
+                return ResourceManager.GetString("Do_not_show_this_dependency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download widget placement from this entry.
+        /// </summary>
+        public static string Download_widget_placement_from_this_entry {
+            get {
+                return ResourceManager.GetString("Download_widget_placement_from_this_entry", resourceCulture);
             }
         }
         
@@ -746,6 +764,15 @@ namespace FrwSoftware {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Statistics for list records.
+        /// </summary>
+        public static string List_Statistics {
+            get {
+                return ResourceManager.GetString("List_Statistics", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to View fileld.
         /// </summary>
         public static string List_View_Field {
@@ -1017,6 +1044,15 @@ namespace FrwSoftware {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to More than one entry selected.
+        /// </summary>
+        public static string More_than_one_entry_selected {
+            get {
+                return ResourceManager.GetString("More_than_one_entry_selected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This drag&amp;drop is not possible. The source or destination does not allow this operation..
         /// </summary>
         public static string Move_Not_Allowed_1 {
@@ -1031,6 +1067,33 @@ namespace FrwSoftware {
         public static string Move_Not_Allowed_2 {
             get {
                 return ResourceManager.GetString("Move_Not_Allowed_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move Down.
+        /// </summary>
+        public static string MoveDown {
+            get {
+                return ResourceManager.GetString("MoveDown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move Up.
+        /// </summary>
+        public static string MoveUp {
+            get {
+                return ResourceManager.GetString("MoveUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No item selected.
+        /// </summary>
+        public static string No_item_selected {
+            get {
+                return ResourceManager.GetString("No_item_selected", resourceCulture);
             }
         }
         
@@ -1142,6 +1205,15 @@ namespace FrwSoftware {
         public static string Save_all_entities_data {
             get {
                 return ResourceManager.GetString("Save_all_entities_data", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save current widget placement to this entry.
+        /// </summary>
+        public static string Save_current_widget_placement_to_this_entry {
+            get {
+                return ResourceManager.GetString("Save_current_widget_placement_to_this_entry", resourceCulture);
             }
         }
         
