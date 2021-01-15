@@ -39,6 +39,39 @@ namespace FrwSoftware
         Middle = 1,
         High = 2
     }
+    public enum ExpiredTypeEnum
+    {
+        GREEN,
+        YELLOW,
+        RED
+
+    }
+    public enum PeriodEnum
+    {
+        DAY_1,
+        DAY_2,
+        DAY_3,
+        DAY_4,
+        DAY_5,
+        DAY_6,
+        WEEK_1,
+        WEEK_2,
+        WEEK_3,
+        MONTH_1,
+        MONTH_2,
+        MONTH_3,
+        MONTH_4,
+        MONTH_5,
+        MONTH_6,
+        YEAR_1,
+        YEAR_2,
+        YEAR_3,
+        YEAR_4,
+        YEAR_5,
+        YEAR_6,
+        YEAR_10
+    }
+
     public class JoinEntityInfo
     {
         public Type DataType1 { get; set; }
@@ -53,6 +86,8 @@ namespace FrwSoftware
         public const string JobConcurrentType = "JobConcurrentType";
         public const string InfoHeaderType = "InfoHeaderType";
         public const string Protocol = "Protocol";
+        public const string Lang = "Lang";
+        public const string Period = "Period";
 
     }
 
@@ -370,9 +405,6 @@ namespace FrwSoftware
             dict.Items.Add(new JDictItem() { Key = JobConcurrentTypeEnum.Wait.ToString(), Text = FrwUtilsRes.Wait });
             dict.Items.Add(new JDictItem() { Key = JobConcurrentTypeEnum.Cancel.ToString(), Text = FrwUtilsRes.Cancel });
 
-
-  
-
             dict = new JDictionary() { Id = DictNames.Protocol };
             dictionaries.Add(dict);
             dict.Items.Add(new JDictItem() { Key = ProtocolEnum.http.ToString() });
@@ -383,7 +415,40 @@ namespace FrwSoftware
             dict.Items.Add(new JDictItem() { Key = ProtocolEnum.rdp.ToString() });
             dict.Items.Add(new JDictItem() { Key = ProtocolEnum.tcp.ToString() });
 
+            dict = new JDictionary() { Id = DictNames.Lang };
+            dictionaries.Add(dict);
+            dict.Items.Add(new JDictItem() { Key = "system", Text = FrwUtilsRes.lang_system });
+            dict.Items.Add(new JDictItem() { Key = "en", Text = FrwUtilsRes.en });
+            dict.Items.Add(new JDictItem() { Key = "ru", Text = FrwUtilsRes.ru });
+
+            dict = new JDictionary() { Id = DictNames.Period };
+            dictionaries.Add(dict);
+            dict.Items.Add(new JDictItem() { Key = PeriodEnum.DAY_1.ToString(), Text = FrwUtilsRes.DAY_1 });
+            dict.Items.Add(new JDictItem() { Key = PeriodEnum.DAY_2.ToString(), Text = FrwUtilsRes.DAY_2 });
+            dict.Items.Add(new JDictItem() { Key = PeriodEnum.DAY_3.ToString(), Text = FrwUtilsRes.DAY_3 });
+            dict.Items.Add(new JDictItem() { Key = PeriodEnum.DAY_4.ToString(), Text = FrwUtilsRes.DAY_4 });
+            dict.Items.Add(new JDictItem() { Key = PeriodEnum.DAY_5.ToString(), Text = FrwUtilsRes.DAY_5 });
+            dict.Items.Add(new JDictItem() { Key = PeriodEnum.DAY_6.ToString(), Text = FrwUtilsRes.DAY_6 });
+            dict.Items.Add(new JDictItem() { Key = PeriodEnum.WEEK_1.ToString(), Text = FrwUtilsRes.WEEK_1 });
+            dict.Items.Add(new JDictItem() { Key = PeriodEnum.WEEK_2.ToString(), Text = FrwUtilsRes.WEEK_2 });
+            dict.Items.Add(new JDictItem() { Key = PeriodEnum.WEEK_3.ToString(), Text = FrwUtilsRes.WEEK_3 });
+            dict.Items.Add(new JDictItem() { Key = PeriodEnum.MONTH_1.ToString(), Text = FrwUtilsRes.MONTH_1 });
+            dict.Items.Add(new JDictItem() { Key = PeriodEnum.MONTH_2.ToString(), Text = FrwUtilsRes.MONTH_2 });
+            dict.Items.Add(new JDictItem() { Key = PeriodEnum.MONTH_3.ToString(), Text = FrwUtilsRes.MONTH_3 });
+            dict.Items.Add(new JDictItem() { Key = PeriodEnum.MONTH_4.ToString(), Text = FrwUtilsRes.MONTH_4 });
+            dict.Items.Add(new JDictItem() { Key = PeriodEnum.MONTH_5.ToString(), Text = FrwUtilsRes.MONTH_5 });
+            dict.Items.Add(new JDictItem() { Key = PeriodEnum.MONTH_6.ToString(), Text = FrwUtilsRes.MONTH_6 });
+            dict.Items.Add(new JDictItem() { Key = PeriodEnum.YEAR_1.ToString(), Text = FrwUtilsRes.YEAR_1 });
+            dict.Items.Add(new JDictItem() { Key = PeriodEnum.YEAR_2.ToString(), Text = FrwUtilsRes.YEAR_2 });
+            dict.Items.Add(new JDictItem() { Key = PeriodEnum.YEAR_3.ToString(), Text = FrwUtilsRes.YEAR_3 });
+            dict.Items.Add(new JDictItem() { Key = PeriodEnum.YEAR_4.ToString(), Text = FrwUtilsRes.YEAR_4 });
+            dict.Items.Add(new JDictItem() { Key = PeriodEnum.YEAR_5.ToString(), Text = FrwUtilsRes.YEAR_5 });
+            dict.Items.Add(new JDictItem() { Key = PeriodEnum.YEAR_6.ToString(), Text = FrwUtilsRes.YEAR_6 });
+            dict.Items.Add(new JDictItem() { Key = PeriodEnum.YEAR_10.ToString(), Text = FrwUtilsRes.YEAR_10 });
+            dict.Items.Add(new JDictItem() { Key = PeriodEnum.YEAR_1.ToString(), Text = FrwUtilsRes.YEAR_1 });
+
         }
+
         public string GetRealPath(string path, object rowObject)
         {
             if (path != null && path.StartsWith(Dm.STORAGE_PREFIX))

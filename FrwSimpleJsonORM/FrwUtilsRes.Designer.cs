@@ -178,6 +178,60 @@ namespace FrwSoftware {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 1 day.
+        /// </summary>
+        public static string DAY_1 {
+            get {
+                return ResourceManager.GetString("DAY_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 2 days.
+        /// </summary>
+        public static string DAY_2 {
+            get {
+                return ResourceManager.GetString("DAY_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 3 days.
+        /// </summary>
+        public static string DAY_3 {
+            get {
+                return ResourceManager.GetString("DAY_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 4 days.
+        /// </summary>
+        public static string DAY_4 {
+            get {
+                return ResourceManager.GetString("DAY_4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 5 days.
+        /// </summary>
+        public static string DAY_5 {
+            get {
+                return ResourceManager.GetString("DAY_5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 6 days.
+        /// </summary>
+        public static string DAY_6 {
+            get {
+                return ResourceManager.GetString("DAY_6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Total.
         /// </summary>
         public static string Dm_Total {
@@ -192,6 +246,15 @@ namespace FrwSoftware {
         public static string Dm_UsedInEntity {
             get {
                 return ResourceManager.GetString("Dm_UsedInEntity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to English.
+        /// </summary>
+        public static string en {
+            get {
+                return ResourceManager.GetString("en", resourceCulture);
             }
         }
         
@@ -228,6 +291,15 @@ namespace FrwSoftware {
         public static string Initial {
             get {
                 return ResourceManager.GetString("Initial", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Interface Language (reload required).
+        /// </summary>
+        public static string Interface_Language {
+            get {
+                return ResourceManager.GetString("Interface_Language", resourceCulture);
             }
         }
         
@@ -414,9 +486,9 @@ namespace FrwSoftware {
         /// <summary>
         ///   Looks up a localized string similar to Archived.
         /// </summary>
-        public static string JNotification_IsArchive {
+        public static string JNotification_IsArchived {
             get {
-                return ResourceManager.GetString("JNotification_IsArchive", resourceCulture);
+                return ResourceManager.GetString("JNotification_IsArchived", resourceCulture);
             }
         }
         
@@ -673,6 +745,15 @@ namespace FrwSoftware {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto detect by OS.
+        /// </summary>
+        public static string lang_system {
+            get {
+                return ResourceManager.GetString("lang_system", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An error occurred while the program was running.
         /// </summary>
         public static string Log_Error_In_Work {
@@ -700,6 +781,60 @@ namespace FrwSoftware {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 1 month.
+        /// </summary>
+        public static string MONTH_1 {
+            get {
+                return ResourceManager.GetString("MONTH_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 2 month.
+        /// </summary>
+        public static string MONTH_2 {
+            get {
+                return ResourceManager.GetString("MONTH_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 3 month.
+        /// </summary>
+        public static string MONTH_3 {
+            get {
+                return ResourceManager.GetString("MONTH_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 4 month.
+        /// </summary>
+        public static string MONTH_4 {
+            get {
+                return ResourceManager.GetString("MONTH_4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 5 month.
+        /// </summary>
+        public static string MONTH_5 {
+            get {
+                return ResourceManager.GetString("MONTH_5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 6 month.
+        /// </summary>
+        public static string MONTH_6 {
+            get {
+                return ResourceManager.GetString("MONTH_6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No.
         /// </summary>
         public static string No {
@@ -714,6 +849,15 @@ namespace FrwSoftware {
         public static string Paused {
             get {
                 return ResourceManager.GetString("Paused", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Russian.
+        /// </summary>
+        public static string ru {
+            get {
+                return ResourceManager.GetString("ru", resourceCulture);
             }
         }
         
@@ -768,6 +912,96 @@ namespace FrwSoftware {
         public static string WARNING1 {
             get {
                 return ResourceManager.GetString("WARNING1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 week.
+        /// </summary>
+        public static string WEEK_1 {
+            get {
+                return ResourceManager.GetString("WEEK_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 2 weeks.
+        /// </summary>
+        public static string WEEK_2 {
+            get {
+                return ResourceManager.GetString("WEEK_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 3 weeks.
+        /// </summary>
+        public static string WEEK_3 {
+            get {
+                return ResourceManager.GetString("WEEK_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 year.
+        /// </summary>
+        public static string YEAR_1 {
+            get {
+                return ResourceManager.GetString("YEAR_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 10 years.
+        /// </summary>
+        public static string YEAR_10 {
+            get {
+                return ResourceManager.GetString("YEAR_10", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 2 years.
+        /// </summary>
+        public static string YEAR_2 {
+            get {
+                return ResourceManager.GetString("YEAR_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 3 years.
+        /// </summary>
+        public static string YEAR_3 {
+            get {
+                return ResourceManager.GetString("YEAR_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 4 years.
+        /// </summary>
+        public static string YEAR_4 {
+            get {
+                return ResourceManager.GetString("YEAR_4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 5 years.
+        /// </summary>
+        public static string YEAR_5 {
+            get {
+                return ResourceManager.GetString("YEAR_5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 6 years.
+        /// </summary>
+        public static string YEAR_6 {
+            get {
+                return ResourceManager.GetString("YEAR_6", resourceCulture);
             }
         }
         

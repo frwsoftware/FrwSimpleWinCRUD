@@ -93,8 +93,8 @@ namespace FrwSoftware
                 }
             }
 
-            bool isIsArchiveFieldPresent = ModelHelper.IsIsArchiveFieldPresent(SourceObjectType);
-            if (isIsArchiveFieldPresent)
+            bool isIsArchivedFieldPresent = ModelHelper.IsIsArchivedFieldPresent(SourceObjectType);
+            if (isIsArchivedFieldPresent)
             {
                 isActiveCheckBox.Text = FrwCRUDRes.Active;
                 isActiveCheckBox.Checked = true;
@@ -103,10 +103,10 @@ namespace FrwSoftware
 
                 listView.AdditionalFilter = new ModelFilter(delegate (object x)
                 {
-                    return (isActiveCheckBox.Checked ? !ModelHelper.GetIsArchiveValue(x) : true);
+                    return (isActiveCheckBox.Checked ? !ModelHelper.GetIsArchivedValue(x) : true);
                 });
             }
-            if (isIsArchiveFieldPresent || ModelHelper.IsTextColoredFieldPresent(SourceObjectType) || ModelHelper.IsExpiredFieldPresent(SourceObjectType))
+            if (isIsArchivedFieldPresent || ModelHelper.IsTextColoredFieldPresent(SourceObjectType) || ModelHelper.IsExpiredFieldPresent(SourceObjectType))
             {
                 listView.UseCellFormatEvents = true;
                 listView.FormatCell += ListView_FormatCell;
@@ -117,7 +117,7 @@ namespace FrwSoftware
             object item = e.Model;
             if (item != null)
             {
-                PropertyInfo p = item.GetType().GetProperty("IsArchive");
+                PropertyInfo p = item.GetType().GetProperty("IsArchived");
                 if (p != null && p.PropertyType == typeof(bool) && (bool)(p.GetValue(item)) == true)
                 {
                     e.SubItem.ForeColor = Color.Gray;

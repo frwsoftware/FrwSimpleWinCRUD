@@ -27,7 +27,7 @@ namespace FrwSoftware
     {
         static private readonly List<Process> runningProcessesList = new List<Process>();
 
-        public static void OpenFile(string fileName, string arguments = null)
+        public static void OpenFile(string fileName, string arguments = null, bool addToProcessList = true)
         {
             Process prc = null;
 
@@ -45,6 +45,13 @@ namespace FrwSoftware
                     }
                 };
                 prc.Start();
+                if (addToProcessList)
+                {
+                    lock (runningProcessesList)
+                    {
+                        runningProcessesList.Add(prc);
+                    }
+                }
             }
             finally
             {
@@ -57,8 +64,9 @@ namespace FrwSoftware
                 }
             }
         }
-        public static void ExecuteProgram(string fileName, string arguments, bool waitForExit = false)
+        public static int ExecuteProgram(string fileName, string arguments, bool waitForExit = false, bool addToProcessList = true)
         {
+            int exitCode = -1;
             Process prc = null;
 
             try
@@ -78,11 +86,19 @@ namespace FrwSoftware
 
                 // Start
                 prc.Start();
+                if (addToProcessList)
+                {
+                    lock (runningProcessesList)
+                    {
+                        runningProcessesList.Add(prc);
+                    }
+                }
 
                 if (waitForExit)
                 {
                     // wait for exit
                     prc.WaitForExit();
+                    exitCode = prc.ExitCode;
                 }
             }
             finally
@@ -95,9 +111,10 @@ namespace FrwSoftware
                 {
                 }
             }
+            return exitCode;
         }
 
-        static public bool RunExe(String path, String workingDir, String arguments, bool openMaximized, bool reopenMaximized, bool addToProcessList)
+        static public bool RunExe(String path, String workingDir, String arguments, bool openMaximized, bool reopenMaximized, bool addToProcessList = true)
         {
             Log.ProcessDebug("RunExe. Сommand line:  " + path + " Arguments: " + arguments);
             try
@@ -137,7 +154,6 @@ namespace FrwSoftware
                         {
                             lock (runningProcessesList)
                             {
-                                clearExitedProcessses();
                                 runningProcessesList.Add(p);
                             }
                         }
@@ -168,15 +184,22 @@ namespace FrwSoftware
             Log.ProcessDebug("myProcess_Exited sender ");// + (sender as Process));
         }
 
-        static private void clearExitedProcessses()
+        static public void ClearExitedProcessses()
         {
             for (int i = runningProcessesList.Count - 1; i >= 0; i--)
             {
-                Process process = runningProcessesList[i];
-                if (process.HasExited)
+                try
                 {
-                    runningProcessesList.RemoveAt(i);
-                    try { process.Dispose(); } catch { }
+                    Process process = runningProcessesList[i];
+                    if (process.HasExited) //InvalidOperationException: There is no process associated with the object.
+                    {
+                        runningProcessesList.RemoveAt(i);
+                        try { process.Dispose(); } catch { }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    Log.LogError(ex);
                 }
             }
         }

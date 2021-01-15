@@ -180,6 +180,10 @@ namespace FrwSoftware
     {
     }
     [AttributeUsage(AttributeTargets.Property)]
+    public class JPassword : Attribute
+    {
+    }
+    [AttributeUsage(AttributeTargets.Property)]
     public class JExpired : Attribute
     {
         public JExpired()

@@ -1,16 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FrwSoftware
 {
     public class BaseAppManager
     {
-
+        private void LoadPluginDlls(string baseDir)
+        {
+            DirectoryInfo pluginsDir = new DirectoryInfo(Path.Combine(baseDir, "Plugins"));
+            if (pluginsDir.Exists)
+            {
+                foreach (FileInfo dllFile in pluginsDir.GetFiles("*.dll"))
+                {
+                    try
+                    {
+                        Console.WriteLine("Load plugin dll " + dllFile.Name);
+                        Assembly assembly = Assembly.LoadFrom(dllFile.FullName);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.LogError(ex);
+                    }
+                }
+            }
+        }
 
 
         virtual public void InitApplication()
@@ -60,6 +81,9 @@ namespace FrwSoftware
             if (!Directory.Exists(FrwConfig.Instance.ComputerUserDir)) new Exception(FrwUtilsRes.Application_Folder_Not_Found + FrwConfig.Instance.ComputerUserDir);
             //directory for temp
             FrwConfig.Instance.UserTempDir = Path.GetTempPath();
+
+            LoadPluginDlls(runPath);
+
             //load settings 
             FrwConfig.Instance.LoadConfig();
             //create database manager instance (includes database loading and relationship resolving) 

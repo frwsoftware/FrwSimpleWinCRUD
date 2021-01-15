@@ -94,7 +94,7 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.SQLite, Version=1.0.113.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <HintPath>..\..\JustProjects\packages\System.Data.SQLite.Core.1.0.113.0\lib\net46\System.Data.SQLite.dll</HintPath>
+      <HintPath>..\..\JustProjects\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.113.3\lib\net46\System.Data.SQLite.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.SQLite.EF6, Version=1.0.113.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
       <HintPath>..\..\JustProjects\packages\System.Data.SQLite.EF6.1.0.113.0\lib\net46\System.Data.SQLite.EF6.dll</HintPath>
@@ -122,6 +122,7 @@
     <Compile Include="AboutDialog.designer.cs">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomImpl\InvoiceEntityPlugin.cs" />
     <Compile Include="CustomImpl\InvoiceListWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -323,6 +324,9 @@
     <Content Include="logConfig.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Plugins\readme.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="simplewincrud.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -338,10 +342,10 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\..\JustProjects\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\JustProjects\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
     <Error Condition="!Exists('..\..\JustProjects\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\JustProjects\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
-    <Error Condition="!Exists('..\..\JustProjects\packages\System.Data.SQLite.Core.1.0.113.0\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\JustProjects\packages\System.Data.SQLite.Core.1.0.113.0\build\net46\System.Data.SQLite.Core.targets'))" />
+    <Error Condition="!Exists('..\..\JustProjects\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.113.3\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\JustProjects\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.113.3\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets'))" />
   </Target>
   <Import Project="..\..\JustProjects\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\..\JustProjects\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
-  <Import Project="..\..\JustProjects\packages\System.Data.SQLite.Core.1.0.113.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\..\JustProjects\packages\System.Data.SQLite.Core.1.0.113.0\build\net46\System.Data.SQLite.Core.targets')" />
+  <Import Project="..\..\JustProjects\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.113.3\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('..\..\JustProjects\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.113.3\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

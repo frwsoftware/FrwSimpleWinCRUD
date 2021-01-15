@@ -20,6 +20,8 @@ using System.Reflection;
 using FrwSoftware.Properties;
 using Newtonsoft.Json;
 using System.Text;
+using System.Threading;
+using System.Globalization;
 
 namespace FrwSoftware
 {
@@ -80,6 +82,7 @@ namespace FrwSoftware
                 description = value;
             }
         }
+            
         private string description = null;
         /// <summary>
         /// Group name (to display in the settings window)
@@ -100,7 +103,7 @@ namespace FrwSoftware
         /// <summary>
         /// Custom settings are displayed in the settings window
         /// </summary>
-        public bool IsUser { get; set; }
+        public bool IsUser { get; set; } = true;
         /// <summary>
         /// Settings that need to be stored on a specific computer 
         /// </summary>
@@ -355,6 +358,23 @@ namespace FrwSoftware
         /// </summary>
         virtual protected void CreateProperties()
         {
+            JSetting setting = FrwConfig.Instance.CreatePropertyIfNotExist(new JSetting()
+            {
+                Name = "Language",
+                Description = FrwUtilsRes.Interface_Language,
+                DictId = DictNames.Lang,
+                Value = "system",
+                IsUser = true,
+                IsAttachedToComputer = false
+            });
+
+            string lang = FrwConfig.Instance.GetPropertyValueAsString(setting.Name, null);
+            if (lang != null && "system".Equals(lang) == false)
+            {
+                Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(lang);
+                //wee need due to i18n
+                setting.Description = FrwUtilsRes.Interface_Language;
+            }
         }
 
         public void ComplateSettingsRelations()
@@ -530,6 +550,7 @@ namespace FrwSoftware
                     }
                 }
             }
+            
             CreateProperties();
         }
         /// <summary>

@@ -213,14 +213,50 @@ namespace FrwSoftware
         override public void InitApplication()
         {
             base.InitApplication();
+            
             LoadPlugins();
+            
             string exePath = Path.GetDirectoryName(Application.ExecutablePath);
             Console.WriteLine("Application.ExecutablePath: " + exePath);
 
+            JSetting setting = FrwConfig.Instance.CreatePropertyIfNotExist(new JSetting() { Name = AppLocator.SETTING_KittyPortablePath });
+            string kittyPath = FrwConfig.Instance.GetPropertyValueAsString(setting.Name, null);
+            //AppLocator.KittyPath = @"R:\RemoteControl\Kitty\KittyPortable\kitty.exe";
+            Console.WriteLine("KittyPortablePath: " + kittyPath);
+
+            setting = FrwConfig.Instance.CreatePropertyIfNotExist(new JSetting() { Name = AppLocator.SETTING_PuttyPortablePath });
+            string puttyPath = FrwConfig.Instance.GetPropertyValueAsString(setting.Name, null);
+            Console.WriteLine("PuttyPortablePath: " + puttyPath);
+
+            setting = FrwConfig.Instance.CreatePropertyIfNotExist(new JSetting() { Name = "FirefoxProtablePath" });
+            AppLocator.FirefoxProtablePath = FrwConfig.Instance.GetPropertyValueAsString(setting.Name, null);
+            //AppLocator.FirefoxProtablePath = @"R:\FirefoxPortable\FirefoxPortable.exe";
+            Console.WriteLine("FirefoxProtablePath: " + AppLocator.FirefoxProtablePath);
+
+            setting = FrwConfig.Instance.CreatePropertyIfNotExist(new JSetting() { Name = "ChromeProtablePath" });
+            AppLocator.ChromeProtablePath = FrwConfig.Instance.GetPropertyValueAsString(setting.Name, null);
+            //AppLocator.ChromeProtablePath = @"R:\GoogleChromePortable\GoogleChromePortable.exe";
+            Console.WriteLine("ChromeProtablePath: " + AppLocator.ChromeProtablePath);
+
+
+            Console.WriteLine("InternetExplorerPath: " + AppLocator.InternetExplorerPath);
+            Console.WriteLine("ChromePath: " + AppLocator.ChromePath);
+            Console.WriteLine("EdgePath: " + AppLocator.EdgePath);
+            Console.WriteLine("FirefoxPath: " + AppLocator.FirefoxPath);
+            Console.WriteLine("OperaPath: " + AppLocator.OperaPath);
+            Console.WriteLine("SafariPath: " + AppLocator.SafariPath);
         }
 
         override public void DestroyApp()
         {
+            try
+            {
+                ProcessUtils.ClearExitedProcessses();
+            }
+            catch (Exception ex)
+            {
+                Log.ShowError(ex);
+            }
             base.DestroyApp();
         }
 
@@ -1520,11 +1556,6 @@ namespace FrwSoftware
             return new List<ToolStripItem>();
 
         }
-        virtual public List<ToolStripItem> CreateGetPasswordContextMenu(Action<string> setNewPassword)
-        {
-            return new List<ToolStripItem>();
-        }
-
 
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         public static extern bool SetProcessDPIAware();

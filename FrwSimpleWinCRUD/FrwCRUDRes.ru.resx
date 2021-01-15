@@ -663,4 +663,13 @@
   <data name="No_item_selected" xml:space="preserve">
     <value>Нет выделенных записей</value>
   </data>
+  <data name="For_filed" xml:space="preserve">
+    <value>для поля</value>
+  </data>
+  <data name="Generate_new_password" xml:space="preserve">
+    <value>Сгенерировать новый пароль</value>
+  </data>
+  <data name="To_generate_new_password_press__Yes__" xml:space="preserve">
+    <value>Чтобы сгенерировать новый пароль нажните "Да"</value>
+  </data>
 </root>

@@ -48,10 +48,17 @@ namespace FrwSoftware
         {
             get; set;
         }
-        public static string KittyPath
-        {
-            get; set;
-        }
+        //public static string KittyPath
+        //{
+        //    get; set;
+        //}
+        public static string SETTING_KittyPortablePath = "KittyPortablePath";
+        public static string SETTING_PuttyPortablePath = "PuttyPortablePath";
+        //public static string PuttyPath
+        //{
+        //    get; set;
+        //} = @"PuttyPortable/PUTTY.EXE";
+        
         public static string RDPPath
         {
             get { return "mstsc"; }

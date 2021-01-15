@@ -18,28 +18,23 @@ using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 using BrightIdeasSoftware;
-using FrwSoftware.Model.Chinook;
 
 namespace FrwSoftware
 {
-    [JListViewForEntityPlugin(typeof(Invoice))]
-    public partial class InvoiceListWindow : SimpleListWindow
+    [JListViewForEntityPlugin(typeof(JCountry))]
+    public partial class DemoListWindowPluginForJCountry : SimpleListWindow
     {
         private ToolStripComboBox filterComboBox = null;
 
-        public InvoiceListWindow()
+        public DemoListWindowPluginForJCountry()
         {
             InitializeComponent();
             filterComboBox = new ToolStripComboBox();
             filterComboBox.Items.AddRange(new object[] {
                 new  CustomItem("all", "All"),
-                new  CustomItem("currentDay", "Current day"),
-                new  CustomItem("lastWeek", "Last week"),
-                new  CustomItem("lastMonth", "Last month"),
-                new  CustomItem("2009", "Archive 2009"),
-                new  CustomItem("2010", "Archive 2010")
+                new  CustomItem("independedOnly", "Independed only"),
             });
-            filterComboBox.Name = "dateComboBox";
+            filterComboBox.Name = "independedComboBox";
             filterComboBox.Size = new Size(121, 38);
             filterComboBox.SelectedIndexChanged += (s, em) =>
             {
@@ -53,10 +48,10 @@ namespace FrwSoftware
             base.MakeListColumns();
 
             //make button column
-            OLVColumn column = MakeButtonColumn("SendInvoice", "Send Invoice");
+            OLVColumn column = MakeButtonColumn("ShowCapital", "Show Capital");
             column.AspectGetter = delegate (Object rowObject)
             {
-                if (((Invoice)rowObject).BillingPostalCode != null)  return "Send";
+                if (((JCountry)rowObject).Capital != null)  return "Show";
                 else return null;
             };
             AddColumnToList(column);
@@ -64,8 +59,11 @@ namespace FrwSoftware
             //handler for all column buttons
             listView.ButtonClick += (s, em) =>
             {
-                Invoice item = em.Model as Invoice;
-                if (em.Column.Name == "SendInvoice") SendInvoive(item);
+                JCountry item = em.Model as JCountry;
+                if (em.Column.Name == "ShowCapital")
+                {
+                    MessageBox.Show(item.Capital);
+                }
             };
 
             //make additional filter (combobox on list toolbar)
@@ -74,38 +72,10 @@ namespace FrwSoftware
                 CustomItem item = filterComboBox.SelectedItem as CustomItem;
                 if (item != null)
                 {
-                    Invoice invoice = (Invoice)x;
-                    if ("currentDay".Equals(item.Key))
+                    JCountry invoice = (JCountry)x;
+                    if ("independedOnly".Equals(item.Key))
                     {
-                        if (invoice.InvoiceDate != null && invoice.InvoiceDate.Date >= DateTime.Now.Date)
-                            return true;
-                        else return false;
-                    }
-                    else if ("lastWeek".Equals(item.Key))
-                    {
-                        if (invoice.InvoiceDate != null && 
-                            invoice.InvoiceDate.Date >= DateTime.Now.Date.AddDays(-7))
-                            return true;
-                        else return false;
-                    }
-                    else if ("lastMonth".Equals(item.Key))
-                    {
-                        if (invoice.InvoiceDate != null &&
-                            invoice.InvoiceDate.Date >= DateTime.Now.Date.AddMonths(-1))
-                            return true;
-                        else return false;
-                    }
-                    else if ("2009".Equals(item.Key))
-                    {
-                        if (invoice.InvoiceDate != null &&
-                            invoice.InvoiceDate.Date.Year == 2009)
-                            return true;
-                        else return false;
-                    }
-                    else if ("2010".Equals(item.Key))
-                    {
-                        if (invoice.InvoiceDate != null &&
-                            invoice.InvoiceDate.Date.Year == 2010)
+                        if ("Yes".Equals(invoice.Is_independent))
                             return true;
                         else return false;
                     }
@@ -113,10 +83,6 @@ namespace FrwSoftware
                 return true;
             });
 
-        }
-        private void SendInvoive(Invoice invoice)
-        {
-            MessageBox.Show("Sent invoice with id: " + invoice.InvoiceId);
         }
 
     }

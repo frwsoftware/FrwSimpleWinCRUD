@@ -1034,7 +1034,7 @@ namespace FrwSoftware
                     {
                         try
                         {
-                            CloneObject(selectedListItem, selectedObject,  null);
+                            CloneObject(selectedListItem, selectedObject, null);
                         }
                         catch (Exception ex)
                         {
@@ -1225,11 +1225,44 @@ namespace FrwSoftware
 
                 }
                 */
-                //todo
-                //menuItemList.AddRange(AppManager.Instance.CreateGetPasswordContextMenu(newPassword =>
-                //{
-                //  item.Password = newPassword;
-                //}));
+                IEnumerable<PropertyInfo> passwordProperties = AttrHelper.GetPropertiesWithAttribute<JPassword>(selectedObject.GetType());
+                List<ToolStripItem> subs = new List<ToolStripItem>();
+                foreach (var passwordProperty in passwordProperties)
+                {
+                    menuItem = new ToolStripMenuItem();
+                    menuItem.Text = FrwCRUDRes.Generate_new_password + " " + FrwCRUDRes.For_filed + ": " + ModelHelper.GetPropertyJDescriptionOrName(passwordProperty);
+                    menuItem.Click += (s, em) =>
+                    {
+                        try
+                        {
+                            DialogResult res = MessageBox.Show(null, FrwCRUDRes.To_generate_new_password_press__Yes__,
+                                FrwCRUDRes.WARNING, MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                            if (res == DialogResult.Yes)
+                            {
+                                string psw = PasswordUtils.GeneratePassword(10);
+                                AttrHelper.SetPropertyValue(selectedObject, passwordProperty, psw);
+                                RefreshObject(selectedObject);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.ShowError(ex);
+                        }
+                    };
+                    subs.Add(menuItem);
+                }
+                if (subs.Count > 1)
+                {
+                    menuItem = new ToolStripMenuItem();
+                    menuItem.Text = FrwCRUDRes.Generate_new_password;
+                    menuItem.DropDownItems.AddRange(subs.ToArray<ToolStripItem>());
+                    menuItemList.Add(menuItem);
+                }
+                else if (subs.Count == 1)
+                {
+                    menuItemList.Add(subs[0]);
+                }
+
 
                 Type typeForPlugin = (selectedObject != null)?selectedObject.GetType() : this.SourceObjectType;
                 if (typeForPlugin != null)

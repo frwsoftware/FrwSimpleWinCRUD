@@ -264,7 +264,7 @@
   <data name="JNotification_SrcId" xml:space="preserve">
     <value>Source identifier</value>
   </data>
-  <data name="JNotification_IsArchive" xml:space="preserve">
+  <data name="JNotification_IsArchived" xml:space="preserve">
     <value>Archived</value>
   </data>
   <data name="Job_batch_canceled" xml:space="preserve">
@@ -356,5 +356,83 @@
   </data>
   <data name="archived" xml:space="preserve">
     <value>archived</value>
+  </data>
+  <data name="en" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Interface_Language" xml:space="preserve">
+    <value>User Interface Language (reload required)</value>
+  </data>
+  <data name="lang_system" xml:space="preserve">
+    <value>Auto detect by OS</value>
+  </data>
+  <data name="ru" xml:space="preserve">
+    <value>Russian</value>
+  </data>
+  <data name="DAY_1" xml:space="preserve">
+    <value>1 day</value>
+  </data>
+  <data name="DAY_2" xml:space="preserve">
+    <value>2 days</value>
+  </data>
+  <data name="DAY_3" xml:space="preserve">
+    <value>3 days</value>
+  </data>
+  <data name="DAY_4" xml:space="preserve">
+    <value>4 days</value>
+  </data>
+  <data name="DAY_5" xml:space="preserve">
+    <value>5 days</value>
+  </data>
+  <data name="DAY_6" xml:space="preserve">
+    <value>6 days</value>
+  </data>
+  <data name="MONTH_1" xml:space="preserve">
+    <value>1 month</value>
+  </data>
+  <data name="MONTH_2" xml:space="preserve">
+    <value>2 month</value>
+  </data>
+  <data name="MONTH_3" xml:space="preserve">
+    <value>3 month</value>
+  </data>
+  <data name="MONTH_4" xml:space="preserve">
+    <value>4 month</value>
+  </data>
+  <data name="MONTH_5" xml:space="preserve">
+    <value>5 month</value>
+  </data>
+  <data name="MONTH_6" xml:space="preserve">
+    <value>6 month</value>
+  </data>
+  <data name="WEEK_1" xml:space="preserve">
+    <value>1 week</value>
+  </data>
+  <data name="WEEK_2" xml:space="preserve">
+    <value>2 weeks</value>
+  </data>
+  <data name="WEEK_3" xml:space="preserve">
+    <value>3 weeks</value>
+  </data>
+  <data name="YEAR_1" xml:space="preserve">
+    <value>1 year</value>
+  </data>
+  <data name="YEAR_10" xml:space="preserve">
+    <value>10 years</value>
+  </data>
+  <data name="YEAR_2" xml:space="preserve">
+    <value>2 years</value>
+  </data>
+  <data name="YEAR_3" xml:space="preserve">
+    <value>3 years</value>
+  </data>
+  <data name="YEAR_4" xml:space="preserve">
+    <value>4 years</value>
+  </data>
+  <data name="YEAR_5" xml:space="preserve">
+    <value>5 years</value>
+  </data>
+  <data name="YEAR_6" xml:space="preserve">
+    <value>6 years</value>
   </data>
 </root>

@@ -49,8 +49,8 @@ namespace FrwSoftware
         [JReadOnly]
         public string SrcId { get; set; }
 
-        [JDisplayName(typeof(FrwUtilsRes), "JNotification_IsArchive")]
-        public bool IsArchive { get; set; }
+        [JDisplayName(typeof(FrwUtilsRes), "JNotification_IsArchived")]
+        public bool IsArchived { get; set; }
 
     }
 }

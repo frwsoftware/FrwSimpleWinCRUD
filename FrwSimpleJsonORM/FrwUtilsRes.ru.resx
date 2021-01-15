@@ -264,7 +264,7 @@
   <data name="JNotification_SrcId" xml:space="preserve">
     <value>Идн. источника</value>
   </data>
-  <data name="JNotification_IsArchive" xml:space="preserve">
+  <data name="JNotification_IsArchived" xml:space="preserve">
     <value>Архивный</value>
   </data>
   <data name="Job_batch_canceled" xml:space="preserve">
@@ -356,5 +356,83 @@
   </data>
   <data name="archived" xml:space="preserve">
     <value>архив.</value>
+  </data>
+  <data name="en" xml:space="preserve">
+    <value>Английский</value>
+  </data>
+  <data name="Interface_Language" xml:space="preserve">
+    <value>Язык пользовательского интерфейса (требуется перезапуск)</value>
+  </data>
+  <data name="lang_system" xml:space="preserve">
+    <value>Определить по ОС</value>
+  </data>
+  <data name="ru" xml:space="preserve">
+    <value>Русский</value>
+  </data>
+  <data name="DAY_1" xml:space="preserve">
+    <value>1 день</value>
+  </data>
+  <data name="DAY_2" xml:space="preserve">
+    <value>2 дня</value>
+  </data>
+  <data name="DAY_3" xml:space="preserve">
+    <value>3 дня</value>
+  </data>
+  <data name="DAY_4" xml:space="preserve">
+    <value>4 дня</value>
+  </data>
+  <data name="DAY_5" xml:space="preserve">
+    <value>5 дней</value>
+  </data>
+  <data name="DAY_6" xml:space="preserve">
+    <value>6 дней</value>
+  </data>
+  <data name="MONTH_1" xml:space="preserve">
+    <value>1 месяц</value>
+  </data>
+  <data name="MONTH_2" xml:space="preserve">
+    <value>2 месяца</value>
+  </data>
+  <data name="MONTH_3" xml:space="preserve">
+    <value>3 месяца</value>
+  </data>
+  <data name="MONTH_4" xml:space="preserve">
+    <value>4 месяца</value>
+  </data>
+  <data name="MONTH_5" xml:space="preserve">
+    <value>5 месяцев</value>
+  </data>
+  <data name="MONTH_6" xml:space="preserve">
+    <value>6 месяцев</value>
+  </data>
+  <data name="WEEK_1" xml:space="preserve">
+    <value>1 неделя</value>
+  </data>
+  <data name="WEEK_2" xml:space="preserve">
+    <value>2 недели</value>
+  </data>
+  <data name="WEEK_3" xml:space="preserve">
+    <value>3 недели</value>
+  </data>
+  <data name="YEAR_1" xml:space="preserve">
+    <value>1 год</value>
+  </data>
+  <data name="YEAR_10" xml:space="preserve">
+    <value>10 лет</value>
+  </data>
+  <data name="YEAR_2" xml:space="preserve">
+    <value>2 года</value>
+  </data>
+  <data name="YEAR_3" xml:space="preserve">
+    <value>3 года</value>
+  </data>
+  <data name="YEAR_4" xml:space="preserve">
+    <value>4 года</value>
+  </data>
+  <data name="YEAR_5" xml:space="preserve">
+    <value>5 лет</value>
+  </data>
+  <data name="YEAR_6" xml:space="preserve">
+    <value>6 лет</value>
   </data>
 </root>

@@ -449,6 +449,24 @@ namespace FrwSoftware {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to for field.
+        /// </summary>
+        public static string For_filed {
+            get {
+                return ResourceManager.GetString("For_filed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Generate new password.
+        /// </summary>
+        public static string Generate_new_password {
+            get {
+                return ResourceManager.GetString("Generate_new_password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Help.
         /// </summary>
         public static string Help {
@@ -1601,6 +1619,15 @@ namespace FrwSoftware {
         public static string This_field_is_readonly {
             get {
                 return ResourceManager.GetString("This_field_is_readonly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To generate new password press &quot;Yes&quot; .
+        /// </summary>
+        public static string To_generate_new_password_press__Yes__ {
+            get {
+                return ResourceManager.GetString("To_generate_new_password_press__Yes__", resourceCulture);
             }
         }
         

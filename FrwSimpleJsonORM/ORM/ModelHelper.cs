@@ -146,10 +146,10 @@ namespace FrwSoftware
                 return GetNameForObject(o);
             }
         }
-        static public bool IsIsArchiveFieldPresent(Type t)
+        static public bool IsIsArchivedFieldPresent(Type t)
         {
-            PropertyInfo IsArchiveProp = t.GetProperty("IsArchive");
-            if (IsArchiveProp != null) return true;
+            PropertyInfo IsArchivedProp = t.GetProperty("IsArchived");
+            if (IsArchivedProp != null) return true;
             else return false;
         }
         static public bool IsExpiredFieldPresent(Type t)
@@ -167,12 +167,12 @@ namespace FrwSoftware
             }
             return false;
         }
-        static public bool GetIsArchiveValue(object o)
+        static public bool GetIsArchivedValue(object o)
         {
             if (o == null) return false;
             Type t = o.GetType();
-            PropertyInfo IsArchiveProp = t.GetProperty("IsArchive");
-            if (IsArchiveProp != null) return (bool)IsArchiveProp.GetValue(o);
+            PropertyInfo IsArchivedProp = t.GetProperty("IsArchived");
+            if (IsArchivedProp != null) return (bool)IsArchivedProp.GetValue(o);
             else return false;
         }
         static public string GetNameForObjectAdv(object o)
@@ -180,8 +180,8 @@ namespace FrwSoftware
             if (o == null) return null;
             string s = GetNameForObject(o);
             Type t = o.GetType();
-            PropertyInfo IsArchiveProp = t.GetProperty("IsArchive");
-            if (IsArchiveProp != null && IsArchiveProp.PropertyType == typeof(bool) && (bool)IsArchiveProp.GetValue(o) == true)
+            PropertyInfo IsArchivedProp = t.GetProperty("IsArchived");
+            if (IsArchivedProp != null && IsArchivedProp.PropertyType == typeof(bool) && (bool)IsArchivedProp.GetValue(o) == true)
             {
                 s = "A* " + s + " ("+ FrwUtilsRes.archived + ")";
             }
@@ -192,8 +192,8 @@ namespace FrwSoftware
             if (o == null) return null;
             string s = GetShortNameForObject(o);
             Type t = o.GetType();
-            PropertyInfo IsArchiveProp = t.GetProperty("IsArchive");
-            if (IsArchiveProp != null && IsArchiveProp.PropertyType == typeof(bool) && (bool)IsArchiveProp.GetValue(o) == true)
+            PropertyInfo IsArchivedProp = t.GetProperty("IsArchived");
+            if (IsArchivedProp != null && IsArchivedProp.PropertyType == typeof(bool) && (bool)IsArchivedProp.GetValue(o) == true)
             {
                 s = "A* " + s + " (" + FrwUtilsRes.archived + ")";
             }
@@ -275,61 +275,6 @@ namespace FrwSoftware
                 }
             }
             return whereEntityRefField;
-        }
-        static public string MakeAllEntitiesDescription(bool makeTable)
-        {
-            StringBuilder str = new StringBuilder();
-            var entityTypes = AttrHelper.GetTypesWithAttribute<JEntity>(true);
-            foreach (var sourceEntityType in entityTypes)
-            {
-                string eDesc = ModelHelper.GetEntityJDescriptionOrName(sourceEntityType);
-                str.Append(makeTable?"<br/>":"\n");
-                str.Append(eDesc);
-                str.Append(makeTable ? "<br/>" : "\n");
-                if (makeTable)
-                {
-                    str.Append("\n");
-                    str.Append("<table>");
-                }
-                //bool pkFound = false;
-                foreach (PropertyInfo p in sourceEntityType.GetProperties())
-                {
-                    str.Append("\n");
-                    if (makeTable)
-                    {
-                        str.Append("<tr>");
-                    }
-                    string desc = GetPropertyJDescriptionOrName(p, true);
-                    if (makeTable)
-                    {
-                        str.Append("\n");
-                        str.Append("<td>");
-                    }
-                    str.Append(p.Name);
-                    if (makeTable)
-                    {
-                        str.Append("\n");
-                        str.Append("</td><td>");
-                    }
-                    else 
-                    {
-                        str.Append(": ");
-                    }
-                    str.Append(desc);
-                    if (makeTable)
-                    {
-                        str.Append("\n");
-                        str.Append("</tr>");
-                    }
-                    else str.Append("\n");
-                }
-                if (makeTable)
-                {
-                    str.Append("\n");
-                    str.Append("</table>");
-                }
-            }
-            return str.ToString();
         }
 
     }
